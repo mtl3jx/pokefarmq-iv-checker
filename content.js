@@ -1,6 +1,5 @@
 // Only run logic if on the correct page
 (function () {
-
   const path = window.location.pathname;
   if (!(path === "/fields" || path.startsWith("/fields/"))) {
     console.log("[PFQ IV] Not on a /fields page, script will not run.");
@@ -25,40 +24,26 @@
   console.log("[PFQ IV] Extension loaded");
   setTimeout(() => {
     init(); // delay init for 1 second to allow page content to load
-  }, 1000); 
-
-  /**
-   * Waits for a tooltip_content element to appear in the DOM.
-   * @returns {Promise<Element>} Resolves with the tooltip_content element.
-   */
-  function waitForTooltip() {
-    return new Promise((resolve) => {
-      const existing = document.querySelector("div.field .tooltip_content");
-      if (existing) {
-        return resolve(existing);
-      }
-      const observer = new MutationObserver(() => {
-        const tooltip = document.querySelector(".tooltip_content");
-        if (tooltip) {
-          observer.disconnect();
-          resolve(tooltip);
-        }
-      });
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-      });
-    });
-  }
+  }, 1000);
 
   /**
    * Initializes the extension: prefetches IVs and sets up event listeners.
    */
   function init() {
+    prefetchAllPartyPokemon();
+    setupPartyHover();
     prefetchAllFieldPokemon();
+    setupFieldHover();
+  }
 
+  /**
+   * Detects when a user hovers over a Pokémon in the field.
+   * When hovered, it fetches the Pokémon's IVs (using cache if available) and injects them into the tooltip.
+   * The IV block is only injected once per tooltip to avoid duplicates.
+   */
+  function setupFieldHover() {
     document.addEventListener("mouseover", async (event) => {
-      const trigger = event.target.closest("span.fieldmon.tooltip_trigger");
+      const trigger = event.target.closest("span.fieldmon");
       if (!trigger) return;
 
       const pokemonID = trigger.getAttribute("data-id");
@@ -74,7 +59,7 @@
       const url = `https://pokefarm.com/summary/${pokemonID}`;
       let ivs = ivCache.get(pokemonID);
       if (!ivs) {
-        console.log("[PFQ IV] Fetching IVs for Pokémon ID:", pokemonID, url);
+        // console.log("[PFQ IV] Fetching IVs for Pokémon ID:", pokemonID, url);
         ivs = await fetchIVs(url);
         ivCache.set(pokemonID, ivs);
       } else {
@@ -82,9 +67,155 @@
       }
 
       waitForTooltip().then(() => {
-        injectIVs(trigger, ivs);
+        injectFieldIVs(trigger, ivs);
       });
     });
+  }
+
+  /**
+   * Detects when a user hovers over a Pokémon in the party.
+   * When hovered, it fetches the Pokémon's IVs (using cache if available) and injects them into the tooltip.
+   * The IV block is only injected once per tooltip to avoid duplicates.
+   * It also handles empty party slots and eggs appropriately.
+   */
+  function setupPartyHover() {
+    const partySlots = document.querySelectorAll(
+      "#field_party div.slot.plateform",
+    );
+    const partyCount = document.querySelectorAll(
+      "#field_party div.slot.plateform div.big.pokemon",
+    ).length;
+
+    console.log("[PFQ IV] Party slots detected:", partyCount);
+
+    document.addEventListener("mouseover", async (event) => {
+      const trigger = event.target.closest("div.slot.plateform");
+      if (!trigger) return;
+
+      const pokemonID = trigger.getAttribute("data-id");
+      if (!pokemonID) { // empty slot
+        // console.log("[PFQ IV] This party slot is empty");
+        return;
+      }
+
+      const url = `https://pokefarm.com/summary/${pokemonID}`;
+      let ivs = ivCache.get(pokemonID);
+      if (!ivs) {
+        // console.log("[PFQ IV] Fetching IVs for Pokémon ID:", pokemonID, url);
+        ivs = await fetchIVs(url);
+        ivCache.set(pokemonID, ivs);
+      } else {
+        // console.log("[PFQ IV] Using cached IVs for Pokémon ID:", pokemonID, ivs);
+      }
+
+      waitForTooltip().then(() => {
+        injectPartyIVs(trigger, ivs);
+      });
+    });
+  }
+
+  /**
+   * @param {*} trigger reference to the hovered party slot element
+   * @param {number[]} ivs list of all 6 IVs and the total (ex. [31, 31, 31, 31, 31, 31, 186])
+   * @returns the HTML that should be injected into the tooltip for a party Pokémon
+   */
+  function injectPartyIVs(trigger, ivs) {
+    if (!ivs) { // egg slot
+      // console.log("[PFQ IV] This is an egg.");
+      return;
+    }
+
+    // Find the tooltip_content immediately after the hovered trigger
+    let tip = null;
+    let el = trigger.nextElementSibling;
+    while (el && !(el.classList && el.classList.contains("tooltip_content"))) {
+      el = el.nextElementSibling;
+    }
+    if (el && el.classList.contains("tooltip_content")) {
+      tip = el;
+    }
+    if (!tip) {
+      console.log("[PFQ IV] Could not find tooltip_content after party trigger");
+      return;
+    }
+
+    if (tip.querySelector(".pfq-iv-block")) return; // skip, already done
+
+    tip.appendChild(getIVRowHTML(ivs));
+
+    // console.log("[PFQ IV] Party IV block injected");
+  }
+
+  /**
+   * Generates the UI for the IV row to be injected in the HTML.
+   * @param {number[]} ivs list of all 6 IVs and the total (ex. [31, 31, 31, 31, 31, 31, 186])
+   * @returns {Element} A div element containing the formatted IV string.
+   */
+  function getIVRowHTML(ivs) {
+    const total = ivs.reduce((a, b) => a + b, 0);
+
+    const ivParts = ivs.slice(0, 6).map((val) =>
+      val === 31 // Underline each IV that is 31
+        ? `<span style="text-decoration:underline">${val}</span>`
+        : val,
+    );
+
+    // Format IVs as '[31/31/31/31/31/31/31=186]'
+    const ivString = ivParts.join("/") + "=" + ivs[6];
+
+    const num31 = ivs.slice(0, 6).filter((v) => v === 31).length;
+
+    const emojiMap = {
+      0: "",
+      1: "1️⃣",
+      2: "2️⃣",
+      3: "3️⃣",
+      4: "4️⃣",
+      5: "5️⃣",
+      6: "💯",
+    };
+
+    const numEmoji = `<b>${emojiMap[num31]}</b>` || "";
+
+    const ivRow = document.createElement("div");
+    ivRow.className = "pfq-iv-block";
+    ivRow.innerHTML = `<b>IVs:</b> [${ivString}] ${numEmoji}`;
+    return ivRow;
+  }
+
+  /**
+   * Prefetches IVs for all Pokémon in the user's party and caches them.
+   */
+  async function prefetchAllPartyPokemon() {
+    const partySlots = document.querySelectorAll(
+      "#field_party div.slot.plateform",
+    );
+
+    console.log("[PFQ IV] Prefetch scanning party Pokémon:", partySlots.length);
+
+    for (const slot of partySlots) {
+      // Skip eggs
+      if (slot.querySelector("div.big.egg")) return;
+
+      const pokemonID = slot.getAttribute("data-id");
+
+      if (!pokemonID || pokemonID === "hello") return; // not a real pokemon
+
+      // Skip if cached
+      if (ivCache.has(pokemonID)) {
+        // console.log("[PFQ IV] Party prefetch skipped (cached):", pokemonID);
+        return;
+      }
+
+      const url = `https://pokefarm.com/summary/${pokemonID}`;
+
+      // console.log("[PFQ IV] Party prefetch:", pokemonID);
+
+      fetchIVs(url).then((ivs) => {
+        console.log("[PFQ IV] Party Prefetch IVs:", pokemonID, ivs);
+        ivCache.set(pokemonID, ivs);
+      });
+    }
   }
 
   /**
@@ -142,7 +273,7 @@
         r.textContent.includes("IVs"),
       );
 
-      if (!row) {
+      if (!row) { // will happen if it's an egg
         console.log("[PFQ IV] IV row not found for pokemon ID:", pokemonId);
         return null;
       }
@@ -162,15 +293,39 @@
   }
 
   /**
+   * Waits for a tooltip_content element to appear in the DOM.
+   * @returns {Promise<Element>} Resolves with the tooltip_content element.
+   */
+  function waitForTooltip() {
+    return new Promise((resolve) => {
+      const existing = document.querySelector("div.field .tooltip_content");
+      if (existing) {
+        return resolve(existing);
+      }
+      const observer = new MutationObserver(() => {
+        const tooltip = document.querySelector(".tooltip_content");
+        if (tooltip) {
+          observer.disconnect();
+          resolve(tooltip);
+        }
+      });
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
+    });
+  }
+
+  /**
    * Injects IVs into the tooltip_content after the hovered trigger.
    * Underlines 31s, adds number emoji, and gold star for perfect IVs.
    * Skips injection if block already exists.
    * @param {Element} trigger - The hovered span.fieldmon.tooltip_trigger element.
    * @param {number[]} ivs - Array of IV values.
    */
-  function injectIVs(trigger, ivs) {
+  function injectFieldIVs(trigger, ivs) {
     if (!ivs) {
-      console.log("[PFQ IV] No IV data to inject");
+      console.log("[PFQ IV] No IV data to inject (field)");
       return;
     }
 
@@ -184,65 +339,15 @@
       tip = el;
     }
     if (!tip) {
-      console.log("[PFQ IV] Could not find tooltip_content after trigger");
+      console.log("[PFQ IV] Could not find tooltip_content after field trigger");
       return;
     }
 
-    // Check if IV block already exists
-    const oldBlock = tip.querySelector(".pfq-iv-block");
-    if (oldBlock) {
-      // console.log('[PFQ IV] IV block already injected, skipping.');
-      return;
-    }
+    if (tip.querySelector(".pfq-iv-block")) return; // skip, already done
 
     // console.log("[PFQ IV] Injecting IV block");
 
-    // Format IVs as '[31/31/31/31/31/31/31=186]'
-    const total = ivs.reduce((a, b) => a + b, 0);
-    // Underline each IV that is 31
-    const ivParts = ivs
-      .slice(0, 6)
-      .map((val) =>
-        val === 31
-          ? `<span style="text-decoration:underline">${val}</span>`
-          : val,
-      );
-    const ivString = ivParts.join("/") + "=" + ivs[6];
-    const isPerfect = total === 186;
-    const num31 = ivs.slice(0, 6).filter((val) => val === 31).length;
-    const emojiMap = {
-      0: "",
-      1: "1️⃣",
-      2: "2️⃣",
-      3: "3️⃣",
-      4: "4️⃣",
-      5: "5️⃣",
-      6: "💯",
-    };
-    const numEmoji = `<b>${emojiMap[num31]}</b>` || "";
-
-    // Create IV row as a div
-    const ivRow = document.createElement("div");
-    ivRow.className = "pfq-iv-block";
-    ivRow.innerHTML = `<b>IVs:</b> [${ivString}] ${numEmoji}`;
-
-    // Insert IV row after Egg Group row
-    let eggGroupRow = null;
-    const rows = tip.querySelectorAll("tr");
-    for (const row of rows) {
-      for (const cell of row.cells) {
-        if (cell.textContent.trim().includes("Egg Group")) {
-          eggGroupRow = row;
-          break;
-        }
-      }
-      if (eggGroupRow) break;
-    }
-    if (eggGroupRow && eggGroupRow.parentNode) {
-      eggGroupRow.parentNode.insertBefore(ivRow, eggGroupRow.nextSibling);
-    } else {
-      tip.appendChild(ivRow);
-    }
+    tip.appendChild(getIVRowHTML(ivs));
   }
 
   /**
