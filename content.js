@@ -24,7 +24,7 @@
   console.log("[PFQ IV] Extension loaded");
   setTimeout(() => {
     init(); // delay init for 1 second to allow page content to load
-  }, 1000);
+  }, 500);
 
   /**
    * Initializes the extension: prefetches IVs and sets up event listeners.
