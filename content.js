@@ -193,18 +193,35 @@ function injectIVs(trigger, ivs) {
   };
   const numEmoji = emojiMap[num31] || '';
 
-  const block = document.createElement('div');
-  block.className = 'pfq-iv-block';
-  block.style.margin = '4px 0';
-  block.style.fontSize = 'inherit'; // Match font size to other rows
-  block.innerHTML = `<b>IVs: </b> [${ivString}] ${numEmoji}`;
+  // Create divider line as a div
+  const divider = document.createElement('div');
+  divider.style.borderTop = '1px solid #ccc';
+  divider.style.marginTop = '8px';
+  divider.style.paddingBottom = '4px';
 
-  // Insert IV block after the level div
-  const levelDiv = tip.querySelector('.expbar');
-  if (levelDiv && levelDiv.parentNode) {
-    levelDiv.parentNode.insertBefore(block, levelDiv.nextSibling);
+  // Create IV row as a div
+  const ivRow = document.createElement('div');
+  ivRow.className = 'pfq-iv-block';
+  ivRow.innerHTML = `<b>IVs:</b> <span style="font-size:smaller">[${ivString}] ${numEmoji}</span>`;
+
+  // Insert divider and IV row after Egg Group row
+  let eggGroupRow = null;
+  const rows = tip.querySelectorAll('tr');
+  for (const row of rows) {
+    for (const cell of row.cells) {
+      if (cell.textContent.trim().includes('Egg Group')) {
+        eggGroupRow = row;
+        break;
+      }
+    }
+    if (eggGroupRow) break;
+  }
+  if (eggGroupRow && eggGroupRow.parentNode) {
+    eggGroupRow.parentNode.insertBefore(divider, eggGroupRow.nextSibling);
+    eggGroupRow.parentNode.insertBefore(ivRow, divider.nextSibling);
   } else {
-    tip.appendChild(block);
+    tip.appendChild(divider);
+    tip.appendChild(ivRow);
   }
 }
 
