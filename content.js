@@ -1,7 +1,9 @@
 // Only run logic if on the correct page
 (function () {
-  if (window.location.href !== "https://pokefarm.com/fields") {
-    console.log("[PFQ IV] Not on /fields page, script will not run.");
+
+  const path = window.location.pathname;
+  if (!(path === "/fields" || path.startsWith("/fields/"))) {
+    console.log("[PFQ IV] Not on a /fields page, script will not run.");
     return;
   }
 
