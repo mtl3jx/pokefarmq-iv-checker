@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "PokéFarm Field IV Viewer",
+  "version": "1.1",
+  "description": "Displays IV stats in Pokémon field tooltips.",
+  "host_permissions": [
+    "https://pokefarm.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://pokefarm.com/fields*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
