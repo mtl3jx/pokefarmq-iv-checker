@@ -21,7 +21,9 @@
   };
 
   console.log("[PFQ IV] Extension loaded");
-  init();
+  setTimeout(() => {
+    init(); // delay init for 1 second to allow page content to load
+  }, 1000); 
 
   /**
    * Waits for a tooltip_content element to appear in the DOM.
