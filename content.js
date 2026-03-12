@@ -1,3 +1,7 @@
+/**
+ * Waits for a tooltip_content element to appear in the DOM.
+ * @returns {Promise<Element>} Resolves with the tooltip_content element.
+ */
 function waitForTooltip() {
   return new Promise(resolve => {
     const existing = document.querySelector('div.field .tooltip_content');
@@ -17,15 +21,19 @@ function waitForTooltip() {
     });
   });
 }
+const isDebugMode = false; // Set to true to enable debug logs
 const ivCache = new Map();
 
-console.log("[PFQ IV] Extension loaded");
+printLog("[PFQ IV] Extension loaded");
 
 init();
 
+/**
+ * Initializes the extension: prefetches IVs and sets up event listeners.
+ */
 function init() {
 
-  console.log("[PFQ IV] Initializing");
+  printLog("[PFQ IV] Initializing");
 
   prefetchAllFieldPokemon();
 
@@ -35,7 +43,7 @@ function init() {
 
     const pokemonID = trigger.getAttribute("data-id");
     if (!pokemonID) {
-      console.log("[PFQ IV] No Pokémon ID found on hovered span");
+      printLog("[PFQ IV] No Pokémon ID found on hovered span");
       return;
     }
     if (pokemonID == "hello") {
@@ -46,11 +54,11 @@ function init() {
     const url = `https://pokefarm.com/summary/${pokemonID}`;
     let ivs = ivCache.get(pokemonID);
     if (!ivs) {
-      console.log("[PFQ IV] Fetching IVs for Pokémon ID:", pokemonID, url);
+      printLog("[PFQ IV] Fetching IVs for Pokémon ID:", pokemonID, url);
       ivs = await fetchIVs(url);
       ivCache.set(pokemonID, ivs);
     } else {
-      console.log("[PFQ IV] Using cached IVs for Pokémon ID:", pokemonID, ivs);
+      printLog("[PFQ IV] Using cached IVs for Pokémon ID:", pokemonID, ivs);
     }
 
     waitForTooltip().then(() => {
@@ -59,11 +67,14 @@ function init() {
   });
 }
 
+/**
+ * Prefetches IVs for all Pokémon in the field and caches them.
+ */
 async function prefetchAllFieldPokemon() {
 
   const anchors = document.querySelectorAll("a[href^='/summary/']");
 
-  console.log("[PFQ IV] Prefetch scanning field Pokémon:", anchors.length);
+  printLog("[PFQ IV] Prefetch scanning field Pokémon:", anchors.length);
 
   for (const a of anchors) {
 
@@ -72,11 +83,11 @@ async function prefetchAllFieldPokemon() {
     if (url.includes("hello")) continue; // this isn't a valid pokemon ID
 
     if (ivCache.has(url)) continue;
-    // console.log("[PFQ IV] Prefetching:", url);
+    printLog("[PFQ IV] Prefetching:", url);
 
     fetchIVs(url).then(ivs => {
 
-    //   console.log("[PFQ IV] Prefetch IVs:", url, ivs);
+      printLog("[PFQ IV] Prefetch IVs:", url, ivs);
       const pokemonID = url.split("/summary/")[1];
       ivCache.set(pokemonID, ivs);
 
@@ -85,16 +96,21 @@ async function prefetchAllFieldPokemon() {
 
 }
 
+/**
+ * Fetches IVs from the summary page for a given Pokémon.
+ * @param {string} url - The summary URL for the Pokémon.
+ * @returns {Promise<number[]>} Array of IV values.
+ */
 async function fetchIVs(url) {
 
   try {
-    // console.log("[PFQ IV] Fetch request:", url);
+    printLog("[PFQ IV] Fetch request:", url);
 
     const res = await fetch(url);
 
     const pokemonId = url.split("/summary/")[1];
 
-    // console.log("[PFQ IV] Response status:", res.status);
+    printLog("[PFQ IV] Response status:", res.status);
 
     const html = await res.text();
 
@@ -105,7 +121,7 @@ async function fetchIVs(url) {
     );
 
     if (!row) {
-      console.log("[PFQ IV] IV row not found for pokemon ID:", pokemonId);
+      printLog("[PFQ IV] IV row not found for pokemon ID:", pokemonId);
       return null;
     }
 
@@ -115,7 +131,7 @@ async function fetchIVs(url) {
       .map(td => parseInt(td.textContent.trim()))
       .filter(val => !isNaN(val));
     const values = numbers.slice(0, 7);
-    console.log("[PFQ IV] IVs parsed for Pokémon ID:", pokemonId, values);
+    printLog("[PFQ IV] IVs parsed for Pokémon ID:", pokemonId, values);
     return values;
   } catch (e) {
     console.error("[PFQ IV] IV fetch failed:", e);
@@ -123,13 +139,18 @@ async function fetchIVs(url) {
   }
 }
 
+/**
+ * Injects IVs into the tooltip_content after the hovered trigger.
+ * Underlines 31s, adds number emoji, and gold star for perfect IVs.
+ * Skips injection if block already exists.
+ * @param {Element} trigger - The hovered span.fieldmon.tooltip_trigger element.
+ * @param {number[]} ivs - Array of IV values.
+ */
 function injectIVs(trigger, ivs) {
   if (!ivs) {
-    console.log("[PFQ IV] No IV data to inject");
+    printLog("[PFQ IV] No IV data to inject");
     return;
   }
-
-  console.log("[PFQ IV] Injecting IV block");
 
   // Find the tooltip_content immediately after the hovered trigger
   let tip = null;
@@ -141,14 +162,18 @@ function injectIVs(trigger, ivs) {
     tip = el;
   }
   if (!tip) {
-    console.log("[PFQ IV] Could not find tooltip_content after trigger");
+    printLog("[PFQ IV] Could not find tooltip_content after trigger");
     return;
   }
 
-  // Remove any previous IV block
+  // Check if IV block already exists
   const oldBlock = tip.querySelector('.pfq-iv-block');
-  if (oldBlock) oldBlock.remove();
+  if (oldBlock) {
+    printLog('[PFQ IV] IV block already injected, skipping.');
+    return;
+  }
 
+  printLog("[PFQ IV] Injecting IV block");
 
   // Format IVs as '[31/31/31/31/31/31/31=186]'
   const total = ivs.reduce((a, b) => a + b, 0);
@@ -174,8 +199,6 @@ function injectIVs(trigger, ivs) {
   block.style.fontSize = 'inherit'; // Match font size to other rows
   block.innerHTML = `<b>IVs: </b> [${ivString}] ${numEmoji}`;
 
-  console.log("IV Block HTML to be Injected:", block);
-
   // Insert IV block after the level div
   const levelDiv = tip.querySelector('.expbar');
   if (levelDiv && levelDiv.parentNode) {
@@ -183,16 +206,27 @@ function injectIVs(trigger, ivs) {
   } else {
     tip.appendChild(block);
   }
-
-  console.log("After Injection:", tip);
 }
 
+/**
+ * Returns a CSS class for an IV value.
+ * @param {number} value - The IV value.
+ * @returns {string} CSS class name.
+ */
 function getIVClass(value) {
+  if (value === 31) {
+    return 'underline';
+  }
+  return '';
+}
 
-  if (value === 31) return "pfq-perfect";
-  if (value >= 26) return "pfq-high";
-  if (value <= 5) return "pfq-low";
-
-  return "pfq-mid";
-
+/**
+ * Only prints logs if debug mode is enabled.
+ * This helps avoid cluttering the console for users who don't want to see logs.
+ * @param {string} message to print to console logs
+ */
+function printLog(message) {
+  if (isDebugMode) {
+    console.log("[PFQ IV Checker]", message);
+  }
 }
