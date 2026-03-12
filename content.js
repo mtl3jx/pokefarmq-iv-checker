@@ -151,16 +151,28 @@ function injectIVs(trigger, ivs) {
 
 
   // Format IVs as '[31/31/31/31/31/31/31=186]'
-  const total = ivs[6];
+  const total = ivs.reduce((a, b) => a + b, 0);
   // Underline each IV that is 31
   const ivParts = ivs.slice(0, 6).map(val => val === 31 ? `<span style="text-decoration:underline">${val}</span>` : val);
-  const ivString = ivParts.join('/') + '=' + total;
+  const ivString = ivParts.join('/') + '=' + ivs[6];
   const isPerfect = total === 186;
+  const num31 = ivs.slice(0, 6).filter(val => val === 31).length;
+  const emojiMap = {
+    0: '',
+    1: '1️⃣',
+    2: '2️⃣',
+    3: '3️⃣',
+    4: '4️⃣',
+    5: '5️⃣',
+    6: '💯' 
+  };
+  const numEmoji = emojiMap[num31] || '';
 
   const block = document.createElement('div');
   block.className = 'pfq-iv-block';
   block.style.margin = '4px 0';
-  block.innerHTML = `<b>IVs: </b> [${ivString}]${isPerfect ? ' <span style="color:gold">★</span>' : ''}`;
+  block.style.fontSize = 'inherit'; // Match font size to other rows
+  block.innerHTML = `<b>IVs: </b> [${ivString}] ${numEmoji}`;
 
   console.log("IV Block HTML to be Injected:", block);
 
