@@ -191,20 +191,14 @@ function injectIVs(trigger, ivs) {
     5: '5️⃣',
     6: '💯' 
   };
-  const numEmoji = emojiMap[num31] || '';
-
-  // Create divider line as a div
-  const divider = document.createElement('div');
-  divider.style.borderTop = '1px solid #ccc';
-  divider.style.marginTop = '8px';
-  divider.style.paddingBottom = '4px';
+  const numEmoji = `<b>${emojiMap[num31]}</b>` || '';
 
   // Create IV row as a div
   const ivRow = document.createElement('div');
   ivRow.className = 'pfq-iv-block';
-  ivRow.innerHTML = `<b>IVs:</b> <span style="font-size:smaller">[${ivString}] ${numEmoji}</span>`;
+  ivRow.innerHTML = `<b>IVs:</b> [${ivString}] ${numEmoji}`;
 
-  // Insert divider and IV row after Egg Group row
+  // Insert IV row after Egg Group row
   let eggGroupRow = null;
   const rows = tip.querySelectorAll('tr');
   for (const row of rows) {
@@ -217,10 +211,8 @@ function injectIVs(trigger, ivs) {
     if (eggGroupRow) break;
   }
   if (eggGroupRow && eggGroupRow.parentNode) {
-    eggGroupRow.parentNode.insertBefore(divider, eggGroupRow.nextSibling);
-    eggGroupRow.parentNode.insertBefore(ivRow, divider.nextSibling);
+    eggGroupRow.parentNode.insertBefore(ivRow, eggGroupRow.nextSibling);
   } else {
-    tip.appendChild(divider);
     tip.appendChild(ivRow);
   }
 }
