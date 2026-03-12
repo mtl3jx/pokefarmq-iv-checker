@@ -1,6 +1,6 @@
 function waitForTooltip() {
   return new Promise(resolve => {
-    const existing = document.querySelector('.tooltip_content');
+    const existing = document.querySelector('div.field .tooltip_content');
     if (existing) {
       return resolve(existing);
     }
@@ -30,37 +30,32 @@ function init() {
   prefetchAllFieldPokemon();
 
   document.addEventListener("mouseover", async (event) => {
-
     const trigger = event.target.closest("span.fieldmon.tooltip_trigger");
-    if (!trigger) return
+    if (!trigger) return;
 
     const pokemonID = trigger.getAttribute("data-id");
-
     if (!pokemonID) {
-        console.log("[PFQ IV] No Pokémon ID found on hovered span");
-        return;
+      console.log("[PFQ IV] No Pokémon ID found on hovered span");
+      return;
     }
-
     if (pokemonID == "hello") {
-        // this isn't a real pokemon ID
-        return;
+      // this isn't a real pokemon ID
+      return;
     }
 
     const url = `https://pokefarm.com/summary/${pokemonID}`;
     let ivs = ivCache.get(pokemonID);
-
     if (!ivs) {
-        console.log("[PFQ IV] Fetching IVs for Pokémon ID:", pokemonID, url);
-        ivs = await fetchIVs(url);
-        ivCache.set(pokemonID, ivs);
+      console.log("[PFQ IV] Fetching IVs for Pokémon ID:", pokemonID, url);
+      ivs = await fetchIVs(url);
+      ivCache.set(pokemonID, ivs);
     } else {
-        console.log("[PFQ IV] Using cached IVs for Pokémon ID:", pokemonID, ivs);
+      console.log("[PFQ IV] Using cached IVs for Pokémon ID:", pokemonID, ivs);
     }
 
-    waitForTooltip().then(tooltip => {
-        injectIVs(tooltip, ivs);
+    waitForTooltip().then(() => {
+      injectIVs(trigger, ivs);
     });
-
   });
 }
 
@@ -82,8 +77,8 @@ async function prefetchAllFieldPokemon() {
     fetchIVs(url).then(ivs => {
 
     //   console.log("[PFQ IV] Prefetch IVs:", url, ivs);
-
-      ivCache.set(url, ivs);
+      const pokemonID = url.split("/summary/")[1];
+      ivCache.set(pokemonID, ivs);
 
     });
   }
@@ -128,46 +123,44 @@ async function fetchIVs(url) {
   }
 }
 
-function injectIVs(tooltip, ivs) {
-
+function injectIVs(trigger, ivs) {
   if (!ivs) {
     console.log("[PFQ IV] No IV data to inject");
     return;
   }
 
-  // if (tooltip.querySelector(".pfq-iv-block")) {
-  //   console.log("[PFQ IV] IV block already injected");
-  //   return;
-  // }
-
   console.log("[PFQ IV] Injecting IV block");
 
-  // Find the correct tooltip_content after the hovered fieldmon
-  let tip = tooltip;
-  const hovered = document.querySelector('span.fieldmon[data-tooltip]:hover');
-  if (hovered) {
-    let el = hovered.nextElementSibling;
-    while (el && !(el.classList && el.classList.contains('tooltip_content'))) {
-      el = el.nextElementSibling;
-    }
-    if (el && el.classList.contains('tooltip_content')) {
-      tip = el;
-    }
+  // Find the tooltip_content immediately after the hovered trigger
+  let tip = null;
+  let el = trigger.nextElementSibling;
+  while (el && !(el.classList && el.classList.contains('tooltip_content'))) {
+    el = el.nextElementSibling;
+  }
+  if (el && el.classList.contains('tooltip_content')) {
+    tip = el;
+  }
+  if (!tip) {
+    console.log("[PFQ IV] Could not find tooltip_content after trigger");
+    return;
   }
 
   // Remove any previous IV block
   const oldBlock = tip.querySelector('.pfq-iv-block');
   if (oldBlock) oldBlock.remove();
 
+
   // Format IVs as '[31/31/31/31/31/31/31=186]'
-  const total = ivs.reduce((a, b) => a + b, 0);
-  const ivString = ivs.slice(0, 6).join('/') + '/' + ivs[6] + '=' + total;
-  const hasPerfect = ivs.includes(31);
+  const total = ivs[6];
+  // Underline each IV that is 31
+  const ivParts = ivs.slice(0, 6).map(val => val === 31 ? `<span style="text-decoration:underline">${val}</span>` : val);
+  const ivString = ivParts.join('/') + '=' + total;
+  const isPerfect = total === 186;
 
   const block = document.createElement('div');
   block.className = 'pfq-iv-block';
   block.style.margin = '4px 0';
-  block.innerHTML = `<b>IVs</b> [${ivString}]${hasPerfect ? ' <span style="color:gold">★</span>' : ''}`;
+  block.innerHTML = `<b>IVs: </b> [${ivString}]${isPerfect ? ' <span style="color:gold">★</span>' : ''}`;
 
   console.log("IV Block HTML to be Injected:", block);
 
