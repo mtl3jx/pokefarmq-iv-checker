@@ -66,7 +66,7 @@
    */
   async function getPartyIVs() {
     const party = document.querySelectorAll("div.party.wide > div[data-pid]");
-    console.log("[PFQ IV] Prefetching party Pokémon:", party.length);
+    // console.log("[PFQ IV] Prefetching party Pokémon:", party.length);
 
     for (const slot of party) {
       if (slot.querySelector(".pfq-iv-block")) return; // skip, already done
@@ -81,11 +81,7 @@
         ivs = await fetchIVs(url);
         ivCache.set(pokemonId, ivs);
       } else {
-        console.log(
-          "[PFQ IV] Using cached IVs for party Pokémon:",
-          pokemonId,
-          ivs,
-        );
+        // console.log("[PFQ IV] Using cached IVs for party Pokémon:", pokemonId, ivs);
       }
 
       // generate and inject IVs for this party pokemon
@@ -93,6 +89,7 @@
       if (ivDiv != null) {
         const extraDiv = slot.querySelector("div.extra");
         extraDiv.append(ivDiv);
+        // slot.append(ivDiv);
       }
     }
   }
@@ -307,13 +304,19 @@
    * @returns {Promise<number[]>} Array of IV values.
    */
   async function fetchIVs(url) {
+    const pokemonId = getPokemonIdFromUrl(url);
     try {
       // console.log("[PFQ IV] Fetch request:", url);
       const res = await fetch(url);
-      const pokemonId = getPokemonIdFromUrl(url);
       // console.log("[PFQ IV] Response status:", res.status);
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, "text/html");
+
+      const isEgg = doc.querySelector("div#summarypage div.egg") != null;
+      if (isEgg) {
+        // console.log("[PFQ IV] This Pokémon is an egg, no IVs to fetch for ID:", pokemonId);
+        return null;
+      }
 
       const row = [...doc.querySelectorAll("tr")].find((r) =>
         r.textContent.includes("IVs"),
@@ -331,7 +334,7 @@
       // console.log("[PFQ IV] IVs parsed for Pokémon ID:", pokemonId, values);
       return values;
     } catch (e) {
-      console.error("[PFQ IV] IV fetch failed:", e);
+      console.error("[PFQ IV] IV fetch failed for Pokémon ID:", pokemonId, e);
       return null;
     }
   }
