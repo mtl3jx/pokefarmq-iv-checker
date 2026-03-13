@@ -211,13 +211,12 @@
       return;
     }
 
-    const ivParts = ivs.slice(0, 6).map((val) => {
-      const cls = getIVClass(val);
-      return `<span class="${cls}">${val}</span>`;
-    });
-    const ivString = ivParts.join("/") + "=" + ivs[6];
+    // Calculate IV parts and classes
+    const ivParts = ivs.slice(0, 6);
+    const ivStringTotal = ivParts.join("/");
+    const total = ivs[6];
 
-    const num31 = ivs.slice(0, 6).filter((v) => v === 31).length;
+    const num31 = ivParts.filter((v) => v === 31).length;
     const emojiMap = {
       0: "",
       1: "1️⃣",
@@ -227,12 +226,38 @@
       5: "5️⃣",
       6: "✅",
     };
-    const numEmoji = `<b>${emojiMap[num31]}</b>` || "";
+    const numEmoji = emojiMap[num31] || "";
 
+    // Create IV row div
     const ivRow = document.createElement("div");
     ivRow.className = "pfq-iv-block";
-    ivRow.innerHTML = `<b>IVs: </b>[${ivString}] ${numEmoji}`;
-    // console.log("[PFQ IV] IV Div:", ivRow);
+
+    // Bold label
+    const label = document.createElement("b");
+    label.textContent = "IVs: ";
+    ivRow.appendChild(label);
+
+    // Add IV spans with classes
+    ivParts.forEach((val, index) => {
+      const span = document.createElement("span");
+      span.textContent = val;
+      span.className = getIVClass(val); // your existing function
+      ivRow.appendChild(span);
+
+      // Add "/" separator except after last number
+      if (index < ivParts.length - 1) {
+        ivRow.appendChild(document.createTextNode("/"));
+      }
+    });
+
+    // Add total part
+    ivRow.appendChild(document.createTextNode("=" + total));
+
+    // Add emoji
+    if (numEmoji) {
+      ivRow.appendChild(document.createTextNode(` ${numEmoji}`));
+    }
+
     return ivRow;
   }
 
