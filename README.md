@@ -10,11 +10,20 @@ This allows players to quickly evaluate Pokémon in the field without opening ea
 
 ### Features
 
-• Displays Pokémon IV stats directly in the field tooltip
-• Highlights perfect IVs (31) with a star indicator
-• Color-graded IV values for quick visual evaluation
-• Automatically prefetches IV data for Pokémon currently visible in the field
-• Lightweight and designed to blend with the existing PokéFarm interface
+- Displays Pokémon IV stats directly in the tooltip when in fields
+- Highlights perfect IVs (31) with underline and emoji indicator
+- Automatically prefetches IV data for Pokémon currently visible in the field
+- Lightweight and designed to blend with the existing PokéFarm interface
+
+<details>
+  <summary>Screenshots</summary>
+  
+  ![6IVs](https://github.com/user-attachments/assets/416d4850-96dd-4b7c-be82-8a19901632e8)
+  
+  ![party IVs](https://github.com/user-attachments/assets/ca3b9fa0-cadf-4956-ab9b-e6a72fed2202)
+  
+  ![1 IV](https://github.com/user-attachments/assets/71d106d0-64f5-4d70-9712-740ef8d8a4ff)
+</details>
 
 ### How It Works
 
