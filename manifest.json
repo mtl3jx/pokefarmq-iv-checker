@@ -8,9 +8,17 @@
   ],
   "content_scripts": [
     {
-      "matches": ["https://pokefarm.com/fields*"],
-      "js": ["content.js"],
-      "css": ["styles.css"],
+      "matches": [
+        "https://pokefarm.com/fields*",
+        "https://pokefarm.com/party*",
+        "https://pokefarm.com/user*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "styles.css"
+      ],
       "run_at": "document_idle"
     }
   ]
