@@ -14,7 +14,11 @@
         "https://pokefarm.com/party*",
         "https://pokefarm.com/user*"
       ],
-      "js": ["content.js"],
+      "js": [
+        "repository.js",
+        "htmlGenerator.js",
+        "content.js"
+      ],
       "css": ["styles.css"],
       "run_at": "document_idle"
     }
