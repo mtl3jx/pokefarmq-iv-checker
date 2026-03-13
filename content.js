@@ -12,7 +12,7 @@
   if (path.startsWith("/fields")) {
     isField = true; // includes your fields and other users' fields
   }
-  if (path.startsWith("/party")) {
+  if (path.startsWith("/party") || path.startsWith("/user")) {
     isParty = true;
   }
   if (!isField && !isParty) {
@@ -212,13 +212,10 @@
       return;
     }
 
-    const ivParts = ivs
-      .slice(0, 6)
-      .map((val) =>
-        val === 31
-          ? `<span style="text-decoration:underline">${val}</span>`
-          : val,
-      );
+    const ivParts = ivs.slice(0, 6).map((val) => {
+      const cls = getIVClass(val);
+      return `<span class="${cls}">${val}</span>`;
+    });
     const ivString = ivParts.join("/") + "=" + ivs[6];
 
     const num31 = ivs.slice(0, 6).filter((v) => v === 31).length;
@@ -229,7 +226,7 @@
       3: "3️⃣",
       4: "4️⃣",
       5: "5️⃣",
-      6: "💯",
+      6: "✅",
     };
     const numEmoji = `<b>${emojiMap[num31]}</b>` || "";
 
@@ -364,6 +361,14 @@
     }
     if (el && el.classList.contains("tooltip_content")) return el;
     return null;
+  }
+
+  function getIVClass(value) {
+    if (value === 31) return "pfq-perfect";
+    if (value === 0) return "pfq-zero";
+    if (value >= 26) return "pfq-high";
+    if (value <= 5) return "pfq-low";
+    return "pfq-mid";
   }
 
   /**
