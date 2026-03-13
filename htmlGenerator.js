@@ -1,4 +1,39 @@
 /**
+ * Maps the count of 31 IVs to the corresponding emoji representation.
+ * Keys are the number of perfect (31) IVs, values are emoji strings.
+ * @type {Record<number, string>}
+ */
+const IV_EMOJI_MAP = {
+    0: "",
+    1: "1️⃣",
+    2: "2️⃣",
+    3: "3️⃣",
+    4: "4️⃣",
+    5: "5️⃣",
+    6: "✅",
+};
+
+/**
+ * Returns the first 6 IV values (HP, Atk, Def, SpA, SpD, Spe) from a full IV array.
+ * @param {number[] | null | undefined} ivs - Full IV array including total at index 6.
+ * @returns {number[] | null} Slice of the first 6 IVs, or null when no IVs are provided.
+ */
+function getIVParts(ivs) {
+    return ivs ? ivs.slice(0, 6) : null;
+}
+
+/**
+ * Computes the emoji to display based on the number of perfect (31) IVs.
+ * @param {number[] | null} ivParts - Array of 6 IV values.
+ * @returns {string} Emoji representing how many perfect IVs there are, or empty string.
+ */
+function getNumEmojiFromIVParts(ivParts) {
+    if (!ivParts) return "";
+    const num31 = ivParts.filter((v) => v === 31).length;
+    return IV_EMOJI_MAP[num31] || "";
+}
+
+/**
  * Injects an IV overlay on top of a field Pokémon sprite.
  * @param {HTMLElement} fieldmonSpan - The span element representing the field Pokémon.
  * @returns {Promise<void>} Resolves when the overlay has been injected or skipped.
@@ -33,19 +68,9 @@ async function injectIVOverlay(fieldmonSpan) {
 function generateIVOverlay(ivs) {
     if (!ivs) return null;
 
-    const ivParts = ivs.slice(0, 6);
-    const num31 = ivParts.filter(v => v === 31).length;
-
-    const emojiMap = {
-        0: "",
-        1: "1️⃣",
-        2: "2️⃣",
-        3: "3️⃣",
-        4: "4️⃣",
-        5: "5️⃣",
-        6: "✅",
-    };
-    const numEmoji = emojiMap[num31] || "";
+    const ivParts = getIVParts(ivs);
+    if (!ivParts) return null;
+    const numEmoji = getNumEmojiFromIVParts(ivParts);
 
     // Overlay container
     const overlay = document.createElement("div");
@@ -79,9 +104,9 @@ function generateIVOverlay(ivs) {
 
 /**
  * Generates the UI for the IV row to be injected in the HTML.
- * @param {number[]} ivs list of all 6 IVs and the total (ex. [31, 31, 31, 31, 31, 31, 186])
- *    When null, that means this is an egg or an empty slot.
- * @returns {Element} A div element containing the formatted IV string.
+ * @param {number[] | null} ivs - List of all 6 IVs and the total (ex. [31, 31, 31, 31, 31, 31, 186]).
+ *    When null, this is an egg or an empty slot.
+ * @returns {HTMLDivElement | undefined} A div element containing the formatted IV string, or undefined if skipped.
  */
 function generateIVTooltip(ivs) {
     if (ivs == null) {
@@ -90,21 +115,11 @@ function generateIVTooltip(ivs) {
     }
 
     // Calculate IV parts and classes
-    const ivParts = ivs.slice(0, 6);
-    const ivStringTotal = ivParts.join("/");
+    const ivParts = getIVParts(ivs);
+    const ivStringTotal = ivParts.join("/"); // currently unused, kept for potential future display
     const total = ivs[6];
 
-    const num31 = ivParts.filter((v) => v === 31).length;
-    const emojiMap = {
-        0: "",
-        1: "1️⃣",
-        2: "2️⃣",
-        3: "3️⃣",
-        4: "4️⃣",
-        5: "5️⃣",
-        6: "✅",
-    };
-    const numEmoji = emojiMap[num31] || "";
+    const numEmoji = getNumEmojiFromIVParts(ivParts);
 
     // Create IV row div
     const ivRow = document.createElement("div");
@@ -140,49 +155,43 @@ function generateIVTooltip(ivs) {
 }
 
 /**
- * @param {*} trigger reference to the hovered party slot element
- * @param {number[]} ivs list of all 6 IVs and the total (ex. [31, 31, 31, 31, 31, 31, 186])
- * @returns the HTML that should be injected into the tooltip for a party Pokémon
+ * Appends an IV tooltip block to the tooltip for the given trigger, if not already present.
+ * Safely no-ops if IV data or tooltip cannot be found.
+ * @param {Element} trigger - The hovered element that owns the tooltip.
+ * @param {number[] | null} ivs - Full IV array including total at index 6.
  */
-function injectFieldPartyIVs(trigger, ivs) {
+function appendIVTooltipIfMissing(trigger, ivs) {
     if (!ivs) {
-        // egg slot
-        // console.log("[PFQ IV] This is an egg.");
         return;
     }
 
     const tip = getTooltip(trigger);
     if (!tip) {
-        // console.log("[PFQ IV] Could not find tooltip_content after party trigger");
         return;
     }
 
     if (tip.querySelector(".pfq-iv-block")) return; // skip, already done
 
     tip.appendChild(generateIVTooltip(ivs));
+}
+
+/**
+ * Injects IV information into the tooltip for a party Pokémon slot.
+ * @param {Element} trigger - Reference to the hovered party slot element.
+ * @param {number[] | null} ivs - List of all 6 IVs and the total (ex. [31, 31, 31, 31, 31, 31, 186]).
+ */
+function injectFieldPartyIVs(trigger, ivs) {
+    appendIVTooltipIfMissing(trigger, ivs);
     // console.log("[PFQ IV] Party IV block injected");
 }
 
 /**
  * Injects IVs into the tooltip_content after the hovered trigger.
- * @param {Element} trigger
- * @param {number[]} ivs
+ * @param {Element} trigger - The hovered field Pokémon element.
+ * @param {number[] | null} ivs - Full IV array including total at index 6.
  */
 function injectFieldIVs(trigger, ivs) {
-    if (!ivs) {
-        // console.log("[PFQ IV] No IV data to inject (field)");
-        return;
-    }
-
-    const tip = getTooltip(trigger);
-    if (!tip) {
-        // console.log("[PFQ IV] Could not find tooltip_content after field trigger");
-        return;
-    }
-
-    if (tip.querySelector(".pfq-iv-block")) return; // skip, already done
-
-    tip.appendChild(generateIVTooltip(ivs));
+    appendIVTooltipIfMissing(trigger, ivs);
     // console.log("[PFQ IV] Field IV block injected");
 }
 

@@ -32,13 +32,13 @@ const ivCache = {
 async function fetchIVs(pokemonId) {
     const existing = ivCache.get(pokemonId);
     if (existing != null) {
-        console.log("[PFQ IV] Using cached IVs for Pokémon:", pokemonId, ivCache.get(pokemonId));
+        // console.log("[PFQ IV] Using cached IVs for Pokémon:", pokemonId, ivCache.get(pokemonId));
         return existing;
     }
 
     const url = `https://pokefarm.com/summary/${pokemonId}`;
     try {
-        console.log("[PFQ IV] Fetching IVs for Pokémon:", pokemonId, url);
+        // console.log("[PFQ IV] Fetching IVs for Pokémon:", pokemonId, url);
         const res = await fetch(url);
         // console.log("[PFQ IV] Response status:", res.status);
         const html = await res.text();
@@ -46,7 +46,7 @@ async function fetchIVs(pokemonId) {
 
         const isEgg = doc.querySelector("div#summarypage div.egg") != null;
         if (isEgg) {
-            console.log("[PFQ IV] This Pokémon is an egg, no IVs to fetch for ID:", pokemonId);
+            // console.log("[PFQ IV] This Pokémon is an egg, no IVs to fetch for ID:", pokemonId);
             return null;
         }
 
@@ -54,7 +54,7 @@ async function fetchIVs(pokemonId) {
             r.textContent.includes("IVs"),
         );
         if (!row) {
-            console.log("[PFQ IV] IV row not found for pokemon ID:", pokemonId);
+            // console.log("[PFQ IV] IV row not found for pokemon ID:", pokemonId);
             return null;
         }
 
@@ -63,7 +63,7 @@ async function fetchIVs(pokemonId) {
             .map((td) => parseInt(td.textContent.trim()))
             .filter((val) => !isNaN(val));
         const values = numbers.slice(0, 7);
-        console.log("[PFQ IV] IVs parsed for Pokémon ID:", pokemonId, values);
+        // console.log("[PFQ IV] IVs parsed for Pokémon ID:", pokemonId, values);
 
         ivCache.set(pokemonId, values); // save IVs to cache
         return values;
