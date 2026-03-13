@@ -37,3 +37,48 @@ div.party div.pfq-iv-block {
 .pfq-perfect{
   color:#8bdc8b;
 }
+
+.pkmn-sprite{
+  position: relative;
+}
+
+/* Container overlay for each Pokémon sprite */
+.pfq-iv-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Allow clicks through overlay */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Emoji in top-right corner */
+.pfq-iv-overlay .iv-emoji {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 14px;
+}
+
+/* IV bars container at the bottom */
+.pfq-iv-overlay .iv-bar-container {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  right: 2px;
+  height: 6px;
+  display: flex;
+  gap: 1px;
+}
+
+/* Individual IV bar */
+.pfq-iv-overlay .iv-bar {
+  flex: 1;
+  height: 100%;
+  border-radius: 1px;
+  background: rgba(0,0,0,0.2); /* fallback for zero IVs */
+  transition: background 0.2s ease-in-out;
+}

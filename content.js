@@ -55,6 +55,7 @@
       prefetchFieldPartyPokemon();
       setupFieldPartyHover();
       prefetchAllFieldPokemon();
+      setupFieldOverlay();
       setupFieldHover();
     }
   }
@@ -76,10 +77,8 @@
 
       let ivs = ivCache.get(pokemonId);
       if (!ivs) {
-        const url = `https://pokefarm.com/summary/${pokemonId}`;
-        // console.log("[PFQ IV] Fetching IVs for party Pokémon:", pokemonId, url);
-        ivs = await fetchIVs(url);
-        ivCache.set(pokemonId, ivs);
+        // console.log("[PFQ IV] Fetching IVs for party Pokémon:", pokemonId);
+        ivs = await fetchIVs(pokemonId);
       } else {
         // console.log("[PFQ IV] Using cached IVs for party Pokémon:", pokemonId, ivs);
       }
@@ -105,14 +104,15 @@
       const trigger = event.target.closest("span.fieldmon");
       if (!trigger) return;
 
+      addIVOverlay(trigger); // add IV overlay if not already there
+
       const pokemonID = trigger.getAttribute("data-id");
       if (!pokemonID || pokemonID == "hello") return;
 
       let ivs = ivCache.get(pokemonID);
       if (!ivs) {
         // console.log("[PFQ IV] Fetching IVs for Pokémon ID:", pokemonID);
-        ivs = await fetchIVs(`https://pokefarm.com/summary/${pokemonID}`);
-        ivCache.set(pokemonID, ivs);
+        ivs = await fetchIVs(pokemonID);
       } else {
         // console.log("[PFQ IV] Using cached IVs for Pokémon ID:", pokemonID, ivs);
       }
@@ -142,8 +142,7 @@
       let ivs = ivCache.get(pokemonID);
       if (!ivs) {
         // console.log("[PFQ IV] Fetching IVs for Pokémon ID:", pokemonID);
-        ivs = await fetchIVs(`https://pokefarm.com/summary/${pokemonID}`);
-        ivCache.set(pokemonID, ivs);
+        ivs = await fetchIVs(pokemonID);
       } else {
         // console.log("[PFQ IV] Using cached IVs for Pokémon ID:", pokemonID, ivs);
       }
@@ -151,6 +150,94 @@
       waitForTooltip().then(() => injectFieldPartyIVs(trigger, ivs));
     });
   }
+
+  // ---------------- FIELD OVERLAY LOGIC ----------------
+
+  function setupFieldOverlay() {
+    const fieldPokemon = document.querySelectorAll('div.field span.fieldmon');
+
+    fieldPokemon.forEach(pokemon => {
+      addIVOverlay(pokemon);
+    });
+  }
+
+  async function addIVOverlay(fieldmonSpan) {
+    const pokemonId = fieldmonSpan.attributes['data-id'].value;
+    let ivs = ivCache.get(pokemonId);
+    console.log("[PFQ IV] starting addIVOverlay for:", pokemonId, ivs)
+
+    if (!ivs) {
+      // console.log("[PFQ IV] Fetching IVs for Pokémon ID:", pokemonID);
+      ivs = await fetchIVs(pokemonId);
+    } else {
+      // console.log("[PFQ IV] Using cached IVs for Pokémon ID:", pokemonID, ivs);
+    }
+    
+    const existing = fieldmonSpan.querySelector('.pfq-iv-overlay');
+    if (existing) {
+      // console.log("[PFQ IV] IV overlay already exists for:", pokemonId)
+      return; // skip because IV overlay already exists
+      // existing.remove();
+    }
+
+    // Ensure sprite has base class
+    fieldmonSpan.classList.add('pkmn-sprite');
+
+    const overlay = getIVOverlayHTML(ivs);
+    if (overlay) {
+      // console.log("[PFQ IV] adding IV overlay for:", pokemonId)
+      fieldmonSpan.appendChild(overlay);
+    }
+  }
+
+  function getIVOverlayHTML(ivs) {
+    if (!ivs) return null;
+
+    const ivParts = ivs.slice(0, 6);
+    const num31 = ivParts.filter(v => v === 31).length;
+
+    const emojiMap = {
+      0: "",
+      1: "1️⃣",
+      2: "2️⃣",
+      3: "3️⃣",
+      4: "4️⃣",
+      5: "5️⃣",
+      6: "✅",
+    };
+    const numEmoji = emojiMap[num31] || "";
+
+    // Overlay container
+    const overlay = document.createElement("div");
+    overlay.className = "pfq-iv-overlay";
+
+    // Emoji
+    if (numEmoji) {
+      const emojiEl = document.createElement("div");
+      emojiEl.className = "iv-emoji";
+      emojiEl.textContent = numEmoji;
+      overlay.appendChild(emojiEl);
+    }
+
+    // Bar container
+    const barContainer = document.createElement("div");
+    barContainer.className = "iv-bar-container";
+
+    ivParts.forEach(val => {
+      const bar = document.createElement("div");
+      bar.className = "iv-bar";
+      // Height or color based on IV
+      const percentage = Math.floor((val / 31) * 100);
+      bar.style.background = `linear-gradient(to top, #4CAF50 ${percentage}%, rgba(0,0,0,0.2) 0%)`;
+      barContainer.appendChild(bar);
+    });
+
+    overlay.appendChild(barContainer);
+
+    return overlay;
+  }
+
+  // ---------------- IV HTML INJECTION ----------------
 
   /**
    * @param {*} trigger reference to the hovered party slot element
@@ -261,105 +348,6 @@
     return ivRow;
   }
 
-  /**
-   * Prefetches IVs for all Pokémon in the user's party and caches them.
-   */
-  async function prefetchFieldPartyPokemon() {
-    const partySlots = document.querySelectorAll(
-      "#field_party div.slot.plateform",
-    );
-    // console.log("[PFQ IV] Prefetch scanning party Pokémon:", partySlots.length);
-
-    for (const slot of partySlots) {
-      if (slot.querySelector("div.big.egg")) return;
-
-      const pokemonID = slot.getAttribute("data-id");
-      if (!pokemonID || pokemonID === "hello") return;
-
-      if (ivCache.has(pokemonID)) {
-        // console.log("[PFQ IV] Party prefetch skipped (cached):", pokemonID);
-        return;
-      }
-
-      const url = `https://pokefarm.com/summary/${pokemonID}`;
-      // console.log("[PFQ IV] Party prefetch:", pokemonID);
-
-      fetchIVs(url).then((ivs) => {
-        // console.log("[PFQ IV] Party Prefetch IVs:", pokemonID, ivs);
-        ivCache.set(pokemonID, ivs);
-      });
-    }
-  }
-
-  /**
-   * Prefetches IVs for all Pokémon in the field and caches them.
-   */
-  async function prefetchAllFieldPokemon() {
-    const anchors = document.querySelectorAll(
-      "div.field h3:not([style]) a[href^='/summary/']",
-    );
-    // console.log("[PFQ IV] Prefetch scanning field Pokémon:", anchors.length);
-
-    for (const a of anchors) {
-      const url = a.href;
-      if (url.includes("hello")) continue;
-
-      const pokemonID = getPokemonIdFromUrl(url);
-      if (ivCache.has(pokemonID)) {
-        // console.log("[PFQ IV] Prefetch skipped (cached):", pokemonID);
-        continue;
-      }
-
-      // console.log("[PFQ IV] Prefetching:", pokemonID);
-
-      fetchIVs(url).then((ivs) => {
-        // console.log("[PFQ IV] Prefetch IVs:", pokemonID, ivs);
-        ivCache.set(pokemonID, ivs);
-      });
-    }
-  }
-
-  /**
-   * Fetches IVs from the summary page for a given Pokémon.
-   * @param {string} url - The summary URL for the Pokémon.
-   * @returns {Promise<number[]>} Array of IV values.
-   */
-  async function fetchIVs(url) {
-    const pokemonId = getPokemonIdFromUrl(url);
-    try {
-      // console.log("[PFQ IV] Fetch request:", url);
-      const res = await fetch(url);
-      // console.log("[PFQ IV] Response status:", res.status);
-      const html = await res.text();
-      const doc = new DOMParser().parseFromString(html, "text/html");
-
-      const isEgg = doc.querySelector("div#summarypage div.egg") != null;
-      if (isEgg) {
-        // console.log("[PFQ IV] This Pokémon is an egg, no IVs to fetch for ID:", pokemonId);
-        return null;
-      }
-
-      const row = [...doc.querySelectorAll("tr")].find((r) =>
-        r.textContent.includes("IVs"),
-      );
-      if (!row) {
-        // console.log("[PFQ IV] IV row not found for pokemon ID:", pokemonId);
-        return null;
-      }
-
-      const tds = [...row.querySelectorAll("td")];
-      const numbers = tds
-        .map((td) => parseInt(td.textContent.trim()))
-        .filter((val) => !isNaN(val));
-      const values = numbers.slice(0, 7);
-      // console.log("[PFQ IV] IVs parsed for Pokémon ID:", pokemonId, values);
-      return values;
-    } catch (e) {
-      console.warn("[PFQ IV] IV fetch failed for Pokémon ID:", pokemonId, e);
-      return null;
-    }
-  }
-
   function waitForTooltip() {
     return new Promise((resolve) => {
       const existing = document.querySelector("div.field .tooltip_content");
@@ -386,6 +374,107 @@
     if (el && el.classList.contains("tooltip_content")) return el;
     return null;
   }
+
+  // ---------------- FETCHING IV DATA ----------------
+
+  /**
+   * Prefetches IVs for all Pokémon in the user's party and caches them.
+   */
+  async function prefetchFieldPartyPokemon() {
+    const partySlots = document.querySelectorAll(
+      "#field_party div.slot.plateform",
+    );
+    // console.log("[PFQ IV] Prefetch scanning party Pokémon:", partySlots.length);
+
+    for (const slot of partySlots) {
+      if (slot.querySelector("div.big.egg")) return;
+
+      const pokemonID = slot.getAttribute("data-id");
+      if (!pokemonID || pokemonID === "hello") return;
+
+      if (ivCache.has(pokemonID)) {
+        // console.log("[PFQ IV] Party prefetch skipped (cached):", pokemonID);
+        return;
+      }
+
+      // console.log("[PFQ IV] Party prefetch:", pokemonID);
+
+      fetchIVs(pokemonID).then((ivs) => {
+        console.log("[PFQ IV] Party Prefetch IVs:", pokemonID, ivs);
+      });
+    }
+  }
+
+  /**
+   * Prefetches IVs for all Pokémon in the field and caches them.
+   */
+  async function prefetchAllFieldPokemon() {
+    const anchors = document.querySelectorAll(
+      "div.field h3:not([style]) a[href^='/summary/']",
+    );
+    console.log("[PFQ IV] Prefetch scanning field Pokémon:", anchors.length);
+
+    for (const a of anchors) {
+      const url = a.href;
+      if (url.includes("hello")) continue;
+
+      const pokemonID = getPokemonIdFromUrl(url);
+      if (ivCache.has(pokemonID)) {
+        console.log("[PFQ IV] Prefetch skipped (cached):", pokemonID);
+        continue;
+      }
+
+      // console.log("[PFQ IV] Prefetching:", pokemonID);
+      fetchIVs(pokemonID).then((ivs) => {
+        console.log("[PFQ IV] Prefetch IVs:", pokemonID, ivs);
+      });
+    }
+  }
+
+  /**
+   * Fetches IVs from the summary page for a given Pokémon.
+   * @param {string} url - The summary URL for the Pokémon.
+   * @returns {Promise<number[]>} Array of IV values.
+   */
+  async function fetchIVs(pokemonId) {
+    const url = `https://pokefarm.com/summary/${pokemonId}`;
+    try {
+      console.log("[PFQ IV] Fetch request:", url);
+      const res = await fetch(url);
+      // console.log("[PFQ IV] Response status:", res.status);
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, "text/html");
+
+      const isEgg = doc.querySelector("div#summarypage div.egg") != null;
+      if (isEgg) {
+        console.log("[PFQ IV] This Pokémon is an egg, no IVs to fetch for ID:", pokemonId);
+        return null;
+      }
+
+      const row = [...doc.querySelectorAll("tr")].find((r) =>
+        r.textContent.includes("IVs"),
+      );
+      if (!row) {
+        console.log("[PFQ IV] IV row not found for pokemon ID:", pokemonId);
+        return null;
+      }
+
+      const tds = [...row.querySelectorAll("td")];
+      const numbers = tds
+        .map((td) => parseInt(td.textContent.trim()))
+        .filter((val) => !isNaN(val));
+      const values = numbers.slice(0, 7);
+      // console.log("[PFQ IV] IVs parsed for Pokémon ID:", pokemonId, values);
+
+      ivCache.set(pokemonId, values); // save IVs to cache
+      return values;
+    } catch (e) {
+      console.warn("[PFQ IV] IV fetch failed for Pokémon ID:", pokemonId, e);
+      return null;
+    }
+  }
+
+  // ---------------- HELPER FUNCTIONS ----------------
 
   function getIVClass(value) {
     if (value === 31) return "pfq-perfect";
