@@ -1,6 +1,36 @@
+/**
+ * Injects an IV overlay on top of a field Pokémon sprite.
+ * @param {HTMLElement} fieldmonSpan - The span element representing the field Pokémon.
+ * @returns {Promise<void>} Resolves when the overlay has been injected or skipped.
+ */
+async function injectIVOverlay(fieldmonSpan) {
+    const pokemonId = fieldmonSpan.attributes['data-id'].value;
+    const ivs = await fetchIVs(pokemonId);
+    // console.log("[PFQ IV] starting addIVOverlay for:", pokemonId, ivs)
 
+    const existing = fieldmonSpan.querySelector('.pfq-iv-overlay');
+    if (existing) {
+        // console.log("[PFQ IV] IV overlay already exists for:", pokemonId)
+        return; // skip because IV overlay already exists
+        // existing.remove();
+    }
 
-function getIVOverlayHTML(ivs) {
+    // Ensure sprite has base class
+    fieldmonSpan.classList.add('pkmn-sprite');
+
+    const overlay = generateIVOverlay(ivs);
+    if (overlay) {
+        // console.log("[PFQ IV] adding IV overlay for:", pokemonId)
+        fieldmonSpan.appendChild(overlay);
+    }
+}
+
+/**
+ * Generates a visual IV overlay element for a Pokémon.
+ * @param {number[] | null} ivs - Array of IVs for the Pokémon, or null if not available.
+ * @returns {HTMLElement | null} A div containing the IV overlay, or null when no overlay should be shown.
+ */
+function generateIVOverlay(ivs) {
     if (!ivs) return null;
 
     const ivParts = ivs.slice(0, 6);
@@ -53,7 +83,7 @@ function getIVOverlayHTML(ivs) {
  *    When null, that means this is an egg or an empty slot.
  * @returns {Element} A div element containing the formatted IV string.
  */
-function getIVTooltipHTML(ivs) {
+function generateIVTooltip(ivs) {
     if (ivs == null) {
         // console.log("[PFQ IV] This is an egg, skipping IV row generation.");
         return;
@@ -107,6 +137,89 @@ function getIVTooltipHTML(ivs) {
     }
 
     return ivRow;
+}
+
+/**
+ * @param {*} trigger reference to the hovered party slot element
+ * @param {number[]} ivs list of all 6 IVs and the total (ex. [31, 31, 31, 31, 31, 31, 186])
+ * @returns the HTML that should be injected into the tooltip for a party Pokémon
+ */
+function injectFieldPartyIVs(trigger, ivs) {
+    if (!ivs) {
+        // egg slot
+        // console.log("[PFQ IV] This is an egg.");
+        return;
+    }
+
+    const tip = getTooltip(trigger);
+    if (!tip) {
+        // console.log("[PFQ IV] Could not find tooltip_content after party trigger");
+        return;
+    }
+
+    if (tip.querySelector(".pfq-iv-block")) return; // skip, already done
+
+    tip.appendChild(generateIVTooltip(ivs));
+    // console.log("[PFQ IV] Party IV block injected");
+}
+
+/**
+ * Injects IVs into the tooltip_content after the hovered trigger.
+ * @param {Element} trigger
+ * @param {number[]} ivs
+ */
+function injectFieldIVs(trigger, ivs) {
+    if (!ivs) {
+        // console.log("[PFQ IV] No IV data to inject (field)");
+        return;
+    }
+
+    const tip = getTooltip(trigger);
+    if (!tip) {
+        // console.log("[PFQ IV] Could not find tooltip_content after field trigger");
+        return;
+    }
+
+    if (tip.querySelector(".pfq-iv-block")) return; // skip, already done
+
+    tip.appendChild(generateIVTooltip(ivs));
+    // console.log("[PFQ IV] Field IV block injected");
+}
+
+/**
+ * Waits until a tooltip element for a field Pokémon exists in the DOM.
+ * @returns {Promise<HTMLElement>} Resolves with the tooltip element once it is available.
+ */
+function waitForTooltip() {
+    return new Promise((resolve) => {
+        const existing = document.querySelector("div.field .tooltip_content");
+        if (existing) return resolve(existing);
+        const observer = new MutationObserver(() => {
+            const tooltip = document.querySelector(".tooltip_content");
+            if (tooltip) {
+                observer.disconnect();
+                resolve(tooltip);
+            }
+        });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+        });
+    });
+}
+
+/**
+ * Finds the tooltip element associated with the given trigger element.
+ * @param {Element} trigger - The element that triggers the tooltip.
+ * @returns {HTMLElement | null} The tooltip element, or null if not found.
+ */
+function getTooltip(trigger) {
+    let el = trigger.nextElementSibling;
+    while (el && !(el.classList && el.classList.contains("tooltip_content"))) {
+        el = el.nextElementSibling;
+    }
+    if (el && el.classList.contains("tooltip_content")) return el;
+    return null;
 }
 
 /**
