@@ -9,14 +9,18 @@
   const path = window.location.pathname;
   isField = false;
   isParty = false;
+  isUser = false
   if (path.startsWith("/fields")) {
     isField = true; // includes your fields and other users' fields
   }
-  if (path.startsWith("/party") || path.startsWith("/user")) {
+  if (path.startsWith("/party")) {
     isParty = true;
   }
-  if (!isField && !isParty) {
-    console.log("[PFQ IV] Not on a Field or Party page, script will not run.");
+  if (path.startsWith("/user")) {
+    isUser = true;
+  }
+  if (!isField && !isParty && !isUser) {
+    console.log("[PFQ IV] Not on a Field or Party or User page, script will not run.");
     return;
   }
 
@@ -48,8 +52,8 @@
    * Initializes the extension: prefetches IVs and sets up event listeners.
    */
   function init() {
-    if (isParty) {
-      getPartyIVs();
+    if (isParty || isUser) {
+      getPartyIVs(isParty);
     }
     if (isField) {
       prefetchFieldPartyPokemon();
@@ -63,8 +67,9 @@
 
   /**
    * Prefetches IVs for all Pokémon currently in party.
+   * @param {boolean} isParty whether this is on the player's party page
    */
-  async function getPartyIVs() {
+  async function getPartyIVs(isParty) {
     const party = document.querySelectorAll("div.party.wide > div[data-pid]");
     // console.log("[PFQ IV] Prefetching party Pokémon:", party.length);
 
@@ -87,9 +92,10 @@
       // generate and inject IVs for this party pokemon
       const ivDiv = getIVRowHTML(ivs);
       if (ivDiv != null) {
-        const extraDiv = slot.querySelector("div.extra");
-        extraDiv.append(ivDiv);
-        // slot.append(ivDiv);
+        let selector;
+        if (isParty) { selector = "extra" } else { selector = "action" };
+        const whereToInject = slot.querySelector(`div.${selector}`);
+        whereToInject.prepend(ivDiv);
       }
     }
   }
@@ -331,7 +337,7 @@
       // console.log("[PFQ IV] IVs parsed for Pokémon ID:", pokemonId, values);
       return values;
     } catch (e) {
-      console.error("[PFQ IV] IV fetch failed for Pokémon ID:", pokemonId, e);
+      console.warn("[PFQ IV] IV fetch failed for Pokémon ID:", pokemonId, e);
       return null;
     }
   }

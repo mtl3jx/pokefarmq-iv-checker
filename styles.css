@@ -1,20 +1,30 @@
-.tooltip_content .pfq-iv-block{
+/* applied to all IV blocks*/
+div.pfq-iv-block {
+  white-space: nowrap;
+}
+
+/* applied to fields */ 
+div.tooltip_content div.pfq-iv-block{
   margin-top:6px;
   padding-top:5px;
   border-top:1px solid rgba(255,255,255,0.25);
-  font-size: 9pt;
+  font-size: 10pt;
 }
 
-.pfq-iv-block b{
-  font-size:12pt;
+/* applied to party / user profiles */ 
+div.party div.pfq-iv-block {
+  text-align: right;
+  font-size:9pt;
+  padding-bottom: 6px;
 }
 
-/* color grading */
+/* bold and underline for perfect and zero */
 .pfq-zero, .pfq-perfect{
   font-weight:bold;
   text-decoration:underline;
 }
 
+/* red for zero */
 .pfq-zero{
   color:#ff6b6b;
 }
@@ -23,6 +33,7 @@
   color:#ffd166;
 } */
 
+/* green for perfect */
 .pfq-perfect{
   color:#8bdc8b;
 }
