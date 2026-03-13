@@ -9,17 +9,13 @@
   const path = window.location.pathname;
   isField = false;
   isParty = false;
-  isUser = false
   if (path.startsWith("/fields")) {
     isField = true; // includes your fields and other users' fields
   }
-  if (path.startsWith("/party")) {
+  if (path.startsWith("/party") || path.startsWith("/user")) {
     isParty = true;
   }
-  if (path.startsWith("/user")) {
-    isUser = true;
-  }
-  if (!isField && !isParty && !isUser) {
+  if (!isField && !isParty) {
     console.log("[PFQ IV] Not on a Field or Party or User page, script will not run.");
     return;
   }
@@ -52,8 +48,8 @@
    * Initializes the extension: prefetches IVs and sets up event listeners.
    */
   function init() {
-    if (isParty || isUser) {
-      getPartyIVs(isParty);
+    if (isParty) {
+      getPartyIVs();
     }
     if (isField) {
       prefetchFieldPartyPokemon();
@@ -67,9 +63,8 @@
 
   /**
    * Prefetches IVs for all Pokémon currently in party.
-   * @param {boolean} isParty whether this is on the player's party page
    */
-  async function getPartyIVs(isParty) {
+  async function getPartyIVs() {
     const party = document.querySelectorAll("div.party.wide > div[data-pid]");
     // console.log("[PFQ IV] Prefetching party Pokémon:", party.length);
 
@@ -92,9 +87,7 @@
       // generate and inject IVs for this party pokemon
       const ivDiv = getIVRowHTML(ivs);
       if (ivDiv != null) {
-        let selector;
-        if (isParty) { selector = "extra" } else { selector = "action" };
-        const whereToInject = slot.querySelector(`div.${selector}`);
+        const whereToInject = slot.querySelector("div.action");
         whereToInject.prepend(ivDiv);
       }
     }

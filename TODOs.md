@@ -3,5 +3,4 @@
 - [ ] Show IVs in Showcase
 
 ### Bugs
-- [ ] Fix placement of IVs within party / user profiles
 - [ ] Fix IV text color for other skins
