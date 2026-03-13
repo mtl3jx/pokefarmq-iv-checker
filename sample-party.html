@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+    <title>Party - PokéFarm Q</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width,user-scalable=no" />
+    <meta name="description"
+        content="Collect eggs, hatch them and care for the Pokémon that emerge in this free-to-play online game!" />
+    <meta name="theme-color" content="#121212" />
+    <link rel="stylesheet" href="/skins/dotd1/__colours.css?t=1769092010" />
+    <link rel="stylesheet" href="https://pokefarm.com/css/index/sally.css?t=1770451133" />
+    <link rel="stylesheet" href="https://pokefarm.com/css/party/party.css?t=1769091987" />
+    <link rel="stylesheet" href="https://pokefarm.com/css/fields/fieldselection.dialog.css?t=1771017304" />
+    <link rel="stylesheet" href="https://pokefarm.com/css/party/showcase.css?t=1769091987" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="/skins/dotd1/__extra.css?t=1769092010" />
+</head>
+
+<body><svg class="svg_icon_definitions">
+        <defs>
+            <path d="M0,-30 L10,-40 0,-50 0,-45 C-25,-45 -40,-25 -40,0 -35,-20 -20,-35 0,-35 Z" id="svg_loading_arrow">
+            </path>
+            <g id="svg_loading_arrows" class="svgicon">
+                <use xlink:href="#svg_loading_arrow"></use>
+                <use xlink:href="#svg_loading_arrow" transform="rotate(180)"></use>
+            </g>
+            <polygon id="svg_usermark_1" points="4,0.5 2.34,5.93 6.85,2.57 1.15,2.57 5.76,5.93" transform="scale(2)">
+            </polygon>
+            <circle id="svg_usermark_2" cx="8" cy="8" r="4"></circle>
+            <polygon id="svg_usermark_3" points="8,3 12,11 4,11"></polygon>
+            <path id="svg_usermark_4" d="M8,12 C5,8 2,8 2,4 A3,3 0 1 1 8,4 A3,3 0 1 1 14,4 C14,8 11,8 8,12 Z"></path>
+            <path id="svg_usermark_5"
+                d="M8,8 A3,3 0 0 0 2,8 A3,3 0 0 0 8,8 A3,3 0 0 0 8,2 A3,3 0 0 0 8,8 A3,3 0 0 0 14,8 A3,3 0 0 0 8,8 L10,14 H6 Z">
+            </path>
+            <path id="svg_usermark_6" d="M8,3 L12,8 L8,13 L4,8 Z"></path>
+            <path id="svg_usermark_7" d="M8,2 L2,8 A3,3 0 0 0 8,8 L10,14 H6 L8,8 A3,3 0 0 0 14,8 Z"></path>
+        </defs>
+    </svg>
+    <div id="initloading" class="dialog">
+        <div>
+            <div>
+                <div>
+                    <h3>Loading...</h3>
+                    <div><svg viewBox="-50 -50 100 100" class="loading">
+                            <use xlink:href="#svg_loading_arrows"></use>
+                        </svg></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="core" class="scrolllock" data-user="bGDJ"><a href="#top" id="toplink">Top</a>
+        <div id="header">
+            <div id="head-avatar">
+                <div class="profilepic" data-tooltip><img src="https://pokefarm.com/upload/:bGDJ/ApoArca_small.png"
+                        style="width:48px;height:38.4px" class="avatar" alt="6lackr0se's Avatar" loading="lazy" /></div>
+                <div class="tooltip_content"><a href="/user/~me">Profile</a><a href="/fields">My Fields</a><a
+                        href="/farm#tab=5.5">Edit Avatar</a><a href="/outfit">Edit Trainer</a>
+                    <hr /><a href="#" id="logout">Log out</a></li>
+                </div>
+            </div>
+            <div id="head-left">
+                <ul>
+                    <li><b id="globaluserlink"><a href="/user/6lackr0se" class="userlink0">6lackr0se</a></b></li>
+                    <li><span data-tooltip id="nicecount">⭐43</span>
+                        <div class="tooltip_content" style="width:160px;right:0">Number of Nice you've been given.</div>
+                    </li>
+                </ul>
+                <ul>
+                    <li><a href="/user/~clickback" class="onetime">Clickback</a></li>
+                    <li><a href="https://pokefarm.wiki/" target="_blank"><b>Wiki</b></a></li>
+                </ul>
+            </div>
+            <div id="head-middle">
+                <ul>
+                    <li><a href="/online">1,048 users online</a> (<a href="/user/~online" class="onetime">Open 10</a>)
+                    </li>
+                </ul>
+                <ul>
+                    <li><a href="/cr" id="c_credits"><img src="//pokefarm.com/img/zophan/credits.png"
+                                class="currencyicon" title="Credits" />564,192</a></li>
+                    <li><a href="/gp" id="c_gold"><img src="//pokefarm.com/img/zophan/gold.png" class="currencyicon"
+                                title="Gold Poké" />1,635</a></li>
+                    <li><a href="/zc" id="c_zophan"><img src="//pokefarm.com/img/zophan/zophan.png" class="currencyicon"
+                                title="Zophan Canisters" />65</a><a href="#" id="viewcurrencies">View all</a></li>
+                </ul>
+            </div>
+            <div id="head-right">
+                <ul>
+                    <li>Server time:<span id="servertimeclock" data-timestamp="1773360325782"
+                            data-icon="moon">13/Mar/2026 00:05:25</span><span data-tooltip><img
+                                src="https://r2.pokefarm.com/img/navbar/sun_sun.png?t=1479382029" data-icon="sun"
+                                alt="Day" loading="lazy" /><img
+                                src="https://r2.pokefarm.com/img/navbar/sun_dawn.png?t=1508750786" data-icon="dawn"
+                                alt="Twilight" loading="lazy" /><img
+                                src="https://r2.pokefarm.com/img/navbar/moon_moon.png?t=1479382037" data-icon="moon"
+                                alt="Night" loading="lazy" /></span>
+                        <div class="tooltip_content"><b>Nighttime</b><br />Sunrise at 06:16</div>
+                    </li>
+                </ul>
+                <ul>
+                    <li><a href="/pm">PMs</a></li>
+                    <li><a href="/forum">Forums</a> (<a href="/forum/subs">Subs</a>)</li>
+                </ul>
+            </div>
+            <div id="head-social">
+                <div id="notifs"><a href="#"><img src="https://r2.pokefarm.com/img/notifications/niet.png?t=1525535053"
+                            alt="Notifications" loading="lazy" /><span id="busystatus_indicator"
+                            class="free">&minus;</span></a>
+                    <div>
+                        <div id="notifications"></div>
+                        <div id="busystatus"><label><input type="checkbox" id="busystatus_cb" /> Set "busy"
+                                status</label></div><audio src="/audio/absol.mp3" type="audio/mpeg"
+                            id="notification_sound"></audio>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="navigation">
+            <ul id="navbtns">
+                <li><a href="/lab"><img src="https://r2.pokefarm.com/img/navbar/lab.png?t=1430540370" alt="Lab"
+                            loading="lazy" /><span>Lab</span></a></li>
+                <li><a href="/party"><img src="https://r2.pokefarm.com/img/navbar/party.png?t=1430540365" alt="Party"
+                            loading="lazy" /><span>Party</span></a></li>
+                <li><a href="/farm"><img src="https://r2.pokefarm.com/img/navbar/farm.png?t=1430540358" alt="Farm"
+                            loading="lazy" /><span>Farm</span></a></li>
+                <li><a href="/shelter"><img src="https://r2.pokefarm.com/img/navbar/shelter.png?t=1430540353"
+                            alt="Shelter" loading="lazy" /><span>Shelter</span></a></li>
+                <li><a href="/marketboard"><img src="https://r2.pokefarm.com/img/navbar/shop.png?t=1430540347"
+                            alt="Market" loading="lazy" /><span>Market</span></a></li>
+                <li><a href="/daycare"><img src="https://r2.pokefarm.com/img/navbar/daycare.png?t=1430540343"
+                            alt="Daycare" loading="lazy" /><span>Daycare</a></li>
+                <li><a href="/dex"><img src="https://r2.pokefarm.com/img/navbar/dex.png?t=1430540337" alt="Pokédex"
+                            loading="lazy" /><span>Pokédex</span></a></li>
+            </ul>
+            <ul id="navbookmark">
+                <li><a href="/fields"><span>Fields</span></a></li>
+                <li><a href="/typerace"><span>Type Race</span></a></li>
+                <li><a href="/scour"><span>Scours</span></a></li>
+                <li><a href="/garden"><span>Garden</span></a></li>
+                <li><a href="/trade"><span>Trades</span></a></li>
+                <li><a href="/boxes"><span>Boxes</span></a></li>
+                <li><a href="#" id="morenavoptions"><span>More...</span></a></li>
+            </ul>
+        </div>
+        <div id="announcement-box">
+            <div id="announcements">
+                <ul>
+                    <li><a href="/news"><img src="https://r2.pokefarm.com/img/characters/announce.png?t=1426303376"
+                                alt="News" loading="lazy" /> News</a></li>
+                    <li data-name="Today's Interactions"><a href="/interactions" title="Today's Interactions"><img
+                                src="https://r2.pokefarm.com/img/zophan/ip.png?t=1475759779" alt="Today's Interactions"
+                                loading="lazy" /> 12</a></li>
+                    <li data-name="Daily Tasks"><a href="/dailies" title="Daily Tasks"><img
+                                src="https://r2.pokefarm.com/img/misc/dailies.png?t=1479727701" alt="Daily Tasks"
+                                loading="lazy" /> 1/4</a></li>
+                    <li data-name="Fabulous Friday"><a href="/fabfriday" title="Fabulous Friday"><img
+                                src="https://r2.pokefarm.com/img/misc/fabfriday.png?t=1674252503" alt="Fabulous Friday"
+                                loading="lazy" /> 23h</a></li>
+                    <li data-name="Type Race"><a href="/typerace" title="Type Race"><img
+                                src="https://r2.pokefarm.com/img/types/v-ice.png?t=1713615589" alt="Type Race"
+                                loading="lazy" /> 2,330 (1d)</a></li>
+                    <li data-name="Tournament"><a href="/tournament" title="Tournament"><img
+                                src="https://r2.pokefarm.com/img/misc/crown.png?t=1471081005" alt="Tournament"
+                                loading="lazy" /> 0 (1d)</a></li>
+                    <li data-name="Egg Timer"><a href="/expboost/eggtimer" title="Egg Timer"><img
+                                src="https://r2.pokefarm.com/img/misc/incubator.png?t=1510140073" alt="Egg Timer"
+                                loading="lazy" /> Lv.10</a></li>
+                    <li data-name="Hypermode"><a href="/hypermode" title="Hypermode"><img
+                                src="https://r2.pokefarm.com/img/zophan/hypermode-24.png?t=1469304491" alt="Hypermode"
+                                loading="lazy" /> OFF</a></li>
+                    <li data-name="Shiny Charm"><a href="/shinyhunt" title="Shiny Charm"><img
+                                src="https://r2.pokefarm.com/img/items/shinycharm.png?t=1420029618" alt="Shiny Charm"
+                                loading="lazy" /> 12h</a></li>
+                    <li data-name="Übercharm"><a href="/ubercharm" title="Übercharm"><img
+                                src="https://r2.pokefarm.com/img/items/ubercharm.png?t=1407360675" alt="Übercharm"
+                                loading="lazy" /> OFF</a></li>
+                    <li data-name="Albino Radar"><a href="/albinohunt" title="Albino Radar"><img
+                                src="https://r2.pokefarm.com/img/items/albinoradar.png?t=1765360524" alt="Albino Radar"
+                                loading="lazy" /> 12h</a></li>
+                    <li data-name="Z-Crystal"><a href="/albinohunt" title="Z-Crystal"><img
+                                src="https://r2.pokefarm.com/img/items/z-normal.png?t=1512129749" alt="Z-Crystal"
+                                loading="lazy" /> OFF</a></li>
+                    <li data-name="Lucky Egg"><a href="/expboost/luckyegg" title="Lucky Egg"><img
+                                src="https://r2.pokefarm.com/img/items/luckyegg.png?t=1478085269" alt="Lucky Egg"
+                                loading="lazy" /> OFF</a></li>
+                    <li class="spacer"></li>
+                    <li><a href="/chat" class="borderless" title="Discord (Chat)"><svg viewBox="45 45 160 160"
+                                class="discord">
+                                <rect class="box" x="45" y="45" width="160" height="160" rx="16" />
+                                <path class="mask"
+                                    d="M142.8 120.1c-5.7 0-10.2 4.9-10.2 11s4.6 11 10.2 11c5.7 0 10.2-4.9 10.2-11s-4.6-11-10.2-11zM106.3 120.1c-5.7 0-10.2 4.9-10.2 11s4.6 11 10.2 11c5.7 0 10.2-4.9 10.2-11 .1-6.1-4.5-11-10.2-11z M152.8 166.4s-3.6-4.3-6.6-8c13.1-3.7 18.1-11.8 18.1-11.8-4.1 2.7-8 4.6-11.5 5.9-5 2.1-9.8 3.4-14.5 4.3-9.6 1.8-18.4 1.3-25.9-.1-5.7-1.1-10.6-2.6-14.7-4.3-2.3-.9-4.8-2-7.3-3.4-.3-.2-.6-.3-.9-.5-.2-.1-.3-.2-.4-.2-1.8-1-2.8-1.7-2.8-1.7s4.8 7.9 17.5 11.7c-3 3.8-6.7 8.2-6.7 8.2-22.1-.7-30.5-15.1-30.5-15.1 0-31.9 14.4-57.8 14.4-57.8 14.4-10.7 28-10.4 28-10.4l1 1.2c-18 5.1-26.2 13-26.2 13s2.2-1.2 5.9-2.8c10.7-4.7 19.2-5.9 22.7-6.3.6-.1 1.1-.2 1.7-.2 6.1-.8 13-1 20.2-.2 9.5 1.1 19.7 3.9 30.1 9.5 0 0-7.9-7.5-24.9-12.6l1.4-1.6s13.7-.3 28 10.4c0 0 14.4 25.9 14.4 57.8 0-.1-8.4 14.3-30.5 15z" />
+                            </svg></a></li>
+                    <li><a href="https://www.facebook.com/PFQgame" target="_blank" rel="noopener" class="borderless"
+                            title="Facebook"><svg viewBox="0 0 267 267" class="facebook">
+                                <rect class="box" x="0" y="0" width="267" height="267" rx="26.7" />
+                                <path class="f"
+                                    d="M182.4 262.3v-99.8h33.5l5-38.9h-38.5V98.8c0-11.3 3.1-18.9 19.3-18.9l20.6 0V45c-3.6-0.5-15.8-1.5-30-1.5 -29.7 0-50 18.1-50 51.4v28.7h-33.6v38.9h33.6v99.8H182.4z">
+                                </path>
+                            </svg></a></li>
+                    <li><a href="https://twitter.com/SystemSalamence" target="_blank" rel="noopener" class="borderless"
+                            title="Twitter"><svg viewBox="0 0 400 400" class="twitter">
+                                <rect class="box" x="0" y="0" width="400" height="400" rx="40" />
+                                <path class="bird"
+                                    d="M153.6,301.6c94.3,0,145.9-78.2,145.9-145.9c0-2.2,0-4.4-0.1-6.6c10-7.2,18.7-16.3,25.6-26.6c-9.2,4.1-19.1,6.8-29.5,8.1c10.6-6.3,18.7-16.4,22.6-28.4c-9.9,5.9-20.9,10.1-32.6,12.4c-9.4-10-22.7-16.2-37.4-16.2c-28.3,0-51.3,23-51.3,51.3c0,4,0.5,7.9,1.3,11.7c-42.6-2.1-80.4-22.6-105.7-53.6c-4.4,7.6-6.9,16.4-6.9,25.8c0,17.8,9.1,33.5,22.8,42.7c-8.4-0.3-16.3-2.6-23.2-6.4c0,0.2,0,0.4,0,0.7c0,24.8,17.7,45.6,41.1,50.3c-4.3,1.2-8.8,1.8-13.5,1.8c-3.3,0-6.5-0.3-9.6-0.9c6.5,20.4,25.5,35.2,47.9,35.6c-17.6,13.8-39.7,22-63.7,22c-4.1,0-8.2-0.2-12.2-0.7C97.7,293.1,124.7,301.6,153.6,301.6">
+                                </path>
+                            </svg></a></li>
+                </ul>
+                <div id="annscrollleft"></div>
+                <div id="annscrollright"></div>
+            </div>
+            <div id="counters">
+                <ul id="counterlist">
+                    <li
+                        style="background-image:url('https://r2.pokefarm.com/img/characters/counters/niet-0.png?t=1676821256')">
+                        <div class="counter_item" data-tooltip>
+                            <div style="height: 26px" class="m"></div>
+                            <div style="height: 14px"></div><span>52M</span>
+                        </div>
+                        <div class="tooltip_content"><img
+                                src="https://r2.pokefarm.com/img/characters/counters/niet-0.png?t=1676821256"
+                                loading="lazy" alt="niet-0.png" />
+                            <h3>Niet</h3>
+                            <p>52,811,943 / 150,000,000<br />Interactions</p>
+                            <p class="q"><i>"Good, very good... keep it up!"</i></p>
+                        </div>
+                    </li>
+                    <li
+                        style="background-image:url('https://r2.pokefarm.com/img/characters/counters/garthic-0.png?t=1676821256')">
+                        <div class="counter_item" data-tooltip>
+                            <div style="height: 22px" class="m"></div>
+                            <div style="height: 18px"></div><span>309M</span>
+                        </div>
+                        <div class="tooltip_content"><img
+                                src="https://r2.pokefarm.com/img/characters/counters/garthic-0.png?t=1676821256"
+                                loading="lazy" alt="garthic-0.png" />
+                            <h3>Garthic</h3>
+                            <p>309,168,982 / 675,000,000<br />Interaction Points</p>
+                            <p class="q"><i>"Oh! It's building up! People are there! No one exploded! YAY!"</i></p>
+                        </div>
+                    </li>
+                    <li
+                        style="background-image:url('https://r2.pokefarm.com/img/characters/counters/bacent-0.png?t=1772656950')">
+                        <div class="counter_item" data-tooltip>
+                            <div style="height: 29px" class="m"></div>
+                            <div style="height: 11px"></div><span>173k</span>
+                        </div>
+                        <div class="tooltip_content"><img
+                                src="https://r2.pokefarm.com/img/characters/counters/bacent-0.png?t=1772656950"
+                                loading="lazy" alt="bacent-0.png" />
+                            <h3>Moonsy</h3>
+                            <p>173,847 / 660,000<br />Scour Missions</p>
+                            <p class="q"><i>"Found a stash! Sally says it's hers, but hey, she wasn't using it
+                                    anyway."</i></p>
+                        </div>
+                    </li>
+                    <li style="background-image:url('https://r2.pokefarm.com/img/characters/counters/ravyne-1.png?t=1676821256')"
+                        class="active">
+                        <div class="counter_item" data-tooltip>
+                            <div style="height: 0px" class="m"></div>
+                            <div style="height: 40px"></div><span>×3.2</span>
+                        </div>
+                        <div class="tooltip_content"><img
+                                src="https://r2.pokefarm.com/img/characters/counters/ravyne-1.png?t=1676821256"
+                                loading="lazy" alt="ravyne-1.png" />
+                            <h3>Ravyne</h3>
+                            <p>×3.2 Gems</p>
+                            <p class="q"><i>"</i>R'lyeh wgah'nagl fht-<i> I mean... um... </i>Nicesparkle gems, please
+                                duplicate!<i>"</i></p>
+                        </div>
+                    </li>
+                    <li
+                        style="background-image:url('https://r2.pokefarm.com/img/characters/counters/seka-0.png?t=1676821256')">
+                        <div class="counter_item" data-tooltip>
+                            <div style="height: 12px" class="m"></div>
+                            <div style="height: 28px"></div><span>380M</span>
+                        </div>
+                        <div class="tooltip_content"><img
+                                src="https://r2.pokefarm.com/img/characters/counters/seka-0.png?t=1676821256"
+                                loading="lazy" alt="seka-0.png" />
+                            <h3>Novan-chan</h3>
+                            <p>380,590,068 / 550,000,000<br />Credits spent</p>
+                            <p class="q"><i>"</i>Chaaa~<i> I think we're half way there, keep up the great work!"</i>
+                            </p>
+                        </div>
+                    </li>
+                    <li
+                        style="background-image:url('https://r2.pokefarm.com/img/characters/counters/marie-0.png?t=1676821256')">
+                        <div class="counter_item" data-tooltip>
+                            <div style="height: 34px" class="m"></div>
+                            <div style="height: 6px"></div><span>78k</span>
+                        </div>
+                        <div class="tooltip_content"><img
+                                src="https://r2.pokefarm.com/img/characters/counters/marie-0.png?t=1676821256"
+                                loading="lazy" alt="marie-0.png" />
+                            <h3>Shazi</h3>
+                            <p>78,065 / 500,000<br />Shelter adoptions</p>
+                            <p class="q"><i>"Hmm, this place is really full. Might want to get some of these guys new
+                                    homes."</i></p>
+                        </div>
+                    </li>
+                    <li
+                        style="background-image:url('https://r2.pokefarm.com/img/characters/counters/ledah-0.png?t=1676821256')">
+                        <div class="counter_item" data-tooltip>
+                            <div style="height: 35px" class="m"></div>
+                            <div style="height: 5px"></div><span>227k</span>
+                        </div>
+                        <div class="tooltip_content"><img
+                                src="https://r2.pokefarm.com/img/characters/counters/ledah-0.png?t=1676821256"
+                                loading="lazy" alt="ledah-0.png" />
+                            <h3>Eltafez</h3>
+                            <p>227,636 / 2,000,000<br />GP spent</p>
+                            <p class="q"><i>"I hope you're refreshed, time to get more Gold!"</i></p>
+                        </div>
+                    </li>
+                    <li
+                        style="background-image:url('https://r2.pokefarm.com/img/characters/counters/sei-0.png?t=1772656949')">
+                        <div class="counter_item" data-tooltip>
+                            <div style="height: 2px" class="m"></div>
+                            <div style="height: 38px"></div><span>7330</span>
+                        </div>
+                        <div class="tooltip_content"><img
+                                src="https://r2.pokefarm.com/img/characters/counters/sei-0.png?t=1772656949"
+                                loading="lazy" alt="sei-0.png" />
+                            <h3>Hades</h3>
+                            <p>7,330 / 7,777<br />Shinies hatched</p>
+                            <p class="q"><i>"Ohh, quick! Find a mirror! I think I saw a sparkle!~"</i></p>
+                        </div>
+                    </li>
+                </ul>
+                <ul id="dailybonus">
+                    <li><a href="/potd">PotD</a>: Absol</li>
+                    <li><a href="/vwave">V~Wave</a>: Stellar</li>
+                    <li><a href="/user/~pkrs">Pokérus</a>: 9min left</li>
+                </ul>
+            </div>
+        </div><a href="#" id="headertoggler"><span class="time"></span><span class="notices"></span></a>
+        <div id="morestuffhtml">
+            <p><a href="/farm#tab=5.3">Edit Bookmarks</a></p>
+            <ul class="morestufflinks">
+                <li class="f12"><a href="/fields">Fields</a></li>
+                <li><a href="/typerace">Type Race</a></li>
+                <li class="f12"><a href="/scour">Scours</a></li>
+                <li><a href="/garden">Garden</a></li>
+                <li class="f12"><a href="/trade">Trades</a></li>
+                <li><a href="/boxes">Boxes</a></li>
+                <li class="f12"><a href="/walker">Pokéwalker</a></li>
+                <li><a href="/summons">Summons</a></li>
+                <li class="f12"><a href="/fishing">Fishing</a></li>
+                <li><a href="/shinyhunt">Shinies</a></li>
+                <li class="f12"><a href="/albinohunt">Albinos</a></li>
+                <li><a href="/contest">Contest</a></li>
+                <li class="f12"><a href="/forge">Wishforge</a></li>
+                <li><a href="/dojo">Dojo</a></li>
+                <li class="f12"><a href="/supplier">Supplier</a></li>
+                <li><a href="/skin">Skins</a></li>
+            </ul>
+        </div>
+        <div id="content">
+            <h1>Party</h1>
+            <div id="partypage">
+                <div id="partybox">
+                    <h3 id="profilelinks"><span>Profile: </span><a
+                            href="https://pfq.link/6lackr0se">https://pfq.link/6lackr0se</a><span> or&nbsp;<a
+                                href="https://pfq.link/@bGDJ">https://pfq.link/@bGDJ</a></span></h3>
+                    <div class="party wide">
+                        <div data-pid="J688x4">
+                            <div class="pkmn">
+                                <div style="background-image:url('https://r2.pokefarm.com/img/pkmn/h/h/h.png?t=1656288108')"
+                                    class="egg"></div>
+                            </div>
+                            <div class="name"><a class="summarylink" draggable="false" href="/summary/J688x4"
+                                    style="width:200px">&lt;Egg></a></div>
+                            <div class="expbar">
+                                <div style="width:27.4%"></div><span><span class="exp-display" data-default="27%"
+                                        data-raw="2,815 / 10,240">27%</span> <span class="small exp-timer">(2h
+                                        49m)</span></span>
+                            </div>
+                            <div class="action"></div>
+                            <div class="taste">&nbsp;<div>&nbsp;</div>
+                            </div>
+                            <div class="extra">
+                                <div class="type"><img src="https://r2.pokefarm.com/img/types/water.png?t=1262702646"
+                                        alt="Water" loading="lazy" /><img
+                                        src="https://r2.pokefarm.com/img/types/ice.png?t=1262702646" alt="Ice"
+                                        loading="lazy" /></div>
+                                <div class="happy"><img src="https://r2.pokefarm.com/img/pkmn/egg.png?t=1451852195"
+                                        alt="Hatch progress" loading="lazy" />&nbsp;27%</div><a href="#"
+                                    class="menu">Menu<span class="menu_icon"></span></a>
+                            </div>
+                            <div class="menu"><label data-menu="hatch" class="disabled">Hatch the Egg</label><label
+                                    data-menu="move">Switch</label>
+                                <hr /><label data-menu="release" data-when="13/Mar/2026 05:48:06">Can't release: Too
+                                    soon</label>
+                            </div>
+                        </div>
+                        <div data-pid="J6fD4F">
+                            <div class="pkmn">
+                                <div style="background-image:url('https://r2.pokefarm.com/img/pkmn/h/h/h.png?t=1656288108')"
+                                    class="egg"></div>
+                            </div>
+                            <div class="name"><a class="summarylink" draggable="false" href="/summary/J6fD4F"
+                                    style="width:200px">&lt;Egg></a></div>
+                            <div class="expbar">
+                                <div style="width:28.9%"></div><span><span class="exp-display" data-default="28%"
+                                        data-raw="2,968 / 10,240">28%</span> <span class="small exp-timer">(2h
+                                        46m)</span></span>
+                            </div>
+                            <div class="action"></div>
+                            <div class="taste">&nbsp;<div>&nbsp;</div>
+                            </div>
+                            <div class="extra">
+                                <div class="type"><img src="https://r2.pokefarm.com/img/types/water.png?t=1262702646"
+                                        alt="Water" loading="lazy" /><img
+                                        src="https://r2.pokefarm.com/img/types/ice.png?t=1262702646" alt="Ice"
+                                        loading="lazy" /></div>
+                                <div class="happy"><img src="https://r2.pokefarm.com/img/pkmn/egg.png?t=1451852195"
+                                        alt="Hatch progress" loading="lazy" />&nbsp;28%</div><a href="#"
+                                    class="menu">Menu<span class="menu_icon"></span></a>
+                            </div>
+                            <div class="menu"><label data-menu="hatch" class="disabled">Hatch the Egg</label><label
+                                    data-menu="move">Switch</label>
+                                <hr /><label data-menu="release" data-when="13/Mar/2026 05:47:57">Can't release: Too
+                                    soon</label>
+                            </div>
+                        </div>
+                        <div data-pid="J6lDHC">
+                            <div class="pkmn">
+                                <div style="background-image:url('https://r2.pokefarm.com/img/pkmn/x/7/n.png?t=1507192849')"
+                                    class="pokemon"></div>
+                                <div class="helditem"></div>
+                            </div>
+                            <div class="name"><a class="summarylink" draggable="false" href="/summary/J6lDHC"
+                                    style="width:168px">Blushwave 5IV</a><img
+                                    src="https://r2.pokefarm.com/img/pkmn/albino.png?t=1730589351" title="[ALBINO]"
+                                    loading="lazy" alt="albino.png" /><img
+                                    src="https://r2.pokefarm.com/img/pkmn/gender_f.png?t=1401213007" title="[F]"
+                                    loading="lazy" alt="gender_f.png" /></div>
+                            <div class="expbar">
+                                <div style="width:49%"></div><span class="exp-display" data-default="Lv. 82 | 49%"
+                                    data-raw="Lv. 82 | 12,510 / 25,523" data-percent-only="49%"
+                                    data-exp-only="12,510 / 25,523">Lv. 82 | 49%</span>
+                            </div>
+                            <div class="action"></div>
+                            <div class="taste">Likes:<div class="right"><b>Dry</b> food</div>
+                            </div>
+                            <div class="extra">
+                                <div class="type"><img src="https://r2.pokefarm.com/img/types/water.png?t=1262702646"
+                                        alt="Water" loading="lazy" /><img
+                                        src="https://r2.pokefarm.com/img/types/ice.png?t=1262702646" alt="Ice"
+                                        loading="lazy" /></div>
+                                <div class="happy"><img src="https://r2.pokefarm.com/img/pkmn/heart_2.png?t=1427152947"
+                                        alt="Happiness" loading="lazy" />&nbsp;92%</div>
+                                <div class="nature"><b>Quiet</b> nature</div><a href="#" class="menu">Menu<span
+                                        class="menu_icon"></span></a>
+                            </div>
+                            <div class="menu"><label data-menu="rename">Rename</label><label data-menu="giveitem"
+                                    class="half">Give Item</label><label data-menu="takeitem" class="disabled">Take
+                                    Item</label><label class="disabled">Cannot evolve: Final stage</label><label
+                                    data-menu="move" class="half">Switch</label><label data-menu="field"
+                                    data-fieldid="party">Send to Field</label><label data-menu="targets">Set
+                                    Target</label><label data-menu="explock">EXP Lock</label>
+                                <hr /><a href="/dress/J6lDHC">Dress up</a><a href="/trade/setup/pkmn/J6lDHC">Send in
+                                    Trade</a>
+                                <hr /><label data-menu="release">Release</label>
+                            </div>
+                        </div>
+                        <div data-pid="J68Mzm">
+                            <div class="pkmn">
+                                <div style="background-image:url('https://r2.pokefarm.com/img/pkmn/h/h/h.png?t=1656288108')"
+                                    class="egg"></div>
+                            </div>
+                            <div class="name"><a class="summarylink" draggable="false" href="/summary/J68Mzm"
+                                    style="width:200px">&lt;Egg></a></div>
+                            <div class="expbar">
+                                <div style="width:94%"></div><span><span class="exp-display" data-default="94%"
+                                        data-raw="9,630 / 10,240">94%</span> <span
+                                        class="small exp-timer">(14m)</span></span>
+                            </div>
+                            <div class="action"></div>
+                            <div class="taste">&nbsp;<div>&nbsp;</div>
+                            </div>
+                            <div class="extra">
+                                <div class="type"><img src="https://r2.pokefarm.com/img/types/water.png?t=1262702646"
+                                        alt="Water" loading="lazy" /><img
+                                        src="https://r2.pokefarm.com/img/types/ice.png?t=1262702646" alt="Ice"
+                                        loading="lazy" /></div>
+                                <div class="happy"><img src="https://r2.pokefarm.com/img/pkmn/egg.png?t=1451852195"
+                                        alt="Hatch progress" loading="lazy" />&nbsp;94%</div><a href="#"
+                                    class="menu">Menu<span class="menu_icon"></span></a>
+                            </div>
+                            <div class="menu"><label data-menu="hatch" class="disabled">Hatch the Egg</label><label
+                                    data-menu="move">Switch</label>
+                                <hr /><label data-menu="release" data-when="13/Mar/2026 04:27:20">Can't release: Too
+                                    soon</label>
+                            </div>
+                        </div>
+                        <div data-pid="J6fsNs">
+                            <div class="pkmn">
+                                <div style="background-image:url('https://r2.pokefarm.com/img/pkmn/h/h/h.png?t=1656288108')"
+                                    class="egg"></div>
+                            </div>
+                            <div class="name"><a class="summarylink" draggable="false" href="/summary/J6fsNs"
+                                    style="width:200px">&lt;Egg></a></div>
+                            <div class="expbar">
+                                <div style="width:94%"></div><span><span class="exp-display" data-default="94%"
+                                        data-raw="9,627 / 10,240">94%</span> <span
+                                        class="small exp-timer">(14m)</span></span>
+                            </div>
+                            <div class="action"></div>
+                            <div class="taste">&nbsp;<div>&nbsp;</div>
+                            </div>
+                            <div class="extra">
+                                <div class="type"><img src="https://r2.pokefarm.com/img/types/water.png?t=1262702646"
+                                        alt="Water" loading="lazy" /><img
+                                        src="https://r2.pokefarm.com/img/types/ice.png?t=1262702646" alt="Ice"
+                                        loading="lazy" /></div>
+                                <div class="happy"><img src="https://r2.pokefarm.com/img/pkmn/egg.png?t=1451852195"
+                                        alt="Hatch progress" loading="lazy" />&nbsp;94%</div><a href="#"
+                                    class="menu">Menu<span class="menu_icon"></span></a>
+                            </div>
+                            <div class="menu"><label data-menu="hatch" class="disabled">Hatch the Egg</label><label
+                                    data-menu="move">Switch</label>
+                                <hr /><label data-menu="release" data-when="13/Mar/2026 04:27:24">Can't release: Too
+                                    soon</label>
+                            </div>
+                        </div>
+                        <div data-pid="J6fh0k">
+                            <div class="pkmn">
+                                <div style="background-image:url('https://r2.pokefarm.com/img/pkmn/f/j/2.png?t=1519354470')"
+                                    class="egg"></div>
+                            </div>
+                            <div class="name"><a class="summarylink" draggable="false" href="/summary/J6fh0k"
+                                    style="width:200px">&lt;Egg></a></div>
+                            <div class="expbar">
+                                <div style="width:95%"></div><span><span class="exp-display" data-default="95%"
+                                        data-raw="7,297 / 7,680">95%</span> <span
+                                        class="small exp-timer">(9m)</span></span>
+                            </div>
+                            <div class="action"></div>
+                            <div class="taste">&nbsp;<div>&nbsp;</div>
+                            </div>
+                            <div class="extra">
+                                <div class="type"><img src="https://r2.pokefarm.com/img/types/unknown.png?t=1427730376"
+                                        alt="Unknown" loading="lazy" /></div>
+                                <div class="happy"><img src="https://r2.pokefarm.com/img/pkmn/egg.png?t=1451852195"
+                                        alt="Hatch progress" loading="lazy" />&nbsp;95%</div><a href="#"
+                                    class="menu">Menu<span class="menu_icon"></span></a>
+                            </div>
+                            <div class="menu"><label data-menu="hatch" class="disabled">Hatch the Egg</label><label
+                                    data-menu="move">Switch</label>
+                                <hr /><label data-menu="release" data-when="13/Mar/2026 04:27:29">Can't release: Too
+                                    soon</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="showcase">
+                        <div data-pid="J6Xn2S">
+                            <div class="pkmn plateform">
+                                <div style="background-image:url('https://r2.pokefarm.com/img/pkmn/7/d/e/f.png?t=1590233773')"
+                                    class="pokemon"></div>
+                                <div class="helditem"></div><a href="#" data-remove="0">Remove</a>
+                            </div>
+                            <div class="name"><a class="summarylink" draggable="false" href="/summary/J6Xn2S">Yukon
+                                    6IV</a></div>
+                            <div class="icons"><img src="https://r2.pokefarm.com/img/pkmn/gender_f.png?t=1401213007"
+                                    title="[F]" loading="lazy" alt="gender_f.png" /></div>
+                            <div class="action"></div>
+                        </div>
+                        <div data-pid="J6s5Dh">
+                            <div class="pkmn plateform">
+                                <div style="background-image:url('https://r2.pokefarm.com/img/pkmn/1/f/z.png?t=1474027727')"
+                                    class="pokemon"></div>
+                                <div class="helditem"></div><a href="#" data-remove="1">Remove</a>
+                            </div>
+                            <div class="name"><a class="summarylink" draggable="false" href="/summary/J6s5Dh">Chikorita
+                                    6iv</a></div>
+                            <div class="icons"><img src="https://r2.pokefarm.com/img/pkmn/gender_f.png?t=1401213007"
+                                    title="[F]" loading="lazy" alt="gender_f.png" /></div>
+                            <div class="action"></div>
+                        </div>
+                        <div data-pid="J6wCZs">
+                            <div class="pkmn plateform">
+                                <div style="background-image:url('https://r2.pokefarm.com/img/pkmn/z/f/n.png?t=1682405065')"
+                                    class="pokemon"></div>
+                                <div class="helditem"></div><a href="#" data-remove="2">Remove</a>
+                            </div>
+                            <div class="name"><a class="summarylink" draggable="false"
+                                    href="/summary/J6wCZs">Mild♀️6iv</a></div>
+                            <div class="icons"><img src="https://r2.pokefarm.com/img/pkmn/gender_f.png?t=1401213007"
+                                    title="[F]" loading="lazy" alt="gender_f.png" /></div>
+                            <div class="action"></div>
+                        </div>
+                        <div data-pid="J6QPBV">
+                            <div class="pkmn plateform">
+                                <div style="background-image:url('https://r2.pokefarm.com/img/pkmn/7/d/e/f.png?t=1590233773')"
+                                    class="pokemon"></div>
+                                <div class="helditem"></div><a href="#" data-remove="3">Remove</a>
+                            </div>
+                            <div class="name"><a class="summarylink" draggable="false" href="/summary/J6QPBV">Frusky 6IV
+                                    - Tokoro</a></div>
+                            <div class="icons"><img src="https://r2.pokefarm.com/img/pkmn/gender_m.png?t=1401213006"
+                                    title="[M]" loading="lazy" alt="gender_m.png" /></div>
+                            <div class="action"></div>
+                        </div>
+                        <div data-pid="JyGNNy">
+                            <div class="pkmn plateform">
+                                <div style="background-image:url('https://r2.pokefarm.com/img/pkmn/k/u/s/u.png?t=1503132326')"
+                                    class="pokemon"></div>
+                                <div class="helditem"></div><a href="#" data-remove="4">Remove</a>
+                            </div>
+                            <div class="name"><a class="summarylink" draggable="false" href="/summary/JyGNNy">Quetzephyr
+                                    6IV</a></div>
+                            <div class="icons"><img src="https://r2.pokefarm.com/img/pkmn/gender_m.png?t=1401213006"
+                                    title="[M]" loading="lazy" alt="gender_m.png" /></div>
+                            <div class="action"></div>
+                        </div>
+                        <div data-pid="J69rjd">
+                            <div class="pkmn plateform">
+                                <div style="background-image:url('https://r2.pokefarm.com/img/pkmn/9/x/1.png?t=1680570290')"
+                                    class="pokemon"></div>
+                                <div class="helditem"></div><a href="#" data-remove="5">Remove</a>
+                            </div>
+                            <div class="name"><a class="summarylink" draggable="false" href="/summary/J69rjd">Pancham
+                                    6IV</a></div>
+                            <div class="icons"><img src="https://r2.pokefarm.com/img/pkmn/gender_f.png?t=1401213007"
+                                    title="[F]" loading="lazy" alt="gender_f.png" /></div>
+                            <div class="action"></div>
+                        </div>
+                    </div>
+                    <div id="eggtimeinfo">
+                        <p><b>Note:</b> The timer shown indicates the <i>maximum</i> time an Egg will take to hatch if
+                            you do nothing else, using only the passive EXP gain of the <a href="/expboost/eggtimer">Egg
+                                Timer</a>.</p>
+                        <p>Making interactions is the best way to progress. Try clicking <a href="/user/~online">Online
+                                Users</a> or <a href="/user/~clickback">Clickback</a> to get going!</p>
+                    </div>
+                    <div class="panel" id="rankreward">
+                        <h3>Player Rank</h3>
+                        <div>
+                            <p style="margin-top:4px" class="center"><a href="/dex">View Pokédex</a></p>
+                            <div class="expbar">
+                                <div style="width:93.103448275862%"></div><span>459/493 EggDex</span>
+                            </div>
+                            <div class="expbar">
+                                <div style="width:113.09523809524%"></div><span>1,330/1,176 Pokédex</span>
+                            </div><img src="https://r2.pokefarm.com/img/userbars/ultra.png?t=1708518828"
+                                class="rank_before" loading="lazy" alt="ultra.png" /><img
+                                src="https://r2.pokefarm.com/img/userbars/master.png?t=1708518828" class="rank_after"
+                                loading="lazy" alt="master.png" />
+                            <div class="info"><b>Reward:</b> <img
+                                    src="https://r2.pokefarm.com/img/items/misc_upgrade9.png?t=1708344182"
+                                    class="itemsprite" alt="Supplier Expansion" data-tooltip loading="lazy" />
+                                <div class="tooltip_content">
+                                    <div class="tooltip_item" data-item="1046">
+                                        <div class="name">
+                                            <div class="image"
+                                                style="background-image:url('https://r2.pokefarm.com/img/items/misc_upgrade9.png?t=1708344182')">
+                                            </div>
+                                            <h3 class="autoscale">Supplier Expansion</h3>
+                                            <p>Key Item</p>
+                                            <p class="q">(<img
+                                                    src="https://r2.pokefarm.com/img/pkmn/item.png?t=1428937036"
+                                                    loading="lazy" alt="item.png" />: <span>0</span>)</p>
+                                        </div>
+                                        <p>Doubles the number of simultaneous orders you can have with the Egg Supplier
+                                            without the need for individual passes.</p>
+                                        <p class="small">Unsellable</p>
+                                        <div class="ttitem_commands"></div>
+                                    </div>
+                                </div>Supplier Expansion
+                            </div>
+                            <div class="info"><button id="claimrankreward" disabled>Claim</button></div>
+                            <hr />
+                            <div class="expbar">
+                                <div style="width:84.615384615385%"></div><span>44/52 ShinyDex</span>
+                            </div><img src="https://r2.pokefarm.com/img/userbars/class/e.png?t=1708518987"
+                                class="rank_before" loading="lazy" alt="e.png" /><img
+                                src="https://r2.pokefarm.com/img/userbars/class/e+.png?t=1708518987" class="rank_after"
+                                loading="lazy" alt="e+.png" />
+                            <div class="info">Your Class doesn't do anything, but it looks cool.</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="friendsbox">
+                    <div class="panel">
+                        <h3>VIP List</h3>
+                        <div>
+                            <ul id="friendslist">
+                                <li class="online_separator">Online: (<a
+                                        href="/users/Altshinx,Archie,AriaLuneris,Blini,Dollete,Eternatus_Shrimp,HereticalTeapot,iv0rykeys,kabru,LucarioRockz,mooniesluv,mortalkombat,Noiivvern,PolarDegrees,pookeyohyeah,Remster,Salamaunder,SgtAngel777,speedy351,Spoilers,Spooky_Boo,starbuster1,Starei,StrayPup,Syzo,TheGreatSilence,Tokoro,Val-Cassia,wyvernwyll,xXKaitoXx">Open
+                                        all</a>)</li>
+                                <li><span class="dot afk"></span><a href="/user/Altshinx" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_2" />
+                                        </svg>AltShinx</a></li>
+                                <li><span class="dot afk"></span><a href="/user/Remster" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>Remster</a></li>
+                                <li><span class="dot busy"></span><a href="/user/Archie" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>Archie</a></li>
+                                <li><span class="dot afk"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/Salamaunder" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_2" />
+                                        </svg>Salamaunder</a></li>
+                                <li><span class="dot on"></span><a href="/user/AriaLuneris" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>AriaLuneris</a></li>
+                                <li><span class="dot afk"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/SgtAngel777" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>SgtAngel777</a></li>
+                                <li><span class="dot busy"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a href="/user/Blini"
+                                        class="userlink0"><svg class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_2" />
+                                        </svg>Blini</a></li>
+                                <li><span class="dot on"></span><a href="/user/speedy351" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_2" />
+                                        </svg>speedy351</a></li>
+                                <li><span class="dot afk"></span><a href="/user/Dollete" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_7" />
+                                        </svg>Dollete</a></li>
+                                <li><span class="dot afk"></span><a href="/user/Spoilers" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>Spoilers</a></li>
+                                <li><span class="dot afk"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/Eternatus_Shrimp" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>Eternatus Shrimp</a></li>
+                                <li><span class="dot on"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/Spooky_Boo" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_5" />
+                                        </svg>Spooky Boo</a></li>
+                                <li><span class="dot afk"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/HereticalTeapot" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>HereticalTeapot</a></li>
+                                <li><span class="dot on"></span><a href="/user/starbuster1" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>Starbuster1</a></li>
+                                <li><span class="dot on"></span><a href="/user/iv0rykeys" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_4" />
+                                        </svg>iv0rykeys</a></li>
+                                <li><span class="dot afk"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a href="/user/Starei"
+                                        class="userlink0"><svg class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_5" />
+                                        </svg>Starei</a></li>
+                                <li><span class="dot on"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a href="/user/kabru"
+                                        class="userlink0"><svg class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>Kabru</a></li>
+                                <li><span class="dot afk"></span><a href="/user/StrayPup" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>StrayPup</a></li>
+                                <li><span class="dot afk"></span><a href="/user/LucarioRockz" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>LucarioRockz</a></li>
+                                <li><span class="dot on"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a href="/user/Syzo"
+                                        class="userlink0"><svg class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>Syzo</a></li>
+                                <li><span class="dot afk"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/mooniesluv" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>mooniesluv</a></li>
+                                <li><span class="dot afk"></span><a href="/user/TheGreatSilence" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>TheGreatSilence</a></li>
+                                <li><span class="dot on"></span><a href="/user/mortalkombat" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>mortalkombat</a></li>
+                                <li><span class="dot on"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a href="/user/Tokoro"
+                                        class="userlink0"><svg class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>Tokoro</a></li>
+                                <li><span class="dot on"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><img
+                                        src="https://r2.pokefarm.com/img/types/v-rock.png?t=1713628488"
+                                        title="Continental Crush Leader" style="width:12px;" loading="lazy"
+                                        alt="v-rock.png" /><a href="/user/Noiivvern" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>Noiivvern</a></li>
+                                <li><span class="dot on"></span><a href="/user/Val-Cassia" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>Val-Cassia</a></li>
+                                <li><span class="dot afk"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/PolarDegrees" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_2" />
+                                        </svg>PolarDegrees</a></li>
+                                <li><span class="dot afk"></span><a href="/user/wyvernwyll" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_2" />
+                                        </svg>wyvernwyll</a></li>
+                                <li><span class="dot afk"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/pookeyohyeah" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_2" />
+                                        </svg>pookeyohyeah</a></li>
+                                <li><span class="dot on"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/xXKaitoXx" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>xXKaitoXx</a></li>
+                                <li class="online_separator">Offline:</li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/Ashe_Moon" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_2" />
+                                        </svg>Ashe Moon</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a href="/user/Neko-7"
+                                        class="userlink0"><svg class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>Neko-7</a></li>
+                                <li><span class="dot off"></span><a href="/user/ayan" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>ayan</a></li>
+                                <li><span class="dot off"></span><a href="/user/NemesisDarkrai" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_7" />
+                                        </svg>NemesisDarkrai</a></li>
+                                <li><span class="dot off"></span><a href="/user/BBubbletea" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>bbubbletea</a></li>
+                                <li><span class="dot off"></span><a href="/user/pipittypro" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>pipittypro</a></li>
+                                <li><span class="dot off"></span><a href="/user/BearWhys" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>BearWhys</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/possmol" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>pössmol</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/Deadlock21" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>Deadlock21</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a href="/user/Retsky"
+                                        class="userlink0"><svg class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>Retsky</a></li>
+                                <li><span class="dot off"></span><a href="/user/DuckieKnight" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>DuckieKnight</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/RocketKit" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>RøcketKit</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/felineairline" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_2" />
+                                        </svg>felineairline</a></li>
+                                <li><span class="dot off"></span><a href="/user/Rockium" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>Rockium</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a href="/user/Hilda"
+                                        class="userlink0"><svg class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>Hilda</a></li>
+                                <li><span class="dot off"></span><a href="/user/SC-07713" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>SC-07713</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/HOLLOWAY" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>HOLLOWAY</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/severen" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>severen</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/Icarusburns" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>IcarusBurns</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/SirBreedalot" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>SirBreedalot</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/Jade162" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>Jade162</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/bulb-12.png?t=1468582453"
+                                        title="New Farmer" loading="lazy" alt="bulb-12.png" /><a href="/user/SpazJake"
+                                        class="userlink0"><svg class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_7" />
+                                        </svg>SpazJake</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/Jaymosque" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>Jaymosque</a></li>
+                                <li><span class="dot off"></span><a href="/user/StarlessSky" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_2" />
+                                        </svg>StarlessSky</a></li>
+                                <li><span class="dot off"></span><a href="/user/JPTRH" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>JPTRH</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/SydSavage" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_2" />
+                                        </svg>SydSavage</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/ketyoulater" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>ketyoulater</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a href="/user/Sym"
+                                        class="userlink0"><svg class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>Sym</a></li>
+                                <li><span class="dot off"></span><a href="/user/LoneShadow" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>LoneShadøw</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/TaterTot-Hotdish" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>TaterTot-Hotdish</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/luxrays" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>luxrays</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/TerraBean" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>TerraBean</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/lyricism" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_7" />
+                                        </svg>lyricism</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/TheShadowsAlly" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>TheShadowsAlly</a></li>
+                                <li><span class="dot off"></span><a href="/user/missLiLy" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>missLiLy</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/Thievul" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>Thievul</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/MissWillow" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_2" />
+                                        </svg>MissWillow</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/Vixenemy" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_2" />
+                                        </svg>Vixenemy</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/MooncalfPumpkin" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_3" />
+                                        </svg>MooncalfPumpkin</a></li>
+                                <li><span class="dot off"></span><a href="/user/Warrioraction" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>Warrioraction</a></li>
+                                <li><span class="dot off"></span><a href="/user/MorskiWilk" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>MorskiWilk</a></li>
+                                <li><span class="dot off"></span><a href="/user/Wolfsfire" class="userlink0"><svg
+                                            class="usermark" viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>Wolfsfire</a></li>
+                                <li><span class="dot off"></span><img
+                                        src="https://r2.pokefarm.com/img/zophan/hypermode-12.png?t=1469304491"
+                                        title="Hypermode" loading="lazy" alt="hypermode-12.png" /><a
+                                        href="/user/Mozaika" class="userlink0"><svg class="usermark"
+                                            viewBox="0 0 16 16">
+                                            <use xlink:href="#svg_usermark_6" />
+                                        </svg>Mozaika</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div id="tasklistbox">
+                    <div class="panel">
+                        <h3>Task List</h3>
+                        <div>
+                            <ul id="tasklist">
+                                <li data-task="99" data-key="battle_lv2"><a
+                                        href="http://pokefarm.wiki/Task_List/battle_lv2" target="_blank">Win 5
+                                        battles</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />1,500</div>
+                                    <div class="small progress">4 / 5 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:80%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="56" data-key="wonder_lv5"><a
+                                        href="http://pokefarm.wiki/Task_List/wonder_lv5" target="_blank">Wonder Trade
+                                        1,000 Pokémon</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />12,000</div>
+                                    <div class="small progress">793 / 1,000 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:79.3%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="51" data-key="berry_lv6"><a
+                                        href="http://pokefarm.wiki/Task_List/berry_lv6" target="_blank">Reach a Level 8
+                                        Berry Garden</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />6,272</div>
+                                    <div class="small progress">6 / 8 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:75%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="110" data-key="online_lv5"><a
+                                        href="http://pokefarm.wiki/Task_List/online_lv5" target="_blank">Attain the
+                                        5-day online chain 7 times</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />50,000</div>
+                                    <div class="small progress">25 / 35 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:71.43%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="126" data-key="fishing_lv4"><a
+                                        href="http://pokefarm.wiki/Task_List/fishing_lv4" target="_blank">Unlock the Sea
+                                        Fishing Zone</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />5,000</div>
+                                    <div class="small progress">46 / 80 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:57.5%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="94" data-key="hatch_lv7"><a
+                                        href="http://pokefarm.wiki/Task_List/hatch_lv7" target="_blank">Hatch 2,500
+                                        Eggs</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />40,000</div>
+                                    <div class="small progress">1,269 / 2,500 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:50.76%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="77" data-key="evo_lv6"><a href="http://pokefarm.wiki/Task_List/evo_lv6"
+                                        target="_blank">Evolve Pokémon 1,000 times</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />8,000</div>
+                                    <div class="small progress">410 / 1,000 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:41%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="70" data-key="scour_lv6"><a
+                                        href="http://pokefarm.wiki/Task_List/scour_lv6" target="_blank">Complete 2,500
+                                        Scour Missions</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />32,500</div>
+                                    <div class="small progress">769 / 2,500 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:30.76%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="125" data-key="fishing_lv3"><a
+                                        href="http://pokefarm.wiki/Task_List/fishing_lv3" target="_blank">Unlock and buy
+                                        the Good Rod</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />1,000</div>
+                                    <div class="small progress">13 / 50 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:26%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="6" data-key="acts_lv5"><a href="http://pokefarm.wiki/Task_List/acts_lv5"
+                                        target="_blank">Make 1,000,000 Interactions</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />128,000</div>
+                                    <div class="small progress">234,786 / 1,000,000 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:23.48%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="63" data-key="trade_lv6"><a
+                                        href="http://pokefarm.wiki/Task_List/trade_lv6" target="_blank">Trade or Gift
+                                        10,000 Pokémon</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />170,000</div>
+                                    <div class="small progress">1,633 / 10,000 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:16.33%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="18" data-key="shelter_lv5"><a
+                                        href="http://pokefarm.wiki/Task_List/shelter_lv5" target="_blank">Make 5,000
+                                        Shelter Adoptions</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />50,000</div>
+                                    <div class="small progress">521 / 5,000 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:10.42%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="105" data-key="supertrain"><a
+                                        href="http://pokefarm.wiki/Task_List/supertrain" target="_blank">Fully Train a
+                                        Pokémon</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />10,000</div>
+                                    <div class="small progress">0 / 510 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:0%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="80" data-key="megaevo_lv1"><a
+                                        href="http://pokefarm.wiki/Task_List/megaevo_lv1" target="_blank">Mega Evolve a
+                                        Pokémon</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />777</div>
+                                    <div class="small progress">0 / 1 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:0%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="21" data-key="summon_lv2"><a
+                                        href="http://pokefarm.wiki/Task_List/summon_lv2" target="_blank">Summon a
+                                        Legendary Pokémon!</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />700</div>
+                                    <div class="small progress">0 / 1 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:0%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="35" data-key="badge_lv5"><a
+                                        href="http://pokefarm.wiki/Task_List/badge_lv5" target="_blank">Upgrade a Silver
+                                        Gemwish Badge</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />24,300</div>
+                                    <div class="small progress">0 / 1 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:0%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="117" data-key="fossils_lv1"><a
+                                        href="http://pokefarm.wiki/Task_List/fossils_lv1" target="_blank">Revive a
+                                        Fossil in the Lab</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />2,000</div>
+                                    <div class="small progress">0 / 1 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:0%"></div>
+                                    </div>
+                                </li>
+                                <li data-task="40" data-key="pkrs_lv1"><a href="http://pokefarm.wiki/Task_List/pkrs_lv1"
+                                        target="_blank">Get Pokérus!</a>
+                                    <div class="small reward"><img src="//pokefarm.com/img/zophan/credits.png"
+                                            class="currencyicon" title="Credits" />5,000</div>
+                                    <div class="small progress">0 / 1 complete</div>
+                                    <div class="expbar">
+                                        <div style="width:0%"></div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div><br style="clear: both" />
+            </div>
+        </div>
+        <div id="footbar"><span>&copy; PokéFarm 2009-2026 (<a href="/copy">Full details</a>)</span><span><a
+                    href="https://pokefarm.com/support">Contact</a> | <a href="/forum/thread/274596/Rules">Rules</a> |
+                <a href="/privacy-policy">Privacy</a> | <a href="/review">Reviews</a> 4.6&#x2605;</span><span><a
+                    href="/shortlinks/save/party">Get shortlink for this page</a></span><span>Ver: 52ecaf8</span></div>
+    </div>
+    <script type="text/javascript" src="https://pokefarm.com/js/index/sally.min.js?t=1771783552"></script>
+    <script type="text/javascript" src="https://pokefarm.com/js/party/menu.min.js?t=1770487658"></script>
+    <script type="text/javascript"
+        src="https://pokefarm.com/js/fields/fieldselection.dialog.min.js?t=1770049721"></script>
+    <script type="text/javascript" src="https://pokefarm.com/js/party/showcase.min.js?t=1755109720"></script>
+    <script type="text/javascript" src="https://pokefarm.com/js/party/tasklist.min.js?t=1755109720"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script async src='https://static.cloudflareinsights.com/beacon.min.js'
+        data-cf-beacon='{"token": "84eb51a2bf4d427e97a032773b68b69a"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+
+</html>
