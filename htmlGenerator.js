@@ -29,8 +29,12 @@ function getIVParts(ivs) {
  */
 function getNumEmojiFromIVParts(ivParts) {
     if (!ivParts) return "";
-    const num31 = ivParts.filter((v) => v === 31).length;
-    return IV_EMOJI_MAP[num31] || "";
+    const num31 = ivParts.filter((v) => v === 31).length; // check how many perfect IVs
+    if (num31 <= 0 && ivParts.every(item => item === 0)) {
+        return "❌"; // perfect-nundo
+    } else {
+        return IV_EMOJI_MAP[num31] || "";
+    }
 }
 
 /**
@@ -88,12 +92,11 @@ function generateIVOverlay(ivs) {
     const barContainer = document.createElement("div");
     barContainer.className = "iv-bar-container";
 
-    ivParts.forEach(val => {
+    ivParts.forEach((val) => {
         const bar = document.createElement("div");
         bar.className = "iv-bar";
-        // Height or color based on IV
-        const percentage = Math.floor((val / 31) * 100);
-        bar.style.background = `linear-gradient(to top, #4CAF50 ${percentage}%, rgba(0,0,0,0.2) 0%)`;
+        // Reuse the same IV class used for text so CSS can color bars
+        bar.classList.add(getIVClass(val));
         barContainer.appendChild(bar);
     });
 

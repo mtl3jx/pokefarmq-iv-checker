@@ -24,18 +24,18 @@ div.party div.pfq-iv-block {
   text-decoration:underline;
 }
 
-/* red for zero */
+/* red for zero (works on light & dark) */
 .pfq-zero{
-  color:#ff6b6b;
+  color:#e53935; /* slightly darker, higher contrast red */
 }
 
 /* .pfq-mid{
   color:#ffd166;
 } */
 
-/* green for perfect */
+/* green for perfect (works on light & dark) */
 .pfq-perfect{
-  color:#8bdc8b;
+  color:#66bb6a; /* bright enough for dark backgrounds, still clear on light */
 }
 
 .pkmn-sprite{
@@ -79,6 +79,19 @@ div.party div.pfq-iv-block {
   flex: 1;
   height: 100%;
   border-radius: 1px;
-  background: rgba(0,0,0,0.2); /* fallback for zero IVs */
-  transition: background 0.2s ease-in-out;
+  background: currentColor; /* default to text color */
+  opacity: 0.6;
+  transition: background 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+/* Red bar for 0 IVs */
+.pfq-iv-overlay .iv-bar.pfq-zero {
+  background: #e53935;
+  opacity: 0.85;
+}
+
+/* Green bar for 31 IVs */
+.pfq-iv-overlay .iv-bar.pfq-perfect {
+  background: #66bb6a;
+  opacity: 0.9;
 }
