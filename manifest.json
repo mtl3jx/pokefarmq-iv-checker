@@ -12,7 +12,8 @@
       "matches": [
         "https://pokefarm.com/fields*",
         "https://pokefarm.com/party*",
-        "https://pokefarm.com/user*"
+        "https://pokefarm.com/user*",
+        "https://pokefarm.com/trade*"
       ],
       "js": [
         "repository.js",
