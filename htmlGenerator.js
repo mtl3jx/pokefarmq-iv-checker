@@ -55,38 +55,35 @@ async function injectPartySlotIVOverlay(slot) {
     const sprite = slot.querySelector("div.big.pokemon");
     if (!sprite) return; // egg or empty slot
 
-    const existing = sprite.querySelector(".pfq-iv-overlay");
-    if (existing) return;
-
-    const ivs = await fetchIVs(pokemonId);
-    sprite.classList.add("pkmn-sprite");
-    const overlay = generateIVOverlay(ivs);
-    if (overlay) sprite.appendChild(overlay);
+    return injectIVOverlayOnSprite(sprite, pokemonId);
 }
 
 /**
- * Injects an IV overlay on top of a field Pokémon sprite.
+ * Injects an IV overlay on top of a sprite element when the Pokémon ID is known.
+ * Used by field (span.fieldmon) and shelter (div.pokemon) overlays.
+ * @param {HTMLElement} spriteElement - The sprite element to attach the overlay to.
+ * @param {string} pokemonId - The Pokémon ID (e.g. from data-id or data-adopt).
+ * @returns {Promise<void>} Resolves when the overlay has been injected or skipped.
+ */
+async function injectIVOverlayOnSprite(spriteElement, pokemonId) {
+    const existing = spriteElement.querySelector(".pfq-iv-overlay");
+    if (existing) return;
+
+    const ivs = await fetchIVs(pokemonId);
+    spriteElement.classList.add("pkmn-sprite");
+    const overlay = generateIVOverlay(ivs);
+    if (overlay) spriteElement.appendChild(overlay);
+}
+
+/**
+ * Injects an IV overlay on top of a field Pokémon sprite (data-id on the span).
  * @param {HTMLElement} fieldmonSpan - The span element representing the field Pokémon.
  * @returns {Promise<void>} Resolves when the overlay has been injected or skipped.
  */
 async function injectIVOverlay(fieldmonSpan) {
-    const pokemonId = fieldmonSpan.attributes["data-id"].value;
-    const ivs = await fetchIVs(pokemonId);
-    // console.log("[PFQ IV] starting addIVOverlay for:", pokemonId, ivs);
-
-    const existing = fieldmonSpan.querySelector(".pfq-iv-overlay");
-    if (existing) {
-        // console.log("[PFQ IV] IV overlay already exists for:", pokemonId);
-        return;
-        // existing.remove();
-    }
-
-    fieldmonSpan.classList.add("pkmn-sprite");
-    const overlay = generateIVOverlay(ivs);
-    if (overlay) {
-        // console.log("[PFQ IV] adding IV overlay for:", pokemonId);
-        fieldmonSpan.appendChild(overlay);
-    }
+    const pokemonId = fieldmonSpan.getAttribute("data-id");
+    if (!pokemonId) return;
+    return injectIVOverlayOnSprite(fieldmonSpan, pokemonId);
 }
 
 /**

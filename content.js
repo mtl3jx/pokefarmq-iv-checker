@@ -8,9 +8,9 @@
     return;
   }
 
-  const { isField, isParty, isTrade } = getPageContext(window.location.pathname);
-  if (!isField && !isParty && !isTrade) {
-    console.log("[PFQ IV] Not on a Field, Party, User, or Trade page, script will not run.");
+  const { isField, isParty, isTrade, isShelter } = getPageContext(window.location.pathname);
+  if (!isField && !isParty && !isTrade && !isShelter) {
+    console.log("[PFQ IV] Not on a Field, Party, User, Trade, or Shelter page, script will not run.");
     return;
   }
 
@@ -36,6 +36,9 @@
     }
     if (isTrade) {
       injectTradeCollectionIVs();
+    }
+    if (isShelter) {
+      setupShelterOverlay();
     }
   }
 
@@ -128,9 +131,21 @@
    */
   function setupFieldOverlay() {
     const fieldPokemon = document.querySelectorAll('div.field span.fieldmon');
+    fieldPokemon.forEach((pokemon) => injectIVOverlay(pokemon));
+  }
 
-    fieldPokemon.forEach(pokemon => {
-      injectIVOverlay(pokemon);
+  // ---------------- SHELTER OVERLAY ----------------
+
+  /**
+   * Adds IV overlays to all shelter Pokémon sprites on page load.
+   */
+  function setupShelterOverlay() {
+    const sprites = document.querySelectorAll("div#shelter div.pokemon");
+    sprites.forEach((sprite) => {
+      const tooltip = sprite.nextElementSibling;
+      if (!tooltip?.classList.contains("tooltip_content")) return;
+      const pokemonId = tooltip.getAttribute("data-adopt");
+      if (isValidPokemonId(pokemonId)) injectIVOverlayOnSprite(sprite, pokemonId);
     });
   }
 
@@ -192,18 +207,19 @@
   /**
    * Determines which page context we're on from the pathname.
    * @param {string} path - window.location.pathname.
-   * @returns {{ isField: boolean, isParty: boolean, isTrade: boolean }}
+   * @returns {{ isField: boolean, isParty: boolean, isTrade: boolean, isShelter: boolean }}
    */
   function getPageContext(path) {
     return {
       isField: path.startsWith("/fields"),
       isParty: path.startsWith("/party") || path.startsWith("/user"),
       isTrade: path.startsWith("/trade"),
+      isShelter: path.startsWith("/shelter"),
     };
   }
 
   /**
-   * Returns true if the value is a non-placeholder Pokémon ID.
+   * Returns true if the value is a non-placeholder Po`kémon ID.
    * @param {string} id - e.g. from data-id or summary URL.
    * @returns {boolean}
    */
