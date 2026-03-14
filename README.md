@@ -112,7 +112,7 @@ Please don't send me PMs on PFQ - I'd like to keep that inbox game-specific!
 
 ### Notes
 
-Only Desktop browser is supported at this time. Mobile browser support is WIP! You will need to install these manually as a developer until the browser extension listings are approved.
+Mobile and Desktop browsers are supported! You will need to install these manually as a developer until the browser extension listings are approved.
 
 IVs are cached during the browsing session to improve performance and reduce repeated page requests.
 
