@@ -44,6 +44,27 @@ function createCountBadge(count, type, context) {
 }
 
 /**
+ * Injects an IV overlay on top of a field party slot's Pokémon sprite (fields page).
+ * @param {HTMLElement} slot - The div.slot.plateform element with data-id.
+ * @returns {Promise<void>} Resolves when the overlay has been injected or skipped.
+ */
+async function injectPartySlotIVOverlay(slot) {
+    const pokemonId = slot.getAttribute("data-id");
+    if (!pokemonId || pokemonId === "hello") return;
+
+    const sprite = slot.querySelector("div.big.pokemon");
+    if (!sprite) return; // egg or empty slot
+
+    const existing = sprite.querySelector(".pfq-iv-overlay");
+    if (existing) return;
+
+    const ivs = await fetchIVs(pokemonId);
+    sprite.classList.add("pkmn-sprite");
+    const overlay = generateIVOverlay(ivs);
+    if (overlay) sprite.appendChild(overlay);
+}
+
+/**
  * Injects an IV overlay on top of a field Pokémon sprite.
  * @param {HTMLElement} fieldmonSpan - The span element representing the field Pokémon.
  * @returns {Promise<void>} Resolves when the overlay has been injected or skipped.

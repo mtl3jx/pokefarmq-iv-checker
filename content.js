@@ -40,6 +40,7 @@
     if (isField) {
       prefetchFieldPartyPokemon();
       setupFieldPartyHover();
+      setupFieldPartyOverlay();
       prefetchAllFieldPokemon();
       setupFieldOverlay();
       setupFieldHover();
@@ -120,6 +121,18 @@
   }
 
   // ---------------- FIELD OVERLAY LOGIC ----------------
+
+  /**
+   * Adds IV overlays to party Pokémon icons on the fields page.
+   */
+  function setupFieldPartyOverlay() {
+    const partySlots = document.querySelectorAll(
+      "#field_party div.slot.plateform[data-id]",
+    );
+    partySlots.forEach((slot) => {
+      injectPartySlotIVOverlay(slot);
+    });
+  }
 
   /**
    * Adds IV overlays to all Pokémon currently visible in the field.
