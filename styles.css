@@ -3,6 +3,61 @@ div.pfq-iv-block {
   white-space: nowrap;
 }
 
+/* Circular count badges – shared (tooltip + overlay) */
+.pfq-iv-block .pfq-iv-badge,
+.pfq-iv-overlay .iv-zero-count,
+.pfq-iv-overlay .iv-perfect-count {
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  font-size: 10px;
+  font-weight: bold;
+  color: #fff;
+  border-radius: 50%;
+}
+.pfq-iv-block .pfq-iv-badge {
+  display: inline-flex;
+  vertical-align: middle;
+}
+.pfq-iv-block .pfq-iv-badge-zero {
+  background: #e53935;
+}
+.pfq-iv-block .pfq-iv-badge-perfect {
+  background: #2e7d32;
+}
+.pfq-iv-block .pfq-iv-badge.pfq-iv-badge-six,
+.pfq-iv-overlay .iv-zero-count.pfq-iv-badge-six,
+.pfq-iv-overlay .iv-perfect-count.pfq-iv-badge-six {
+  box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.9);
+}
+/* Badge row keeps red and green badges from overlapping on narrow sprites */
+.pfq-iv-overlay .iv-overlay-badge-row {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-width: 0;
+}
+.pfq-iv-overlay .iv-overlay-badge-row .iv-zero-count,
+.pfq-iv-overlay .iv-overlay-badge-row .iv-perfect-count {
+  position: static;
+  left: auto;
+  right: auto;
+  flex-shrink: 0;
+  display: flex;
+}
+.pfq-iv-overlay .iv-zero-count {
+  background: #e53935;
+}
+.pfq-iv-overlay .iv-perfect-count {
+  background: #2e7d32;
+}
+
 /* applied to fields */ 
 div.tooltip_content div.pfq-iv-block{
   margin-top:6px;
@@ -24,16 +79,67 @@ div.party div.pfq-iv-block {
   text-decoration:underline;
 }
 
-/* red for zero */
+/* red for zero (works on light & dark) */
 .pfq-zero{
-  color:#ff6b6b;
+  color:#e53935; /* slightly darker, higher contrast red */
 }
 
 /* .pfq-mid{
   color:#ffd166;
 } */
 
-/* green for perfect */
+/* green for perfect (works on light & dark) */
 .pfq-perfect{
-  color:#8bdc8b;
+  color:#66bb6a; /* bright enough for dark backgrounds, still clear on light */
+}
+
+.pkmn-sprite{
+  position: relative;
+}
+
+/* Container overlay for each Pokémon sprite */
+.pfq-iv-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Allow clicks through overlay */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* IV bars container at the bottom */
+.pfq-iv-overlay .iv-bar-container {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  right: 2px;
+  height: 6px;
+  display: flex;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+/* Individual IV bar - height set inline from IV value (31 = full) */
+.pfq-iv-overlay .iv-bar {
+  flex: 1;
+  min-height: 2px;
+  border-radius: 1px;
+  background: currentColor; /* default to text color */
+  opacity: 0.6;
+  transition: background 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+/* Red bar for 0 IVs */
+.pfq-iv-overlay .iv-bar.pfq-zero {
+  background: #e53935;
+  opacity: 0.85;
+}
+
+/* Green bar for 31 IVs */
+.pfq-iv-overlay .iv-bar.pfq-perfect {
+  background: #66bb6a;
+  opacity: 0.9;
 }

@@ -1,51 +1,26 @@
+/**
+ * Entry point for the PFQ IV Checker content script.
+ * Sets up page detection, prefetching, overlays, and hover handlers.
+ */
 (function () {
-  // Only run logic if on PFQ
   if (window.location.hostname !== "pokefarm.com") {
     console.log("[PFQ IV] Not on pokefarm.com, script will not run.");
     return;
   }
 
-  // Only run logic on Party or Fields pages
-  const path = window.location.pathname;
-  isField = false;
-  isParty = false;
-  if (path.startsWith("/fields")) {
-    isField = true; // includes your fields and other users' fields
-  }
-  if (path.startsWith("/party") || path.startsWith("/user")) {
-    isParty = true;
-  }
-  if (!isField && !isParty) {
-    console.log("[PFQ IV] Not on a Field or Party or User page, script will not run.");
+  const { isField, isParty, isTrade, isShelter } = getPageContext(window.location.pathname);
+  if (!isField && !isParty && !isTrade && !isShelter) {
+    console.log("[PFQ IV] Not on a Field, Party, User, Trade, or Shelter page, script will not run.");
     return;
   }
 
-  const PFQ_POKEMON_ID_KEY_PREFIX = "pfq-pokemon-id";
-
-  /**
-   * IV cache using sessionStorage
-   */
-  const ivCache = {
-    get: (pokemonID) => {
-      const data = sessionStorage.getItem(getCacheKey(pokemonID));
-      return data ? JSON.parse(data) : null;
-    },
-    set: (pokemonID, ivs) => {
-      sessionStorage.setItem(getCacheKey(pokemonID), JSON.stringify(ivs));
-    },
-    has: (pokemonID) => {
-      return sessionStorage.getItem(getCacheKey(pokemonID)) !== null;
-    },
-  };
-
   console.log("[PFQ IV] Extension Detected");
+  setTimeout(() => init(), 500);
 
-  setTimeout(() => {
-    init(); // delay init for 0.5 second to allow page content to load
-  }, 500);
+  // ---------------- INIT ----------------
 
   /**
-   * Initializes the extension: prefetches IVs and sets up event listeners.
+   * Initializes the extension based on the current page: prefetches IVs and sets up event listeners.
    */
   function init() {
     if (isParty) {
@@ -54,41 +29,35 @@
     if (isField) {
       prefetchFieldPartyPokemon();
       setupFieldPartyHover();
+      setupFieldPartyOverlay();
       prefetchAllFieldPokemon();
+      setupFieldOverlay();
       setupFieldHover();
+    }
+    if (isTrade) {
+      injectTradeCollectionIVs();
+    }
+    if (isShelter) {
+      setupShelterOverlay();
     }
   }
 
   // ---------------- PARTY WIDE / INJECTION ----------------
 
   /**
-   * Prefetches IVs for all Pokémon currently in party.
+   * Injects IV rows for all Pokémon in the party (party/user page).
    */
   async function getPartyIVs() {
     const party = document.querySelectorAll("div.party.wide > div[data-pid]");
-    // console.log("[PFQ IV] Prefetching party Pokémon:", party.length);
-
     for (const slot of party) {
-      if (slot.querySelector(".pfq-iv-block")) return; // skip, already done
-
+      if (slot.querySelector(".pfq-iv-block")) continue;
       const pokemonId = slot.getAttribute("data-pid");
-      if (!pokemonId || pokemonId === "hello") continue;
+      if (!isValidPokemonId(pokemonId)) continue;
 
-      let ivs = ivCache.get(pokemonId);
-      if (!ivs) {
-        const url = `https://pokefarm.com/summary/${pokemonId}`;
-        // console.log("[PFQ IV] Fetching IVs for party Pokémon:", pokemonId, url);
-        ivs = await fetchIVs(url);
-        ivCache.set(pokemonId, ivs);
-      } else {
-        // console.log("[PFQ IV] Using cached IVs for party Pokémon:", pokemonId, ivs);
-      }
-
-      // generate and inject IVs for this party pokemon
-      const ivDiv = getIVRowHTML(ivs);
+      const ivs = await fetchIVs(pokemonId);
+      const ivDiv = generateIVTooltip(ivs);
       if (ivDiv != null) {
-        const whereToInject = slot.querySelector("div.action");
-        whereToInject.prepend(ivDiv);
+        slot.querySelector("div.action").prepend(ivDiv);
       }
     }
   }
@@ -96,198 +65,127 @@
   // ---------------- FIELD / PARTY HOVER LOGIC ----------------
 
   /**
-   * Detects when a user hovers over a Pokémon in the field.
-   * When hovered, it fetches the Pokémon's IVs (using cache if available) and injects them into the tooltip.
-   * The IV block is only injected once per tooltip to avoid duplicates.
+   * Fetches IVs for the given trigger and appends the IV tooltip block when the tooltip is available.
+   * @param {Element} trigger - The hovered element that owns the tooltip.
+   * @param {string} pokemonId - The Pokémon ID (e.g. from data-id).
+   */
+  function fetchAndAppendIVTooltip(trigger, pokemonId) {
+    fetchIVs(pokemonId).then((ivs) => {
+      waitForTooltip().then(() => appendIVTooltipIfMissing(trigger, ivs));
+    });
+  }
+
+  /**
+   * Registers a mouseover listener that injects IVs into the tooltip when the user hovers over a matching trigger.
+   * @param {string} triggerSelector - Selector for the trigger element (e.g. "span.fieldmon").
+   * @param {function(Element): string} getPokemonId - Function that returns the Pokémon ID from the trigger (e.g. data-id).
+   * @param {function(Element): void} [onBeforeFetch] - Optional callback run before fetching (e.g. inject overlay).
+   */
+  function setupTooltipHover(triggerSelector, getPokemonId, onBeforeFetch) {
+    document.addEventListener("mouseover", (event) => {
+      const trigger = event.target.closest(triggerSelector);
+      if (!trigger) return;
+
+      const pokemonId = getPokemonId(trigger);
+      if (!isValidPokemonId(pokemonId)) return;
+
+      if (onBeforeFetch) onBeforeFetch(trigger);
+      fetchAndAppendIVTooltip(trigger, pokemonId);
+    });
+  }
+
+  /**
+   * Detects hover over a field Pokémon: adds sprite overlay and injects IVs into the tooltip.
    */
   function setupFieldHover() {
-    document.addEventListener("mouseover", async (event) => {
-      const trigger = event.target.closest("span.fieldmon");
-      if (!trigger) return;
-
-      const pokemonID = trigger.getAttribute("data-id");
-      if (!pokemonID || pokemonID == "hello") return;
-
-      let ivs = ivCache.get(pokemonID);
-      if (!ivs) {
-        // console.log("[PFQ IV] Fetching IVs for Pokémon ID:", pokemonID);
-        ivs = await fetchIVs(`https://pokefarm.com/summary/${pokemonID}`);
-        ivCache.set(pokemonID, ivs);
-      } else {
-        // console.log("[PFQ IV] Using cached IVs for Pokémon ID:", pokemonID, ivs);
-      }
-
-      waitForTooltip().then(() => injectFieldIVs(trigger, ivs));
-    });
+    setupTooltipHover(
+      "span.fieldmon",
+      (trigger) => trigger.getAttribute("data-id"),
+      (trigger) => injectIVOverlay(trigger),
+    );
   }
 
   /**
-   * Detects when a user hovers over a Pokémon in the party.
-   * When hovered, it fetches the Pokémon's IVs (using cache if available) and injects them into the tooltip.
-   * The IV block is only injected once per tooltip to avoid duplicates.
-   * It also handles empty party slots and eggs appropriately.
+   * Detects hover over a party slot on the fields page and injects IVs into the tooltip.
    */
   function setupFieldPartyHover() {
-    document.addEventListener("mouseover", async (event) => {
-      const trigger = event.target.closest("div.slot.plateform");
-      if (!trigger) return;
+    setupTooltipHover("div.slot.plateform", (trigger) => trigger.getAttribute("data-id"));
+  }
 
-      const pokemonID = trigger.getAttribute("data-id");
-      if (!pokemonID) {
-        // empty slot
-        // console.log("[PFQ IV] This party slot is empty");
-        return;
-      }
+  // ---------------- FIELD OVERLAY LOGIC ----------------
 
-      let ivs = ivCache.get(pokemonID);
-      if (!ivs) {
-        // console.log("[PFQ IV] Fetching IVs for Pokémon ID:", pokemonID);
-        ivs = await fetchIVs(`https://pokefarm.com/summary/${pokemonID}`);
-        ivCache.set(pokemonID, ivs);
-      } else {
-        // console.log("[PFQ IV] Using cached IVs for Pokémon ID:", pokemonID, ivs);
-      }
-
-      waitForTooltip().then(() => injectFieldPartyIVs(trigger, ivs));
+  /**
+   * Adds IV overlays to party Pokémon icons on the fields page.
+   */
+  function setupFieldPartyOverlay() {
+    const partySlots = document.querySelectorAll(
+      "#field_party div.slot.plateform[data-id]",
+    );
+    partySlots.forEach((slot) => {
+      injectPartySlotIVOverlay(slot);
     });
   }
 
   /**
-   * @param {*} trigger reference to the hovered party slot element
-   * @param {number[]} ivs list of all 6 IVs and the total (ex. [31, 31, 31, 31, 31, 31, 186])
-   * @returns the HTML that should be injected into the tooltip for a party Pokémon
+   * Adds IV overlays to all Pokémon currently visible in the field.
    */
-  function injectFieldPartyIVs(trigger, ivs) {
-    if (!ivs) {
-      // egg slot
-      // console.log("[PFQ IV] This is an egg.");
-      return;
-    }
-
-    const tip = getTooltip(trigger);
-    if (!tip) {
-      // console.log("[PFQ IV] Could not find tooltip_content after party trigger");
-      return;
-    }
-
-    if (tip.querySelector(".pfq-iv-block")) return; // skip, already done
-
-    tip.appendChild(getIVRowHTML(ivs));
-    // console.log("[PFQ IV] Party IV block injected");
+  function setupFieldOverlay() {
+    const fieldPokemon = document.querySelectorAll('div.field span.fieldmon');
+    fieldPokemon.forEach((pokemon) => injectIVOverlay(pokemon));
   }
 
-  /**
-   * Injects IVs into the tooltip_content after the hovered trigger.
-   * @param {Element} trigger
-   * @param {number[]} ivs
-   */
-  function injectFieldIVs(trigger, ivs) {
-    if (!ivs) {
-      // console.log("[PFQ IV] No IV data to inject (field)");
-      return;
-    }
-
-    const tip = getTooltip(trigger);
-    if (!tip) {
-      // console.log("[PFQ IV] Could not find tooltip_content after field trigger");
-      return;
-    }
-
-    if (tip.querySelector(".pfq-iv-block")) return; // skip, already done
-
-    tip.appendChild(getIVRowHTML(ivs));
-    // console.log("[PFQ IV] Field IV block injected");
-  }
+  // ---------------- SHELTER OVERLAY ----------------
 
   /**
-   * Generates the UI for the IV row to be injected in the HTML.
-   * @param {number[]} ivs list of all 6 IVs and the total (ex. [31, 31, 31, 31, 31, 31, 186])
-   *    When null, that means this is an egg or an empty slot.
-   * @returns {Element} A div element containing the formatted IV string.
+   * Adds IV overlays to all shelter Pokémon sprites on page load.
    */
-  function getIVRowHTML(ivs) {
-    if (ivs == null) {
-      // console.log("[PFQ IV] This is an egg, skipping IV row generation.");
-      return;
-    }
-
-    // Calculate IV parts and classes
-    const ivParts = ivs.slice(0, 6);
-    const ivStringTotal = ivParts.join("/");
-    const total = ivs[6];
-
-    const num31 = ivParts.filter((v) => v === 31).length;
-    const emojiMap = {
-      0: "",
-      1: "1️⃣",
-      2: "2️⃣",
-      3: "3️⃣",
-      4: "4️⃣",
-      5: "5️⃣",
-      6: "✅",
-    };
-    const numEmoji = emojiMap[num31] || "";
-
-    // Create IV row div
-    const ivRow = document.createElement("div");
-    ivRow.className = "pfq-iv-block";
-
-    // Bold label
-    const label = document.createElement("b");
-    label.textContent = "IVs: ";
-    ivRow.appendChild(label);
-
-    // Add IV spans with classes
-    ivParts.forEach((val, index) => {
-      const span = document.createElement("span");
-      span.textContent = val;
-      span.className = getIVClass(val); // your existing function
-      ivRow.appendChild(span);
-
-      // Add "/" separator except after last number
-      if (index < ivParts.length - 1) {
-        ivRow.appendChild(document.createTextNode("/"));
-      }
+  function setupShelterOverlay() {
+    const sprites = document.querySelectorAll("div#shelter div.pokemon");
+    sprites.forEach((sprite) => {
+      const tooltip = sprite.nextElementSibling;
+      if (!tooltip?.classList.contains("tooltip_content")) return;
+      const pokemonId = tooltip.getAttribute("data-adopt");
+      if (isValidPokemonId(pokemonId)) injectIVOverlayOnSprite(sprite, pokemonId);
     });
-
-    // Add total part
-    ivRow.appendChild(document.createTextNode("=" + total));
-
-    // Add emoji
-    if (numEmoji) {
-      ivRow.appendChild(document.createTextNode(` ${numEmoji}`));
-    }
-
-    return ivRow;
   }
 
+  // ---------------- TRADE COLLECTION IV INJECTION ----------------
+
   /**
-   * Prefetches IVs for all Pokémon in the user's party and caches them.
+   * On trade page load: finds each .fieldmontip, fetches IVs from the summary URL,
+   * and appends the IV row as the last child of the tooltip.
+   */
+  async function injectTradeCollectionIVs() {
+    const pkmns = document.querySelectorAll(".fieldmontip");
+    for (const pokemon of pkmns) {
+      if (pokemon.querySelector(".pfq-iv-block")) continue;
+
+      const anchor = getSummaryAnchor(pokemon);
+      if (!anchor) continue;
+
+      const pokemonId = getPokemonIdFromUrl(anchor.href);
+      if (!isValidPokemonId(pokemonId)) continue;
+
+      const ivs = await fetchIVs(pokemonId);
+      const ivRow = generateIVTooltip(ivs);
+      if (!ivRow) continue;
+
+      pokemon.appendChild(ivRow);
+    }
+  }
+
+  // ---------------- PREFETCH (CACHE IVs) ----------------
+
+  /**
+   * Prefetches IVs for Pokémon in the field party and caches them for tooltip/overlay use.
    */
   async function prefetchFieldPartyPokemon() {
-    const partySlots = document.querySelectorAll(
-      "#field_party div.slot.plateform",
-    );
-    // console.log("[PFQ IV] Prefetch scanning party Pokémon:", partySlots.length);
-
+    const partySlots = document.querySelectorAll("#field_party div.slot.plateform");
     for (const slot of partySlots) {
-      if (slot.querySelector("div.big.egg")) return;
-
-      const pokemonID = slot.getAttribute("data-id");
-      if (!pokemonID || pokemonID === "hello") return;
-
-      if (ivCache.has(pokemonID)) {
-        // console.log("[PFQ IV] Party prefetch skipped (cached):", pokemonID);
-        return;
-      }
-
-      const url = `https://pokefarm.com/summary/${pokemonID}`;
-      // console.log("[PFQ IV] Party prefetch:", pokemonID);
-
-      fetchIVs(url).then((ivs) => {
-        // console.log("[PFQ IV] Party Prefetch IVs:", pokemonID, ivs);
-        ivCache.set(pokemonID, ivs);
-      });
+      if (slot.querySelector("div.big.egg")) continue;
+      const pokemonId = slot.getAttribute("data-id");
+      if (!isValidPokemonId(pokemonId)) continue;
+      await fetchIVs(pokemonId);
     }
   }
 
@@ -295,121 +193,56 @@
    * Prefetches IVs for all Pokémon in the field and caches them.
    */
   async function prefetchAllFieldPokemon() {
-    const anchors = document.querySelectorAll(
-      "div.field h3:not([style]) a[href^='/summary/']",
-    );
-    // console.log("[PFQ IV] Prefetch scanning field Pokémon:", anchors.length);
-
+    const anchors = document.querySelectorAll("div.field h3:not([style]) a[href^='/summary/']");
     for (const a of anchors) {
-      const url = a.href;
-      if (url.includes("hello")) continue;
-
-      const pokemonID = getPokemonIdFromUrl(url);
-      if (ivCache.has(pokemonID)) {
-        // console.log("[PFQ IV] Prefetch skipped (cached):", pokemonID);
-        continue;
-      }
-
-      // console.log("[PFQ IV] Prefetching:", pokemonID);
-
-      fetchIVs(url).then((ivs) => {
-        // console.log("[PFQ IV] Prefetch IVs:", pokemonID, ivs);
-        ivCache.set(pokemonID, ivs);
-      });
+      if (a.href.includes("hello")) continue;
+      const pokemonId = getPokemonIdFromUrl(a.href);
+      if (!isValidPokemonId(pokemonId)) continue;
+      await fetchIVs(pokemonId);
     }
   }
 
+  // ---------------- HELPER FUNCTIONS ----------------
+
   /**
-   * Fetches IVs from the summary page for a given Pokémon.
-   * @param {string} url - The summary URL for the Pokémon.
-   * @returns {Promise<number[]>} Array of IV values.
+   * Determines which page context we're on from the pathname.
+   * @param {string} path - window.location.pathname.
+   * @returns {{ isField: boolean, isParty: boolean, isTrade: boolean, isShelter: boolean }}
    */
-  async function fetchIVs(url) {
-    const pokemonId = getPokemonIdFromUrl(url);
-    try {
-      // console.log("[PFQ IV] Fetch request:", url);
-      const res = await fetch(url);
-      // console.log("[PFQ IV] Response status:", res.status);
-      const html = await res.text();
-      const doc = new DOMParser().parseFromString(html, "text/html");
-
-      const isEgg = doc.querySelector("div#summarypage div.egg") != null;
-      if (isEgg) {
-        // console.log("[PFQ IV] This Pokémon is an egg, no IVs to fetch for ID:", pokemonId);
-        return null;
-      }
-
-      const row = [...doc.querySelectorAll("tr")].find((r) =>
-        r.textContent.includes("IVs"),
-      );
-      if (!row) {
-        // console.log("[PFQ IV] IV row not found for pokemon ID:", pokemonId);
-        return null;
-      }
-
-      const tds = [...row.querySelectorAll("td")];
-      const numbers = tds
-        .map((td) => parseInt(td.textContent.trim()))
-        .filter((val) => !isNaN(val));
-      const values = numbers.slice(0, 7);
-      // console.log("[PFQ IV] IVs parsed for Pokémon ID:", pokemonId, values);
-      return values;
-    } catch (e) {
-      console.warn("[PFQ IV] IV fetch failed for Pokémon ID:", pokemonId, e);
-      return null;
-    }
-  }
-
-  function waitForTooltip() {
-    return new Promise((resolve) => {
-      const existing = document.querySelector("div.field .tooltip_content");
-      if (existing) return resolve(existing);
-      const observer = new MutationObserver(() => {
-        const tooltip = document.querySelector(".tooltip_content");
-        if (tooltip) {
-          observer.disconnect();
-          resolve(tooltip);
-        }
-      });
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-      });
-    });
-  }
-
-  function getTooltip(trigger) {
-    let el = trigger.nextElementSibling;
-    while (el && !(el.classList && el.classList.contains("tooltip_content"))) {
-      el = el.nextElementSibling;
-    }
-    if (el && el.classList.contains("tooltip_content")) return el;
-    return null;
-  }
-
-  function getIVClass(value) {
-    if (value === 31) return "pfq-perfect";
-    if (value === 0) return "pfq-zero";
-    if (value >= 26) return "pfq-high";
-    if (value <= 5) return "pfq-low";
-    return "pfq-mid";
+  function getPageContext(path) {
+    return {
+      isField: path.startsWith("/fields"),
+      isParty: path.startsWith("/party") || path.startsWith("/user"),
+      isTrade: path.startsWith("/trade"),
+      isShelter: path.startsWith("/shelter"),
+    };
   }
 
   /**
-   * Extracts the Pokémon ID from the given URL.
-   * @param {string} url - The URL to extract the ID from. (ex. https://pokefarm.com/summary/J6QPB6)
-   * @returns {string} - The extracted Pokémon ID. (ex. J6QPB6)
+   * Returns true if the value is a non-placeholder Po`kémon ID.
+   * @param {string} id - e.g. from data-id or summary URL.
+   * @returns {boolean}
+   */
+  function isValidPokemonId(id) {
+    return id != null && id !== "" && id !== "hello";
+  }
+
+  /**
+   * Extracts the Pokémon ID from a summary URL.
+   * @param {string} url - e.g. "https://pokefarm.com/summary/J6QPB6"
+   * @returns {string|undefined} - e.g. "J6QPB6"
    */
   function getPokemonIdFromUrl(url) {
     return url.split("/summary/")[1];
   }
 
   /**
-   * Generates a cache key for the given Pokémon ID.
-   * @param {string} pokemonId - The Pokémon ID. (ex. J6QPB6)
-   * @returns {string} - The generated cache key. (ex. pfq-pokemon-id-J6QPB6)
+   * Returns the summary link from a .fieldmontip that points to a real Pokémon (not the "hello" placeholder).
+   * @param {Element} pokemon - Element containing the tooltip content.
+   * @returns {Element|null} - The anchor element or null.
    */
-  function getCacheKey(pokemonId) {
-    return PFQ_POKEMON_ID_KEY_PREFIX + pokemonId;
+  function getSummaryAnchor(pokemon) {
+    const anchors = pokemon.querySelectorAll('h3 a[href^="/summary/"]');
+    return [...anchors].find((a) => !a.getAttribute("href").includes("hello")) ?? null;
   }
 })();
