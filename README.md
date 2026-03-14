@@ -1,5 +1,7 @@
 Desktop Browser Extensions to inject Pokemon's IVs into UI for Fields / Parties / etc.
 
+### NOT supported on Mobile Browsers yet
+
 View Pokémon IV stats directly in PokéFarm Q field tooltips with perfect IV or zero IV highlights.
 
 ## PokéFarm Field IV Viewer
@@ -76,6 +78,11 @@ Please don't send me PMs on PFQ - I'd like to keep that inbox game-specific!
 Only Desktop browser is supported at this time. Mobile browser support is WIP! You will need to install these manually as a developer until the browser extension listings are approved.
 
 IVs are cached during the browsing session to improve performance and reduce repeated page requests.
+
+Generate .XPI or .ZIP files using
+```
+zip -r releases/pfq-1.0.1.xpi manifest.json *.js styles.css icons/* README.md privacy-policy.md
+```
 
 ### Supported Pages
 
