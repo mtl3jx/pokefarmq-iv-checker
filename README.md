@@ -1,4 +1,4 @@
-Browser Extensions to inject Pokemon's IVs into UI for Fields / Parties / etc.
+Browser Extensions to inject Pokemon's IVs into UI for Fields, Parties, Shelter etc.
 
 View Pokémon IV stats directly in PokéFarm Q field tooltips with perfect IV or zero IV highlights.
 
@@ -67,7 +67,6 @@ The Orion Mobile app allows you to load browser extensions in from a file. [Inst
 
 #### ![google chrome logo](/icons/logo-google-chrome-20.png) Google Chrome - Desktop 💻
 
-1. Download the latest .XPI release file from [releases](/releases/).
 2. Unzip and extract contents from .XPI file
 3. Manage Extensions > Turn ON Developer Mode (top right corner)
 4. Load unpacked > Select extracted folder
@@ -78,7 +77,6 @@ Chrome extension listing in store pending!
 
 #### ![safari logo](/icons/logo-safari-20.png) Safari - Desktop 💻
 
-1. Download the latest .XPI release file from [releases](/releases/).
 2. Safari menu (top left) > Settings > Advanced > check "Show features for web developers"
 3. Switch to "Developer" tab in Settings window and ensure "Allow Unsigned Extensions" is enabled
 4. Add Temporary Extension > select .XPI file
@@ -89,8 +87,12 @@ Chrome extension listing in store pending!
 These steps will need to be done every time a new Safari session starts since it doesn't keep temporary extensions.
 
 #### ![firefox logo](/icons/logo-firefox-20.png) Firefox - Desktop 💻
-1. Download the latest .ZIP release file from [releases](/releases/).
-2. Navigate to [Developer Settings for Extensions](https://about:debugging#/runtime/this-firefox)
+
+2. Navigate to Developer Settings for Extensions
+```
+about:debugging#/runtime/this-firefox
+```
+
 3. Load Temporary Add-On > Select ZIP file
 4. You should see PokefarmQ IV Checker listed under Temporary Extensions
 5. Refresh on PFQ!
@@ -98,7 +100,7 @@ These steps will need to be done every time a new Safari session starts since it
 These steps will need to be done every time a new Firefox session starts since it doesn't keep temporary extensions. Firefox extension listing in store pending!
 
 
-### Ideas / Suggestions?
+## Ideas / Suggestions?
 
 Please [create an issue](https://github.com/mtl3jx/pokefarmq-iv-checker/issues) in this repo prefixed with "NEW:" OR send me ([6lackr0se](https://discord.com/users/418475101244358666)) a message on discord. Include any helpful details and screenshots please! Feel free to leave comments on anything anyone else posts as well; the more interest the sooner I'll work on it.
 
@@ -120,11 +122,6 @@ Generate .XPI or .ZIP files using
 ```
 zip -r releases/pfq-1.0.1.xpi manifest.json *.js styles.css icons/* README.md privacy-policy.md
 ```
-
-### Supported Pages
-
-This extension currently runs on the PokéFarm Fields page:
-https://pokefarm.com/fields
 
 ### [Privacy Policy](/privacy-policy.md)
 
