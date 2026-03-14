@@ -71,13 +71,14 @@ div.party div.pfq-iv-block {
   right: 2px;
   height: 6px;
   display: flex;
+  align-items: flex-end;
   gap: 1px;
 }
 
-/* Individual IV bar */
+/* Individual IV bar - height set inline from IV value (31 = full) */
 .pfq-iv-overlay .iv-bar {
   flex: 1;
-  height: 100%;
+  min-height: 2px;
   border-radius: 1px;
   background: currentColor; /* default to text color */
   opacity: 0.6;

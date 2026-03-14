@@ -97,6 +97,9 @@ function generateIVOverlay(ivs) {
         bar.className = "iv-bar";
         // Reuse the same IV class used for text so CSS can color bars
         bar.classList.add(getIVClass(val));
+        // Height proportional to IV (31 = full height)
+        const heightPct = Math.round((val / 31) * 100);
+        bar.style.height = `${heightPct}%`;
         barContainer.appendChild(bar);
     });
 
