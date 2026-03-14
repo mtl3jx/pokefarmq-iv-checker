@@ -84,8 +84,15 @@ function generateIVOverlay(ivs) {
     const overlay = document.createElement("div");
     overlay.className = "pfq-iv-overlay";
 
-    if (num0 > 0) overlay.appendChild(createCountBadge(num0, "zero", "overlay"));
-    if (num31 > 0) overlay.appendChild(createCountBadge(num31, "perfect", "overlay"));
+    const hasZero = num0 > 0;
+    const hasPerfect = num31 > 0;
+    if (hasZero || hasPerfect) {
+        const badgeRow = document.createElement("div");
+        badgeRow.className = "iv-overlay-badge-row";
+        if (hasZero) badgeRow.appendChild(createCountBadge(num0, "zero", "overlay"));
+        if (hasPerfect) badgeRow.appendChild(createCountBadge(num31, "perfect", "overlay"));
+        overlay.appendChild(badgeRow);
+    }
 
     const barContainer = document.createElement("div");
     barContainer.className = "iv-bar-container";
