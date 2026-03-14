@@ -10,8 +10,10 @@ This allows players to quickly evaluate Pokémon in the field without opening ea
 
 ### Features
 
-- Displays Pokémon IV stats directly in the tooltip when in fields
-- Highlights perfect IVs (31) with underline and emoji indicator
+- Displays IV overlay in Fields highlighting perfect IVs and nundos
+- Displays Pokemon IVs in user + other players' parties
+- Displays Pokémon IV stats directly in the tooltip window
+- Highlights perfect IVs (31) with underline, bold, text color, and numerical indicator for how many perfect and 0 IVs
 - Automatically prefetches IV data for Pokémon currently visible in the field
 - Lightweight and designed to blend with the existing PokéFarm interface
 
@@ -25,9 +27,45 @@ This allows players to quickly evaluate Pokémon in the field without opening ea
   ![1 IV](https://github.com/user-attachments/assets/71d106d0-64f5-4d70-9712-740ef8d8a4ff)
 </details>
 
-### How It Works
+### Installation
 
-When you hover over a Pokémon on the PokéFarm Fields page, the extension retrieves that Pokémon’s IV values from its summary page and displays them within the tooltip.
+Google Chrome
+1. Download the latest .XPI release file from [releases](/releases/).
+2. Unzip and extract contents from .XPI file
+3. Manage Extensions > Turn ON Developer Mode (top right corner)
+4. Load unpacked > Select extracted folder
+5. "Extension Loaded" means you're good to go!
+6. Refresh on PFQ!
+
+Firefox
+1. Download the latest .ZIP release file from [releases](/releases/).
+2. Navigate to [Developer Settings for Extensions](https://about:debugging#/runtime/this-firefox)
+3. Load Temporary Add-On > Select ZIP file
+4. You should see PokefarmQ IV Checker listed under Temporary Extensions
+5. Refresh on PFQ!
+
+Safari
+1. Download the latest .XPI release file from [releases](/releases/).
+2. Safari menu (top left) > Settings > Advanced > check "Show features for web developers"
+3. Switch to "Developer" tab in Settings window
+4. Add Temporary Extension > select .XPI file
+5. Ensure PokefarmQ IV Checker extension is enabled (checkbox ON)
+6. Enable extension for website: Edit Websites > change pokefarm.com dropdown to "Allow"
+7. Refresh on PFQ!
+
+### Ideas / Suggestions?
+
+Please [create an issue](https://github.com/mtl3jx/pokefarmq-iv-checker/issues) in this repo prefixed with "NEW:" OR send me ([6lackr0se](https://discord.com/users/418475101244358666)) a message on discord. Include any helpful details and screenshots please!
+
+### Troubleshooting
+
+Please [create an issue](https://github.com/mtl3jx/pokefarmq-iv-checker/issues) in this repo prefixed with "BUG:" OR send me ([6lackr0se](https://discord.com/users/418475101244358666)) a message on discord. Include any helpful details and screenshots please!
+
+Please don't send me PMs on PFQ - I'd like to keep that inbox game-specific!
+
+### Notes
+
+Only Desktop browser is supported at this time. Mobile browser support is WIP! You will need to install these manually as a developer until the browser extension listings are approved.
 
 IVs are cached during the browsing session to improve performance and reduce repeated page requests.
 
