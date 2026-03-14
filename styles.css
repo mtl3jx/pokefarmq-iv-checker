@@ -3,6 +3,49 @@ div.pfq-iv-block {
   white-space: nowrap;
 }
 
+/* Circular count badges – shared (tooltip + overlay) */
+.pfq-iv-block .pfq-iv-badge,
+.pfq-iv-overlay .iv-zero-count,
+.pfq-iv-overlay .iv-perfect-count {
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  font-size: 10px;
+  font-weight: bold;
+  color: #fff;
+  border-radius: 50%;
+}
+.pfq-iv-block .pfq-iv-badge {
+  display: inline-flex;
+  vertical-align: middle;
+}
+.pfq-iv-block .pfq-iv-badge-zero {
+  background: #e53935;
+}
+.pfq-iv-block .pfq-iv-badge-perfect {
+  background: #2e7d32;
+}
+.pfq-iv-block .pfq-iv-badge.pfq-iv-badge-six,
+.pfq-iv-overlay .iv-zero-count.pfq-iv-badge-six,
+.pfq-iv-overlay .iv-perfect-count.pfq-iv-badge-six {
+  box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.9);
+}
+.pfq-iv-overlay .iv-zero-count,
+.pfq-iv-overlay .iv-perfect-count {
+  position: absolute;
+  top: 2px;
+  display: flex;
+}
+.pfq-iv-overlay .iv-zero-count {
+  left: 2px;
+  background: #e53935;
+}
+.pfq-iv-overlay .iv-perfect-count {
+  right: 2px;
+  background: #2e7d32;
+}
+
 /* applied to fields */ 
 div.tooltip_content div.pfq-iv-block{
   margin-top:6px;
@@ -53,14 +96,6 @@ div.party div.pfq-iv-block {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-
-/* Emoji in top-right corner */
-.pfq-iv-overlay .iv-emoji {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  font-size: 14px;
 }
 
 /* IV bars container at the bottom */

@@ -1,19 +1,4 @@
 /**
- * Maps the count of 31 IVs to the corresponding emoji representation.
- * Keys are the number of perfect (31) IVs, values are emoji strings.
- * @type {Record<number, string>}
- */
-const IV_EMOJI_MAP = {
-    0: "",
-    1: "1️⃣",
-    2: "2️⃣",
-    3: "3️⃣",
-    4: "4️⃣",
-    5: "5️⃣",
-    6: "✅",
-};
-
-/**
  * Returns the first 6 IV values (HP, Atk, Def, SpA, SpD, Spe) from a full IV array.
  * @param {number[] | null | undefined} ivs - Full IV array including total at index 6.
  * @returns {number[] | null} Slice of the first 6 IVs, or null when no IVs are provided.
@@ -23,18 +8,39 @@ function getIVParts(ivs) {
 }
 
 /**
- * Computes the emoji to display based on the number of perfect (31) IVs.
+ * Returns counts of 0 and 31 IVs from the 6 IV values.
  * @param {number[] | null} ivParts - Array of 6 IV values.
- * @returns {string} Emoji representing how many perfect IVs there are, or empty string.
+ * @returns {{ num0: number, num31: number }}
  */
-function getNumEmojiFromIVParts(ivParts) {
-    if (!ivParts) return "";
-    const num31 = ivParts.filter((v) => v === 31).length; // check how many perfect IVs
-    if (num31 <= 0 && ivParts.every(item => item === 0)) {
-        return "❌"; // perfect-nundo
+function getIVCounts(ivParts) {
+    if (!ivParts) return { num0: 0, num31: 0 };
+    return {
+        num0: ivParts.filter((v) => v === 0).length,
+        num31: ivParts.filter((v) => v === 31).length,
+    };
+}
+
+/**
+ * Creates a count badge element (circle with number).
+ * @param {number} count - Number to display.
+ * @param {'zero' | 'perfect'} type - Zero (red) or perfect (green).
+ * @param {'overlay' | 'tooltip'} context - Overlay uses positioned divs, tooltip uses inline spans.
+ * @returns {HTMLElement}
+ */
+/** White symbol shown when count is 6: check for perfect (31s), X for zero (0s). */
+const BADGE_SIX_SYMBOL = { perfect: "✓", zero: "✕" };
+
+function createCountBadge(count, type, context) {
+    const el = document.createElement(context === "overlay" ? "div" : "span");
+    const isSix = count === 6;
+    el.textContent = isSix ? BADGE_SIX_SYMBOL[type] : String(count);
+    if (context === "overlay") {
+        el.className = type === "zero" ? "iv-zero-count" : "iv-perfect-count";
     } else {
-        return IV_EMOJI_MAP[num31] || "";
+        el.className = type === "zero" ? "pfq-iv-badge pfq-iv-badge-zero" : "pfq-iv-badge pfq-iv-badge-perfect";
     }
+    if (isSix) el.classList.add("pfq-iv-badge-six");
+    return el;
 }
 
 /**
@@ -43,23 +49,21 @@ function getNumEmojiFromIVParts(ivParts) {
  * @returns {Promise<void>} Resolves when the overlay has been injected or skipped.
  */
 async function injectIVOverlay(fieldmonSpan) {
-    const pokemonId = fieldmonSpan.attributes['data-id'].value;
+    const pokemonId = fieldmonSpan.attributes["data-id"].value;
     const ivs = await fetchIVs(pokemonId);
-    // console.log("[PFQ IV] starting addIVOverlay for:", pokemonId, ivs)
+    // console.log("[PFQ IV] starting addIVOverlay for:", pokemonId, ivs);
 
-    const existing = fieldmonSpan.querySelector('.pfq-iv-overlay');
+    const existing = fieldmonSpan.querySelector(".pfq-iv-overlay");
     if (existing) {
-        // console.log("[PFQ IV] IV overlay already exists for:", pokemonId)
-        return; // skip because IV overlay already exists
+        // console.log("[PFQ IV] IV overlay already exists for:", pokemonId);
+        return;
         // existing.remove();
     }
 
-    // Ensure sprite has base class
-    fieldmonSpan.classList.add('pkmn-sprite');
-
+    fieldmonSpan.classList.add("pkmn-sprite");
     const overlay = generateIVOverlay(ivs);
     if (overlay) {
-        // console.log("[PFQ IV] adding IV overlay for:", pokemonId)
+        // console.log("[PFQ IV] adding IV overlay for:", pokemonId);
         fieldmonSpan.appendChild(overlay);
     }
 }
@@ -74,45 +78,39 @@ function generateIVOverlay(ivs) {
 
     const ivParts = getIVParts(ivs);
     if (!ivParts) return null;
-    const numEmoji = getNumEmojiFromIVParts(ivParts);
+    const { num0, num31 } = getIVCounts(ivParts);
 
     // Overlay container
     const overlay = document.createElement("div");
     overlay.className = "pfq-iv-overlay";
 
-    // Emoji
-    if (numEmoji) {
-        const emojiEl = document.createElement("div");
-        emojiEl.className = "iv-emoji";
-        emojiEl.textContent = numEmoji;
-        overlay.appendChild(emojiEl);
-    }
+    if (num0 > 0) overlay.appendChild(createCountBadge(num0, "zero", "overlay"));
+    if (num31 > 0) overlay.appendChild(createCountBadge(num31, "perfect", "overlay"));
 
-    // Bar container
     const barContainer = document.createElement("div");
     barContainer.className = "iv-bar-container";
-
-    ivParts.forEach((val) => {
-        const bar = document.createElement("div");
-        bar.className = "iv-bar";
-        // Reuse the same IV class used for text so CSS can color bars
-        bar.classList.add(getIVClass(val));
-        // Height proportional to IV (31 = full height)
-        const heightPct = Math.round((val / 31) * 100);
-        bar.style.height = `${heightPct}%`;
-        barContainer.appendChild(bar);
-    });
-
+    ivParts.forEach((val) => barContainer.appendChild(createIVBar(val)));
     overlay.appendChild(barContainer);
 
     return overlay;
 }
 
 /**
- * Generates the UI for the IV row to be injected in the HTML.
- * @param {number[] | null} ivs - List of all 6 IVs and the total (ex. [31, 31, 31, 31, 31, 31, 186]).
- *    When null, this is an egg or an empty slot.
- * @returns {HTMLDivElement | undefined} A div element containing the formatted IV string, or undefined if skipped.
+ * Appends a space and count badge to the tooltip row when count > 0.
+ * @param {HTMLElement} row - The IV row element.
+ * @param {number} count - Badge count (0 or 31 IVs).
+ * @param {'zero' | 'perfect'} type - Badge type.
+ */
+function appendTooltipBadgeIfAny(row, count, type) {
+    if (count <= 0) return;
+    row.appendChild(document.createTextNode(" "));
+    row.appendChild(createCountBadge(count, type, "tooltip"));
+}
+
+/**
+ * Generates the IV row UI for tooltips (field/party hover).
+ * @param {number[] | null} ivs - Full IV array including total at index 6. Null for eggs.
+ * @returns {HTMLDivElement | undefined}
  */
 function generateIVTooltip(ivs) {
     if (ivs == null) {
@@ -120,42 +118,28 @@ function generateIVTooltip(ivs) {
         return;
     }
 
-    // Calculate IV parts and classes
     const ivParts = getIVParts(ivs);
-    const ivStringTotal = ivParts.join("/"); // currently unused, kept for potential future display
     const total = ivs[6];
+    const { num0, num31 } = getIVCounts(ivParts);
 
-    const numEmoji = getNumEmojiFromIVParts(ivParts);
-
-    // Create IV row div
     const ivRow = document.createElement("div");
     ivRow.className = "pfq-iv-block";
 
-    // Bold label
     const label = document.createElement("b");
     label.textContent = "IVs: ";
     ivRow.appendChild(label);
 
-    // Add IV spans with classes
     ivParts.forEach((val, index) => {
         const span = document.createElement("span");
         span.textContent = val;
-        span.className = getIVClass(val); // your existing function
+        span.className = getIVClass(val);
         ivRow.appendChild(span);
-
-        // Add "/" separator except after last number
-        if (index < ivParts.length - 1) {
-            ivRow.appendChild(document.createTextNode("/"));
-        }
+        if (index < ivParts.length - 1) ivRow.appendChild(document.createTextNode("/"));
     });
 
-    // Add total part
     ivRow.appendChild(document.createTextNode("=" + total));
-
-    // Add emoji
-    if (numEmoji) {
-        ivRow.appendChild(document.createTextNode(` ${numEmoji}`));
-    }
+    appendTooltipBadgeIfAny(ivRow, num0, "zero");
+    appendTooltipBadgeIfAny(ivRow, num31, "perfect");
 
     return ivRow;
 }
@@ -179,26 +163,6 @@ function appendIVTooltipIfMissing(trigger, ivs) {
     if (tip.querySelector(".pfq-iv-block")) return; // skip, already done
 
     tip.appendChild(generateIVTooltip(ivs));
-}
-
-/**
- * Injects IV information into the tooltip for a party Pokémon slot.
- * @param {Element} trigger - Reference to the hovered party slot element.
- * @param {number[] | null} ivs - List of all 6 IVs and the total (ex. [31, 31, 31, 31, 31, 31, 186]).
- */
-function injectFieldPartyIVs(trigger, ivs) {
-    appendIVTooltipIfMissing(trigger, ivs);
-    // console.log("[PFQ IV] Party IV block injected");
-}
-
-/**
- * Injects IVs into the tooltip_content after the hovered trigger.
- * @param {Element} trigger - The hovered field Pokémon element.
- * @param {number[] | null} ivs - Full IV array including total at index 6.
- */
-function injectFieldIVs(trigger, ivs) {
-    appendIVTooltipIfMissing(trigger, ivs);
-    // console.log("[PFQ IV] Field IV block injected");
 }
 
 /**
@@ -238,8 +202,21 @@ function getTooltip(trigger) {
 }
 
 /**
- * @param {number} value 
- * @returns string of CSS class based on IV {value}
+ * Creates a single IV bar element (height proportional to IV value).
+ * @param {number} val - IV value (0–31).
+ * @returns {HTMLElement}
+ */
+function createIVBar(val) {
+    const bar = document.createElement("div");
+    bar.className = "iv-bar";
+    bar.classList.add(getIVClass(val));
+    bar.style.height = `${Math.round((val / 31) * 100)}%`;
+    return bar;
+}
+
+/**
+ * @param {number} value
+ * @returns {string} CSS class for the IV value.
  */
 function getIVClass(value) {
     if (value === 31) return "pfq-perfect";

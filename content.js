@@ -91,7 +91,7 @@
 
       const ivs = await fetchIVs(pokemonId);
 
-      waitForTooltip().then(() => injectFieldIVs(trigger, ivs));
+      waitForTooltip().then(() => appendIVTooltipIfMissing(trigger, ivs));
     });
   }
 
@@ -115,7 +115,7 @@
 
       const ivs = await fetchIVs(pokemonId);
 
-      waitForTooltip().then(() => injectFieldPartyIVs(trigger, ivs));
+      waitForTooltip().then(() => appendIVTooltipIfMissing(trigger, ivs));
     });
   }
 
