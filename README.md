@@ -29,8 +29,6 @@ This allows players to quickly evaluate Pokémon in the field without opening ea
 
 ## Installation
 
-1. Download the latest .XPI release file from [releases](/releases/). If there is only a .ZIP available, rename the file with an .XPI extension.
-
 Supported Browsers:
 - Firefox Nightly 📱![android logo](/icons/logo-android-20.png)
 - Orion 📱![ios logo](/icons/logo-apple-20.png)
@@ -38,66 +36,74 @@ Supported Browsers:
 - Safari 💻
 - Firefox 💻
 
+1. Set your PFQ API Key in the Browser console with the following command. You can [get your PFQ API Key here.](https://pokefarm.com/farm#tab=5.7)
+```
+localStorage.setItem('pfq-api-key', '{{PFQ API Key}}');
+```
+
+2. Download the latest .XPI release file from [releases](/releases/). If there is only a .ZIP available, rename the file with an .XPI extension.
+
+
 #### ![firefox nightly logo](/icons/logo-firefox-nightly-20.png) Firefox Nightly - Mobile ![android logo](/icons/logo-android-20.png) / Desktop 💻
 
 Firefox Nightly is a Developer specific version of the browser. The Nightly Mobile app allows you to load browser extensions in from a file. [Install on Android](https://play.google.com/store/apps/details?id=org.mozilla.fenix&hl=en_US) ~~or Install on iOS (currently unavailable).~~
 
-2. Download and install Firefox Nightly (or another mobile browser that allows extensions)
-3. In the browser, turn on Developer Mode. Menu > Settings > About Firefox Nightly > click the logo rapidly 5+ times until it says "Debug menu enabled"
-2. Allow unverified extensions (Done at your own risk - I'm not responsible for anything you do outside of this extension) 
+3. Download and install Firefox Nightly (or another mobile browser that allows extensions)
+4. In the browser, turn on Developer Mode. Menu > Settings > About Firefox Nightly > click the logo rapidly 5+ times until it says "Debug menu enabled"
+5. Allow unverified extensions (Done at your own risk - I'm not responsible for anything you do outside of this extension) 
 ```
 about:config
 ```
 
-5. Search for "signatures" and toggle `xpinstall.signatures.required` to false.
-6. Install the PokefarmQ IV Checker extension on your browser. Menu > Settings > Install extension from file > select the .XPI file > Add
-7. You should now see PokefarmQ IV Checker listed under Extensions
-8. Refresh on PFQ!
+6. Search for "signatures" and toggle `xpinstall.signatures.required` to false.
+7. Install the PokefarmQ IV Checker extension on your browser. Menu > Settings > Install extension from file > select the .XPI file > Add
+8. You should now see PokefarmQ IV Checker listed under Extensions
+9. Refresh on PFQ!
 
 #### ![orion logo](/icons/logo-orion-20.png) Orion - Mobile ![ios logo](/icons/logo-apple-20.png)
 
 The Orion Mobile app allows you to load browser extensions in from a file. [Install on iOS](https://apps.apple.com/us/app/orion-browser-by-kagi/id1484498200).
 
-2. Download and install Orion (or another mobile browser that allows extensions)
-3. Enable extensions: Options icon > Settings > Advanced > Enable Chrome extensions (it may prompt you for this upon installation)
-4. More Options icon > Extensions > Add extension > Install from File
-5. Select the .XPI file
-6. You should now see PokefarmQ IV Checker listed under Extensions
-7. Refresh on PFQ!
+3. Download and install Orion (or another mobile browser that allows extensions)
+4. Enable extensions: Options icon > Settings > Advanced > Enable Chrome extensions (it may prompt you for this upon installation)
+5. More Options icon > Extensions > Add extension > Install from File
+6. Select the .XPI file
+7. You should now see PokefarmQ IV Checker listed under Extensions
+8. Refresh on PFQ!
 
 #### ![google chrome logo](/icons/logo-google-chrome-20.png) Google Chrome - Desktop 💻
 
-2. Unzip and extract contents from .XPI file
-3. Manage Extensions > Turn ON Developer Mode (top right corner)
-4. Load unpacked > Select extracted folder
-5. "Extension Loaded" means you're good to go!
-6. Refresh on PFQ!
+3. Unzip and extract contents from .XPI file
+4. Manage Extensions > Turn ON Developer Mode (top right corner)
+5. Load unpacked > Select extracted folder
+6. "Extension Loaded" means you're good to go!
+7. Refresh on PFQ!
 
 Chrome extension listing in store pending!
 
 #### ![safari logo](/icons/logo-safari-20.png) Safari - Desktop 💻
 
-2. Safari menu (top left) > Settings > Advanced > check "Show features for web developers"
-3. Switch to "Developer" tab in Settings window and ensure "Allow Unsigned Extensions" is enabled
-4. Add Temporary Extension > select .XPI file
-5. Ensure PokefarmQ IV Checker extension is enabled (checkbox ON)
-6. Enable extension for website: Edit Websites > change pokefarm.com dropdown to "Allow"
-7. Refresh on PFQ!
+3. Safari menu (top left) > Settings > Advanced > check "Show features for web developers"
+4. Switch to "Developer" tab in Settings window and ensure "Allow Unsigned Extensions" is enabled
+5. Add Temporary Extension > select .XPI file
+6. Ensure PokefarmQ IV Checker extension is enabled (checkbox ON)
+7. Enable extension for website: Edit Websites > change pokefarm.com dropdown to "Allow"
+8. Refresh on PFQ!
 
-These steps will need to be done every time a new Safari session starts since it doesn't keep temporary extensions.
+These steps may need to be done every time a new Safari session starts since it doesn't keep temporary extensions.
 
 #### ![firefox logo](/icons/logo-firefox-20.png) Firefox - Desktop 💻
 
-2. Navigate to Developer Settings for Extensions
+3. Navigate to Developer Settings for Extensions
 ```
 about:debugging#/runtime/this-firefox
 ```
 
-3. Load Temporary Add-On > Select ZIP file
-4. You should see PokefarmQ IV Checker listed under Temporary Extensions
-5. Refresh on PFQ!
+4. Load Temporary Add-On > Select ZIP file
+5. You should see PokefarmQ IV Checker listed under Temporary Extensions
+6. Refresh on PFQ!
 
-These steps will need to be done every time a new Firefox session starts since it doesn't keep temporary extensions. Firefox extension listing in store pending!
+These steps may need to be done every time a new Firefox session starts since it doesn't keep temporary extensions. Firefox extension listing in store pending!
 
 
 ## Ideas / Suggestions?

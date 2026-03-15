@@ -1,3 +1,88 @@
+window.PFQ_HTML_GENERATOR = window.PFQ_HTML_GENERATOR || {};
+
+/** White symbol shown when count is 6: check for perfect (31s), X for zero (0s). */
+const BADGE_SIX_SYMBOL = { perfect: "✓", zero: "✕" };
+
+/**
+ * Injects an IV overlay on top of a field Pokémon sprite (data-id on the span).
+ * @param {HTMLElement} fieldmonSpan - The span element representing the field Pokémon.
+ * @returns {Promise<void>} Resolves when the overlay has been injected or skipped.
+ */
+PFQ_HTML_GENERATOR.injectIVOverlay = async function (fieldmonSpan) {
+    const pokemonId = fieldmonSpan.getAttribute("data-id");
+    if (!pokemonId) return;
+    return PFQ_HTML_GENERATOR.injectIVOverlayOnSprite(fieldmonSpan, pokemonId);
+};
+
+/**
+ * Generates the IV row UI for tooltips (field/party hover).
+ * @param {number[] | null} ivs - Full IV array including total at index 6. Null for eggs.
+ * @returns {HTMLDivElement | undefined}
+ */
+PFQ_HTML_GENERATOR.generateIVTooltip = function (ivs) {
+    if (ivs == null) {
+        // console.log("[PFQ IV] This is an egg, skipping IV row generation.");
+        return;
+    }
+
+    const ivParts = getIVParts(ivs);
+    const total = ivs[6];
+    const { num0, num31 } = getIVCounts(ivParts);
+
+    const ivRow = document.createElement("div");
+    ivRow.className = "pfq-iv-block";
+
+    const label = document.createElement("b");
+    label.textContent = "IVs: ";
+    ivRow.appendChild(label);
+
+    ivParts.forEach((val, index) => {
+        const span = document.createElement("span");
+        span.textContent = val;
+        span.className = getIVClass(val);
+        ivRow.appendChild(span);
+        if (index < ivParts.length - 1) ivRow.appendChild(document.createTextNode("/"));
+    });
+
+    ivRow.appendChild(document.createTextNode("=" + total));
+    appendTooltipBadgeIfAny(ivRow, num0, "zero");
+    appendTooltipBadgeIfAny(ivRow, num31, "perfect");
+
+    return ivRow;
+};
+
+/**
+ * Injects an IV overlay on top of a field party slot's Pokémon sprite (fields page).
+ * @param {HTMLElement} slot - The div.slot.plateform element with data-id.
+ * @returns {Promise<void>} Resolves when the overlay has been injected or skipped.
+ */
+PFQ_HTML_GENERATOR.injectPartySlotIVOverlay = async function (slot) {
+    const pokemonId = slot.getAttribute("data-id");
+    if (!pokemonId || pokemonId === "hello") return;
+
+    const sprite = slot.querySelector("div.big.pokemon");
+    if (!sprite) return; // egg or empty slot
+
+    return PFQ_HTML_GENERATOR.injectIVOverlayOnSprite(sprite, pokemonId);
+};
+
+/**
+ * Injects an IV overlay on top of a sprite element when the Pokémon ID is known.
+ * Used by field (span.fieldmon) and shelter (div.pokemon) overlays.
+ * @param {HTMLElement} spriteElement - The sprite element to attach the overlay to.
+ * @param {string} pokemonId - The Pokémon ID (e.g. from data-id or data-adopt).
+ * @returns {Promise<void>} Resolves when the overlay has been injected or skipped.
+ */
+PFQ_HTML_GENERATOR.injectIVOverlayOnSprite = async function (spriteElement, pokemonId) {
+    const existing = spriteElement.querySelector(".pfq-iv-overlay");
+    if (existing) return;
+
+    const ivs = await PFQ_REPOSITORY.fetchIVs(pokemonId);
+    spriteElement.classList.add("pkmn-sprite");
+    const overlay = generateIVOverlay(ivs);
+    if (overlay) spriteElement.appendChild(overlay);
+};
+
 /**
  * Returns the first 6 IV values (HP, Atk, Def, SpA, SpD, Spe) from a full IV array.
  * @param {number[] | null | undefined} ivs - Full IV array including total at index 6.
@@ -27,9 +112,6 @@ function getIVCounts(ivParts) {
  * @param {'overlay' | 'tooltip'} context - Overlay uses positioned divs, tooltip uses inline spans.
  * @returns {HTMLElement}
  */
-/** White symbol shown when count is 6: check for perfect (31s), X for zero (0s). */
-const BADGE_SIX_SYMBOL = { perfect: "✓", zero: "✕" };
-
 function createCountBadge(count, type, context) {
     const el = document.createElement(context === "overlay" ? "div" : "span");
     const isSix = count === 6;
@@ -41,49 +123,6 @@ function createCountBadge(count, type, context) {
     }
     if (isSix) el.classList.add("pfq-iv-badge-six");
     return el;
-}
-
-/**
- * Injects an IV overlay on top of a field party slot's Pokémon sprite (fields page).
- * @param {HTMLElement} slot - The div.slot.plateform element with data-id.
- * @returns {Promise<void>} Resolves when the overlay has been injected or skipped.
- */
-async function injectPartySlotIVOverlay(slot) {
-    const pokemonId = slot.getAttribute("data-id");
-    if (!pokemonId || pokemonId === "hello") return;
-
-    const sprite = slot.querySelector("div.big.pokemon");
-    if (!sprite) return; // egg or empty slot
-
-    return injectIVOverlayOnSprite(sprite, pokemonId);
-}
-
-/**
- * Injects an IV overlay on top of a sprite element when the Pokémon ID is known.
- * Used by field (span.fieldmon) and shelter (div.pokemon) overlays.
- * @param {HTMLElement} spriteElement - The sprite element to attach the overlay to.
- * @param {string} pokemonId - The Pokémon ID (e.g. from data-id or data-adopt).
- * @returns {Promise<void>} Resolves when the overlay has been injected or skipped.
- */
-async function injectIVOverlayOnSprite(spriteElement, pokemonId) {
-    const existing = spriteElement.querySelector(".pfq-iv-overlay");
-    if (existing) return;
-
-    const ivs = await fetchIVs(pokemonId);
-    spriteElement.classList.add("pkmn-sprite");
-    const overlay = generateIVOverlay(ivs);
-    if (overlay) spriteElement.appendChild(overlay);
-}
-
-/**
- * Injects an IV overlay on top of a field Pokémon sprite (data-id on the span).
- * @param {HTMLElement} fieldmonSpan - The span element representing the field Pokémon.
- * @returns {Promise<void>} Resolves when the overlay has been injected or skipped.
- */
-async function injectIVOverlay(fieldmonSpan) {
-    const pokemonId = fieldmonSpan.getAttribute("data-id");
-    if (!pokemonId) return;
-    return injectIVOverlayOnSprite(fieldmonSpan, pokemonId);
 }
 
 /**
@@ -133,43 +172,6 @@ function appendTooltipBadgeIfAny(row, count, type) {
 }
 
 /**
- * Generates the IV row UI for tooltips (field/party hover).
- * @param {number[] | null} ivs - Full IV array including total at index 6. Null for eggs.
- * @returns {HTMLDivElement | undefined}
- */
-function generateIVTooltip(ivs) {
-    if (ivs == null) {
-        // console.log("[PFQ IV] This is an egg, skipping IV row generation.");
-        return;
-    }
-
-    const ivParts = getIVParts(ivs);
-    const total = ivs[6];
-    const { num0, num31 } = getIVCounts(ivParts);
-
-    const ivRow = document.createElement("div");
-    ivRow.className = "pfq-iv-block";
-
-    const label = document.createElement("b");
-    label.textContent = "IVs: ";
-    ivRow.appendChild(label);
-
-    ivParts.forEach((val, index) => {
-        const span = document.createElement("span");
-        span.textContent = val;
-        span.className = getIVClass(val);
-        ivRow.appendChild(span);
-        if (index < ivParts.length - 1) ivRow.appendChild(document.createTextNode("/"));
-    });
-
-    ivRow.appendChild(document.createTextNode("=" + total));
-    appendTooltipBadgeIfAny(ivRow, num0, "zero");
-    appendTooltipBadgeIfAny(ivRow, num31, "perfect");
-
-    return ivRow;
-}
-
-/**
  * Appends an IV tooltip block to the tooltip for the given trigger, if not already present.
  * Safely no-ops if IV data or tooltip cannot be found.
  * @param {Element} trigger - The hovered element that owns the tooltip.
@@ -187,7 +189,7 @@ function appendIVTooltipIfMissing(trigger, ivs) {
 
     if (tip.querySelector(".pfq-iv-block")) return; // skip, already done
 
-    tip.appendChild(generateIVTooltip(ivs));
+    tip.appendChild(PFQ_HTML_GENERATOR.generateIVTooltip(ivs));
 }
 
 /**
