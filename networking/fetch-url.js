@@ -16,7 +16,9 @@ PFQ_FETCH_URL.get = async function (path) {
  * @returns 
  */
 async function fetchJSON(url, options = {}) {
-  const apiKey = await PFQ_BROWSER_STORAGE.getApiKey();
+  // console.log(`[PFQ IV] fetchJSON:`, url);
+
+  const apiKey = PFQ_BROWSER_STORAGE.getApiKey();
   if (!apiKey) {
     console.error("[PFQ IV] pfq-api-key not set in browser storage");
     return null;

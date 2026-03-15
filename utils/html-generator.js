@@ -10,7 +10,7 @@ const BADGE_SIX_SYMBOL = { perfect: "✓", zero: "✕" };
  */
 PFQ_HTML_GENERATOR.injectIVOverlay = async function (fieldmonSpan) {
     const pokemonId = fieldmonSpan.getAttribute("data-id");
-    if (!pokemonId) return;
+    if (!pokemonId) return; // no pokemonId found
     return PFQ_HTML_GENERATOR.injectIVOverlayOnSprite(fieldmonSpan, pokemonId);
 };
 
@@ -22,7 +22,7 @@ PFQ_HTML_GENERATOR.injectIVOverlay = async function (fieldmonSpan) {
 PFQ_HTML_GENERATOR.generateIVTooltip = function (ivs) {
     if (ivs == null) {
         // console.log("[PFQ IV] This is an egg, skipping IV row generation.");
-        return;
+        return; // likely an egg, if IVs are missing
     }
 
     const ivParts = getIVParts(ivs);
@@ -44,6 +44,8 @@ PFQ_HTML_GENERATOR.generateIVTooltip = function (ivs) {
         if (index < ivParts.length - 1) ivRow.appendChild(document.createTextNode("/"));
     });
 
+    // console.log("[PFQ IV] generateIVTooltip: ivRow -", ivRow);
+
     ivRow.appendChild(document.createTextNode("=" + total));
     appendTooltipBadgeIfAny(ivRow, num0, "zero");
     appendTooltipBadgeIfAny(ivRow, num31, "perfect");
@@ -58,7 +60,7 @@ PFQ_HTML_GENERATOR.generateIVTooltip = function (ivs) {
  */
 PFQ_HTML_GENERATOR.injectPartySlotIVOverlay = async function (slot) {
     const pokemonId = slot.getAttribute("data-id");
-    if (!pokemonId || pokemonId === "hello") return;
+    if (!pokemonId || pokemonId === "hello") return; // not a real pokemon
 
     const sprite = slot.querySelector("div.big.pokemon");
     if (!sprite) return; // egg or empty slot
@@ -75,12 +77,55 @@ PFQ_HTML_GENERATOR.injectPartySlotIVOverlay = async function (slot) {
  */
 PFQ_HTML_GENERATOR.injectIVOverlayOnSprite = async function (spriteElement, pokemonId) {
     const existing = spriteElement.querySelector(".pfq-iv-overlay");
-    if (existing) return;
+    if (existing) return; // overlay already present, skip
 
+    // console.log("[PFQ IV] injectIVOverlayOnSprite:", pokemonId);
     const ivs = await PFQ_REPOSITORY.fetchIVs(pokemonId);
     spriteElement.classList.add("pkmn-sprite");
     const overlay = generateIVOverlay(ivs);
     if (overlay) spriteElement.appendChild(overlay);
+};
+
+
+/**
+ * Appends an IV tooltip block to the tooltip for the given trigger, if not already present.
+ * Safely no-ops if IV data or tooltip cannot be found.
+ * @param {Element} trigger - The hovered element that owns the tooltip.
+ * @param {number[] | null} ivs - Full IV array including total at index 6.
+ */
+PFQ_HTML_GENERATOR.appendIVTooltipIfMissing = function (trigger, ivs) {
+    if (!ivs) return; // no IV data available to display
+
+    const tip = getTooltip(trigger);
+    if (!tip) return; // tooltip not available
+
+    if (tip.querySelector(".pfq-iv-block")) return; // skip, already done
+
+    // console.log("[PFQ IV] appendIVTooltipIfMissing: ivs -", ivs);
+
+    tip.appendChild(PFQ_HTML_GENERATOR.generateIVTooltip(ivs));
+};
+
+/**
+ * Waits until a tooltip element for a field Pokémon exists in the DOM.
+ * @returns {Promise<HTMLElement>} Resolves with the tooltip element once it is available.
+ */
+PFQ_HTML_GENERATOR.waitForTooltip = function () {
+    return new Promise((resolve) => {
+        const existing = document.querySelector("div.field .tooltip_content");
+        if (existing) return resolve(existing);
+        const observer = new MutationObserver(() => {
+            const tooltip = document.querySelector(".tooltip_content");
+            if (tooltip) {
+                observer.disconnect();
+                resolve(tooltip);
+            }
+        });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+        });
+    });
 };
 
 /**
@@ -137,6 +182,8 @@ function generateIVOverlay(ivs) {
     if (!ivParts) return null;
     const { num0, num31 } = getIVCounts(ivParts);
 
+    // console.log("[PFQ IV] generateIVOverlay:", ivs);
+
     // Overlay container
     const overlay = document.createElement("div");
     overlay.className = "pfq-iv-overlay";
@@ -156,6 +203,8 @@ function generateIVOverlay(ivs) {
     ivParts.forEach((val) => barContainer.appendChild(createIVBar(val)));
     overlay.appendChild(barContainer);
 
+    // console.log("[PFQ IV] generateIVOverlay: overlay -", overlay);
+
     return overlay;
 }
 
@@ -169,49 +218,6 @@ function appendTooltipBadgeIfAny(row, count, type) {
     if (count <= 0) return;
     row.appendChild(document.createTextNode(" "));
     row.appendChild(createCountBadge(count, type, "tooltip"));
-}
-
-/**
- * Appends an IV tooltip block to the tooltip for the given trigger, if not already present.
- * Safely no-ops if IV data or tooltip cannot be found.
- * @param {Element} trigger - The hovered element that owns the tooltip.
- * @param {number[] | null} ivs - Full IV array including total at index 6.
- */
-function appendIVTooltipIfMissing(trigger, ivs) {
-    if (!ivs) {
-        return;
-    }
-
-    const tip = getTooltip(trigger);
-    if (!tip) {
-        return;
-    }
-
-    if (tip.querySelector(".pfq-iv-block")) return; // skip, already done
-
-    tip.appendChild(PFQ_HTML_GENERATOR.generateIVTooltip(ivs));
-}
-
-/**
- * Waits until a tooltip element for a field Pokémon exists in the DOM.
- * @returns {Promise<HTMLElement>} Resolves with the tooltip element once it is available.
- */
-function waitForTooltip() {
-    return new Promise((resolve) => {
-        const existing = document.querySelector("div.field .tooltip_content");
-        if (existing) return resolve(existing);
-        const observer = new MutationObserver(() => {
-            const tooltip = document.querySelector(".tooltip_content");
-            if (tooltip) {
-                observer.disconnect();
-                resolve(tooltip);
-            }
-        });
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-        });
-    });
 }
 
 /**

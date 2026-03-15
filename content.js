@@ -71,7 +71,7 @@
    */
   function fetchAndAppendIVTooltip(trigger, pokemonId) {
     PFQ_REPOSITORY.fetchIVs(pokemonId).then((ivs) => {
-      waitForTooltip().then(() => appendIVTooltipIfMissing(trigger, ivs));
+      PFQ_HTML_GENERATOR.waitForTooltip().then(() => PFQ_HTML_GENERATOR.appendIVTooltipIfMissing(trigger, ivs));
     });
   }
 

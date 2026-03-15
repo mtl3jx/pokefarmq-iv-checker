@@ -5,21 +5,21 @@ pfqApiKey = null
 PFQ_BROWSER_STORAGE.getApiKey = function () {
     if (pfqApiKey == null) {
         pfqApiKey = getStorageKey('pfq-api-key')
-        console.log("[PFQ IV] PFQ API key:", apiKey);
+        console.log("[PFQ IV] PFQ API key:", pfqApiKey);
     }
     return pfqApiKey;
 };
 
-async function getStorageKey(key) {
+function getStorageKey(key) {
     // TODO: ensure this compatibility with multiple browsers
     if (typeof localStorage !== "undefined") {
-        return localStorage.getItem('pfq-api-key');
+        return localStorage.getItem(key);
     }
     console.error("[PFQ IV] localStorage not compatible on this browser... cannot get pfq-api-key");
     return null;
 }
 
-async function setStorageKey(key, value) {
+function setStorageKey(key, value) {
     let storageAPI = null;
 
     if (typeof chrome !== "undefined" && chrome?.storage?.local) {

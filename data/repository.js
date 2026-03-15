@@ -39,12 +39,12 @@ PFQ_REPOSITORY.fetchIVs = async function (pokemonId) {
     }
 
     try {
-        const response = PFQ_SERVICE.getPokemonIVs(pokemonId);
-        if (response?.ivList == null) return; // network request failed
+        const response = await PFQ_SERVICE.getPokemonIVs(pokemonId);
+        // console.log(`[PFQ IV] fetchIVs: response`, response);
+        const ivList = response?.iv;
+        if (ivList == null) return; // network request failed
 
-        const ivList = response.ivList;
-        ivList.push(PFQ_ARRAY_UTILS.sum(ivList)); // add total to end of array
-
+        ivList.push(PFQ_ARRAY_UTILS.sum(ivList)); // add total to end of array at index 6
         ivCache.set(pokemonId, ivList); // save IVs to cache
         return ivList;
     } catch (e) {
