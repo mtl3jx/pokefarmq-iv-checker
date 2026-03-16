@@ -36,10 +36,12 @@ Supported Browsers:
 - Safari 💻
 - Firefox 💻
 
-1. Set your PFQ API Key in the Browser console with the following command. You can [get your PFQ API Key here.](https://pokefarm.com/farm#tab=5.7)
-```
-localStorage.setItem('pfq-api-key', '{{PFQ API Key}}');
-```
+1. Set your PFQ API Key in the Browser console with the following command. You can [get your PFQ API Key here.](https://pokefarm.com/farm#tab=5.7) 
+
+       localStorage.setItem('pfq-api-key', '{{PFQ API Key}}');
+
+   It's fine if it says `undefined` in the response, as long as it doesn't show an error message.
+
 
 2. Download the latest .XPI (or .ZIP depending on your browser) release file from [releases](dist/releases/). If there is only a .ZIP available, rename the file with an .XPI extension.
 
@@ -51,9 +53,8 @@ Firefox Nightly is a Developer specific version of the browser. The Nightly Mobi
 3. Download and install Firefox Nightly (or another mobile browser that allows extensions)
 4. In the browser, turn on Developer Mode. Menu > Settings > About Firefox Nightly > click the logo rapidly 5+ times until it says "Debug menu enabled"
 5. Allow unverified extensions (Done at your own risk - I'm not responsible for anything you do outside of this extension) 
-```
-about:config
-```
+
+       about:config
 
 6. Search for "signatures" and toggle `xpinstall.signatures.required` to false.
 7. Install the PokefarmQ IV Checker extension on your browser. Menu > Settings > Install extension from file > select the .XPI file > Add
@@ -95,9 +96,8 @@ These steps may need to be done every time a new Safari session starts since it 
 #### ![firefox logo](/icons/logo-firefox-20.png) Firefox - Desktop 💻
 
 3. Navigate to Developer Settings for Extensions
-```
-about:debugging#/runtime/this-firefox
-```
+
+       about:debugging#/runtime/this-firefox
 
 4. Load Temporary Add-On > Select ZIP file
 5. You should see PokefarmQ IV Checker listed under Temporary Extensions
