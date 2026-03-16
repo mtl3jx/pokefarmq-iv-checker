@@ -41,7 +41,7 @@ Supported Browsers:
 localStorage.setItem('pfq-api-key', '{{PFQ API Key}}');
 ```
 
-2. Download the latest .XPI release file from [releases](/releases/). If there is only a .ZIP available, rename the file with an .XPI extension.
+2. Download the latest .XPI (or .ZIP depending on your browser) release file from [releases](dist/releases/). If there is only a .ZIP available, rename the file with an .XPI extension.
 
 
 #### ![firefox nightly logo](/icons/logo-firefox-nightly-20.png) Firefox Nightly - Mobile ![android logo](/icons/logo-android-20.png) / Desktop 💻
@@ -124,9 +124,14 @@ Mobile and Desktop browsers are supported! You will need to install these manual
 
 IVs are cached during the browsing session to improve performance and reduce repeated page requests.
 
-Generate .XPI or .ZIP files using
+#### .XPI / .ZIP / Userscript.JS Generation
+
+Must have `npm` installed. If not, use Homebrew to install via CLI.
+This compiles everything to a single `bundle.js` file (including CSS styles) that can be viewed [here](dist/bundle.js). This can be used as a userscript.
+It also creates the [.XPI and .ZIP release files](dist/releases/).
+
 ```
-zip -r releases/pfq-1.0.1.xpi manifest.json *.js styles.css icons/* README.md privacy-policy.md
+node build.js
 ```
 
 ### [Privacy Policy](/privacy-policy.md)

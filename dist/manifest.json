@@ -16,8 +16,10 @@
         "*://*.pokefarm.com/trade*",
         "*://*.pokefarm.com/shelter*"
       ],
-      "js": ["dist/bundle.js"],
-      "css": ["src/styles.css"],
+      "js": [
+        "bundle.js"
+      ],
+      "css": [],
       "run_at": "document_idle",
       "type": "module"
     }
@@ -31,7 +33,9 @@
       "id": "pfq-iv-checker@luansing.dev",
       "strict_min_version": "140.0",
       "data_collection_permissions": {
-        "required": ["none"],
+        "required": [
+          "none"
+        ],
         "optional": []
       }
     }

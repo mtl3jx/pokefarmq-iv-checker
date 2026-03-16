@@ -1,10 +1,5 @@
 window.PFQ_FETCH_URL = window.PFQ_FETCH_URL || {};
 
-// require('dotenv').config(); // or import 'dotenv/config'; for ES6 modules
-
-// const apiKey = process.env.API_KEY;
-
-
 PFQ_FETCH_URL.get = async function (path) {
   const url = `${ENV.API_BASE_URL}${path}`;
   return fetchJSON(url);
