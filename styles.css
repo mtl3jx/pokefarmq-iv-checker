@@ -15,22 +15,28 @@ div.pfq-iv-block {
   font-weight: bold;
   color: #fff;
   border-radius: 50%;
+  outline: thin solid black;
 }
+
 .pfq-iv-block .pfq-iv-badge {
   display: inline-flex;
   vertical-align: middle;
 }
+
 .pfq-iv-block .pfq-iv-badge-zero {
   background: #e53935;
 }
-.pfq-iv-block .pfq-iv-badge-perfect {
+-iv-badge-perfect {
   background: #2e7d32;
 }
+
+/* add glow around perfect and nundo badges */
 .pfq-iv-block .pfq-iv-badge.pfq-iv-badge-six,
 .pfq-iv-overlay .iv-zero-count.pfq-iv-badge-six,
 .pfq-iv-overlay .iv-perfect-count.pfq-iv-badge-six {
   box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.9);
 }
+
 /* Badge row keeps red and green badges from overlapping on narrow sprites */
 .pfq-iv-overlay .iv-overlay-badge-row {
   position: absolute;
@@ -39,10 +45,10 @@ div.pfq-iv-block {
   right: 2px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: flex-start;
   min-width: 0;
 }
+
 .pfq-iv-overlay .iv-overlay-badge-row .iv-zero-count,
 .pfq-iv-overlay .iv-overlay-badge-row .iv-perfect-count {
   position: static;
@@ -51,11 +57,14 @@ div.pfq-iv-block {
   flex-shrink: 0;
   display: flex;
 }
+
 .pfq-iv-overlay .iv-zero-count {
   background: #e53935;
 }
+
 .pfq-iv-overlay .iv-perfect-count {
   background: #2e7d32;
+  margin-left: auto;
 }
 
 /* applied to fields */ 
@@ -83,10 +92,6 @@ div.party div.pfq-iv-block {
 .pfq-zero{
   color:#e53935; /* slightly darker, higher contrast red */
 }
-
-/* .pfq-mid{
-  color:#ffd166;
-} */
 
 /* green for perfect (works on light & dark) */
 .pfq-perfect{

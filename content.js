@@ -54,8 +54,8 @@
       const pokemonId = slot.getAttribute("data-pid");
       if (!isValidPokemonId(pokemonId)) continue;
 
-      const ivs = await fetchIVs(pokemonId);
-      const ivDiv = generateIVTooltip(ivs);
+      const ivs = await PFQ_REPOSITORY.fetchIVs(pokemonId);
+      const ivDiv = PFQ_HTML_GENERATOR.generateIVTooltip(ivs);
       if (ivDiv != null) {
         slot.querySelector("div.action").prepend(ivDiv);
       }
@@ -70,8 +70,8 @@
    * @param {string} pokemonId - The Pokémon ID (e.g. from data-id).
    */
   function fetchAndAppendIVTooltip(trigger, pokemonId) {
-    fetchIVs(pokemonId).then((ivs) => {
-      waitForTooltip().then(() => appendIVTooltipIfMissing(trigger, ivs));
+    PFQ_REPOSITORY.fetchIVs(pokemonId).then((ivs) => {
+      PFQ_HTML_GENERATOR.waitForTooltip().then(() => PFQ_HTML_GENERATOR.appendIVTooltipIfMissing(trigger, ivs));
     });
   }
 
@@ -101,7 +101,7 @@
     setupTooltipHover(
       "span.fieldmon",
       (trigger) => trigger.getAttribute("data-id"),
-      (trigger) => injectIVOverlay(trigger),
+      (trigger) => PFQ_HTML_GENERATOR.injectIVOverlay(trigger),
     );
   }
 
@@ -122,7 +122,7 @@
       "#field_party div.slot.plateform[data-id]",
     );
     partySlots.forEach((slot) => {
-      injectPartySlotIVOverlay(slot);
+      PFQ_HTML_GENERATOR.injectPartySlotIVOverlay(slot);
     });
   }
 
@@ -131,7 +131,7 @@
    */
   function setupFieldOverlay() {
     const fieldPokemon = document.querySelectorAll('div.field span.fieldmon');
-    fieldPokemon.forEach((pokemon) => injectIVOverlay(pokemon));
+    fieldPokemon.forEach((pokemon) => PFQ_HTML_GENERATOR.injectIVOverlay(pokemon));
   }
 
   // ---------------- SHELTER OVERLAY ----------------
@@ -145,7 +145,7 @@
       const tooltip = sprite.nextElementSibling;
       if (!tooltip?.classList.contains("tooltip_content")) return;
       const pokemonId = tooltip.getAttribute("data-adopt");
-      if (isValidPokemonId(pokemonId)) injectIVOverlayOnSprite(sprite, pokemonId);
+      if (isValidPokemonId(pokemonId)) PFQ_HTML_GENERATOR.injectIVOverlayOnSprite(sprite, pokemonId);
     });
   }
 
@@ -166,8 +166,8 @@
       const pokemonId = getPokemonIdFromUrl(anchor.href);
       if (!isValidPokemonId(pokemonId)) continue;
 
-      const ivs = await fetchIVs(pokemonId);
-      const ivRow = generateIVTooltip(ivs);
+      const ivs = await PFQ_REPOSITORY.fetchIVs(pokemonId);
+      const ivRow = PFQ_HTML_GENERATOR.generateIVTooltip(ivs);
       if (!ivRow) continue;
 
       pokemon.appendChild(ivRow);
@@ -185,7 +185,7 @@
       if (slot.querySelector("div.big.egg")) continue;
       const pokemonId = slot.getAttribute("data-id");
       if (!isValidPokemonId(pokemonId)) continue;
-      await fetchIVs(pokemonId);
+      await PFQ_REPOSITORY.fetchIVs(pokemonId);
     }
   }
 
@@ -198,7 +198,7 @@
       if (a.href.includes("hello")) continue;
       const pokemonId = getPokemonIdFromUrl(a.href);
       if (!isValidPokemonId(pokemonId)) continue;
-      await fetchIVs(pokemonId);
+      await PFQ_REPOSITORY.fetchIVs(pokemonId);
     }
   }
 
