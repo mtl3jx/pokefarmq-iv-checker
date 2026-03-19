@@ -62,10 +62,20 @@ PFQ_HTML_GENERATOR.injectPartySlotIVOverlay = async function (slot) {
     const pokemonId = slot.getAttribute("data-id");
     if (!pokemonId || pokemonId === "hello") return; // not a real pokemon
 
-    const sprite = slot.querySelector("div.big.pokemon");
-    if (!sprite) return; // egg or empty slot
+    const sprite = slot.querySelector("div.big.egg");
+    if (sprite != null) return; // egg
 
-    return PFQ_HTML_GENERATOR.injectIVOverlayOnSprite(sprite, pokemonId);
+    const desktopSprite = slot.querySelector("div.big.pokemon"); // desktop
+    const mobileSprite = slot.querySelector("div.small"); // mobile
+    if (desktopSprite == null && mobileSprite == null) return; // empty slot
+
+    if (desktopSprite.checkVisibility()) {
+        return PFQ_HTML_GENERATOR.injectIVOverlayOnSprite(desktopSprite, pokemonId)
+    } else if (mobileSprite.checkVisibility()) {
+        return PFQ_HTML_GENERATOR.injectIVOverlayOnSprite(mobileSprite, pokemonId)
+    } else {
+        return; // error - not possible?
+    }
 };
 
 /**
