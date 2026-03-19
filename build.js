@@ -84,8 +84,8 @@ fs.writeFileSync(path.join(DIST, "manifest.json"), JSON.stringify(distManifest, 
 console.log("dist/manifest.json generated successfully");
 
 /* ===== PACKAGE RELEASES ===== */
-const zipCmd = `cd ${DIST} && zip -r releases/pfq-${version}.zip *`;
-const xpiCmd = `cd ${DIST} && zip -r releases/pfq-${version}.xpi *`;
+const zipCmd = `cd ${DIST} && zip -r releases/pfq-${version}.zip bundle.js manifest.json`;
+const xpiCmd = `cd ${DIST} && zip -r releases/pfq-${version}.xpi bundle.js manifest.json`;
 
 execSync(zipCmd, { stdio: "inherit" });
 execSync(xpiCmd, { stdio: "inherit" });
