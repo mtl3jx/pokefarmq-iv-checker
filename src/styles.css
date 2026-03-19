@@ -38,23 +38,6 @@ div.pfq-iv-block {
   box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.9);
 }
 
-/* for QOL shelter */
-div.pkmn-sprite {
-  position: relative;
-}
-
-/* ensure pkmn sprite stays centered and iv overlay stacks on top*/
-.pkmn-sprite {
-  display: grid !important;
-  justify-items: center;
-  align-items: center;
-}
-
-/* stack pokemon sprite and iv overlay in same cell */
-.pkmn-sprite>* {
-  grid-area: 1 / 1;
-}
-
 /* Badge row keeps red and green badges from overlapping on narrow sprites */
 .pfq-iv-overlay .iv-overlay-badge-row {
   position: absolute;
@@ -119,6 +102,23 @@ div.party div.pfq-iv-block {
   /* bright enough for dark backgrounds, still clear on light */
 }
 
+/* ensure pkmn sprite stays centered and iv overlay stacks on top*/
+.pkmn-sprite {
+  display: grid !important;
+  justify-items: center;
+  align-items: center;
+}
+
+/* shelter pokemon sprite */
+div.pkmn-sprite.qolpokemongrid {
+  display: inline-grid !important;
+}
+
+/* stack pokemon sprite and iv overlay in same cell */
+.pkmn-sprite>* {
+  grid-area: 1 / 1;
+}
+
 /* Container overlay for each Pokémon sprite */
 .pfq-iv-overlay {
   top: 0;
@@ -131,14 +131,21 @@ div.party div.pfq-iv-block {
 }
 
 /* shelter with QOL */
-div.qolpokemongrid>.pfq-iv-overlay {
+div.qolpokemongrid>.pfq-iv-overlay{
   position: relative;
   width: 99px;
   height: 70px;
 }
 
+/* other users' fields with QOL */
+span.qolGridPokeSize>.pfq-iv-overlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 /* random positions in fields */
-span.pkmn-sprite>.pfq-iv-overlay {
+span.pkmn-sprite:not(.qolGridPokeSize)>.pfq-iv-overlay {
   position: absolute;
   width: 100%;
   height: 100%;
