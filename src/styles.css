@@ -26,6 +26,7 @@ div.pfq-iv-block {
 .pfq-iv-block .pfq-iv-badge-zero {
   background: #e53935;
 }
+
 -iv-badge-perfect {
   background: #2e7d32;
 }
@@ -35,6 +36,18 @@ div.pfq-iv-block {
 .pfq-iv-overlay .iv-zero-count.pfq-iv-badge-six,
 .pfq-iv-overlay .iv-perfect-count.pfq-iv-badge-six {
   box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.9);
+}
+
+/* ensure pkmn sprite stays centered and iv overlay stacks on top*/
+.qolpokemongrid {
+  display: grid !important;
+  justify-items: center;
+  align-items: center;
+}
+
+.qolpokemongrid>* {
+  grid-area: 1 / 1;
+  /* stack all children in same cell */
 }
 
 /* Badge row keeps red and green badges from overlapping on narrow sprites */
@@ -67,49 +80,53 @@ div.pfq-iv-block {
   margin-left: auto;
 }
 
-/* applied to fields */ 
-div.tooltip_content div.pfq-iv-block{
-  margin-top:6px;
-  padding-top:5px;
-  border-top:1px solid rgba(255,255,255,0.25);
+/* applied to fields */
+div.tooltip_content div.pfq-iv-block {
+  margin-top: 6px;
+  padding-top: 5px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
   font-size: 10pt;
 }
 
-/* applied to party / user profiles */ 
+/* applied to party / user profiles */
 div.party div.pfq-iv-block {
   text-align: right;
-  font-size:8pt;
+  font-size: 8pt;
   padding-bottom: 6px;
 }
 
 /* bold and underline for perfect and zero */
-.pfq-zero, .pfq-perfect{
-  font-weight:bold;
-  text-decoration:underline;
+.pfq-zero,
+.pfq-perfect {
+  font-weight: bold;
+  text-decoration: underline;
 }
 
 /* red for zero (works on light & dark) */
-.pfq-zero{
-  color:#e53935; /* slightly darker, higher contrast red */
+.pfq-zero {
+  color: #e53935;
+  /* slightly darker, higher contrast red */
 }
 
 /* green for perfect (works on light & dark) */
-.pfq-perfect{
-  color:#66bb6a; /* bright enough for dark backgrounds, still clear on light */
+.pfq-perfect {
+  color: #66bb6a;
+  /* bright enough for dark backgrounds, still clear on light */
 }
 
-.pkmn-sprite{
+.pkmn-sprite {
   position: relative;
 }
 
 /* Container overlay for each Pokémon sprite */
 .pfq-iv-overlay {
-  position: absolute;
+  position: relative;
   top: 0;
   right: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none; /* Allow clicks through overlay */
+  width: 99px;
+  height: 70px;
+  pointer-events: none;
+  /* Allow clicks through overlay */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -132,7 +149,8 @@ div.party div.pfq-iv-block {
   flex: 1;
   min-height: 2px;
   border-radius: 1px;
-  background: currentColor; /* default to text color */
+  background: currentColor;
+  /* default to text color */
   opacity: 0.6;
   transition: background 0.2s ease-in-out, opacity 0.2s ease-in-out;
 }
