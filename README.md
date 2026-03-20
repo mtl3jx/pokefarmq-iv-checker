@@ -17,6 +17,39 @@ This allows players to quickly evaluate Pokémon in the field without opening ea
 - Automatically prefetches IV data for Pokémon currently visible in the field
 - Lightweight and designed to blend with the existing PokéFarm interface
 
+<details>
+   <summary>Screenshots</summary>
+   
+Own Party
+
+<img width="651" height="619" alt="image" src="https://github.com/user-attachments/assets/7fa6e418-1006-4fd1-91b8-8ea2637df218" />
+
+Own Fields
+
+<img width="710" height="646" alt="image" src="https://github.com/user-attachments/assets/1fae2c86-278e-48c4-beca-dad4f5776ba6" />
+
+Other Users' Fields
+
+<img width="881" height="771" alt="image" src="https://github.com/user-attachments/assets/e73ce8a4-833b-4d49-819d-59e8e7040c58" />
+
+User Pages
+
+<img width="1728" height="801" alt="image" src="https://github.com/user-attachments/assets/a87bb3b7-1ab4-4845-b29b-623f7aac99be" />
+
+Trade Center
+
+<img width="930" height="590" alt="image" src="https://github.com/user-attachments/assets/c07e2ced-f9da-4e4e-8353-0257bd78f3d7" />
+
+Shelter
+
+<img width="648" height="553" alt="image" src="https://github.com/user-attachments/assets/166dd946-cfa7-4131-9cde-b3dad614e515" />
+
+Daycare
+
+<img width="1119" height="398" alt="image" src="https://github.com/user-attachments/assets/26a09412-f3f1-4b50-8e6a-c1b96526826d" />
+
+</details>
+
 ## Installation
 
 Supported Browsers:
