@@ -537,25 +537,21 @@ function getCacheKey(pokemonId) {
         // console.log("[PFQ IV] injectNetworkListener:", event);
         const { url, body } = event.data.payload;
         if (isField && url.includes("/fields/field")) {
-          const data = JSON.parse(body);
-          // console.log("[PFQ IV] Field selection on Fields detected...:", data);
+          // console.log("[PFQ IV] Field selection on Fields detected...:", JSON.parse(body));
           setupFieldOverlay();
 
         } else if (isShelter && url.includes("/shelter/load")) {
-          const data = JSON.parse(body);
-          console.log("[PFQ IV] Reload page in Shelter detected...:", data);
-          // TODO: fetch shelter IVs on reload
+          // console.log("[PFQ IV] Reload page in Shelter detected...:", JSON.parse(body));
+          setupShelterOverlay();
 
         } else if (isTrade && url.includes("/fields/pkmnlist")) {
-          const data = JSON.parse(body);
-          // console.log("[PFQ IV] Field selection in Trade Center detected...:", data);
+          // console.log("[PFQ IV] Field selection in Trade Center detected...:", JSON.parse(body));
           setupFieldOverlay();
+          setupFieldHover()
         }
         else if (isParty && url.includes("/users/load")) {
-          const data = JSON.parse(body);
-          // console.log("[PFQ IV] New user party detected...:", data);
+          // console.log("[PFQ IV] New user party detected...:", JSON.parse(body));
           getPartyIVs();
-
         }
       }
     });
