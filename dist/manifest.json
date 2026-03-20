@@ -14,7 +14,8 @@
         "*://*.pokefarm.com/party*",
         "*://*.pokefarm.com/user*",
         "*://*.pokefarm.com/trade*",
-        "*://*.pokefarm.com/shelter*"
+        "*://*.pokefarm.com/shelter*",
+        "*://*.pokefarm.com/daycare*"
       ],
       "js": [
         "bundle.js"
