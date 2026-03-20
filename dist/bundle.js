@@ -472,9 +472,9 @@ function getCacheKey(pokemonId) {
     return;
   }
 
-  const { isField, isParty, isTrade, isShelter } = getPageContext(window.location.pathname);
-  if (!isField && !isParty && !isTrade && !isShelter) {
-    console.log("[PFQ IV] Not on a Field, Party, User, Trade, or Shelter page, script will not run.");
+  const { isField, isParty, isTrade, isShelter, isDaycare } = getPageContext(window.location.pathname);
+  if (!isField && !isParty && !isTrade && !isShelter && !isDaycare) {
+    console.log("[PFQ IV] Not on a supported page, script will not run.");
     return;
   }
 
@@ -504,6 +504,11 @@ function getCacheKey(pokemonId) {
     }
     if (isShelter) {
       setupShelterOverlay();
+    }
+    if (isDaycare) {
+      getPartyIVs();
+      setupFieldOverlay();
+      setupFieldHover();
     }
     injectNetworkInterceptor();
     injectNetworkListener();
@@ -537,21 +542,31 @@ function getCacheKey(pokemonId) {
         // console.log("[PFQ IV] injectNetworkListener:", event);
         const { url, body } = event.data.payload;
         if (isField && url.includes("/fields/field")) {
-          // console.log("[PFQ IV] Field selection on Fields detected...:", JSON.parse(body));
+          // console.log("[PFQ IV] Field change on Fields detected...:", JSON.parse(body));
           setupFieldOverlay();
+        } else if (isDaycare) {
+          if (url.includes("/daycare/add") || url.includes("/daycare/remove")) {
+            // console.log("[PFQ IV] Daycare pokemon changed...:", JSON.parse(body));
+            getPartyIVs();
+
+          } else if (url.includes("/fields/pkmnlist")) {
+            // console.log("[PFQ IV] Field change in Daycare detected...:", JSON.parse(body));
+            setupFieldOverlay();
+            setupFieldHover();
+          }
+
+        } else if (isParty && url.includes("/users/load")) {
+          // console.log("[PFQ IV] New user party detected...:", JSON.parse(body));
+          getPartyIVs();
 
         } else if (isShelter && url.includes("/shelter/load")) {
           // console.log("[PFQ IV] Reload page in Shelter detected...:", JSON.parse(body));
           setupShelterOverlay();
 
         } else if (isTrade && url.includes("/fields/pkmnlist")) {
-          // console.log("[PFQ IV] Field selection in Trade Center detected...:", JSON.parse(body));
+          // console.log("[PFQ IV] Field change in Trade Center detected...:", JSON.parse(body));
           setupFieldOverlay();
           setupFieldHover()
-        }
-        else if (isParty && url.includes("/users/load")) {
-          // console.log("[PFQ IV] New user party detected...:", JSON.parse(body));
-          getPartyIVs();
         }
       }
     });
@@ -746,6 +761,7 @@ function getCacheKey(pokemonId) {
       isParty: path.startsWith("/party") || path.startsWith("/user"),
       isTrade: path.startsWith("/trade"),
       isShelter: path.startsWith("/shelter"),
+      isDaycare: path.startsWith("/daycare"),
     };
   }
 

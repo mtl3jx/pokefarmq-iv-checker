@@ -14,18 +14,27 @@
         "*://*.pokefarm.com/party*",
         "*://*.pokefarm.com/user*",
         "*://*.pokefarm.com/trade*",
-        "*://*.pokefarm.com/shelter*"
+        "*://*.pokefarm.com/shelter*",
+        "*://*.pokefarm.com/daycare*"
       ],
-      "js": ["dist/bundle.js"],
-      "css": ["src/styles.css"],
+      "js": [
+        "dist/bundle.js"
+      ],
+      "css": [
+        "src/styles.css"
+      ],
       "run_at": "document_idle",
       "type": "module"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["network-interceptor.js"],
-      "matches": ["*://*.pokefarm.com/*"]
+      "resources": [
+        "network-interceptor.js"
+      ],
+      "matches": [
+        "*://*.pokefarm.com/*"
+      ]
     }
   ],
   "icons": {
@@ -37,7 +46,9 @@
       "id": "pfq-iv-checker@luansing.dev",
       "strict_min_version": "140.0",
       "data_collection_permissions": {
-        "required": ["none"],
+        "required": [
+          "none"
+        ],
         "optional": []
       }
     }
