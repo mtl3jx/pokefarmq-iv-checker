@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "PokéFarm Q IV Checker",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "View Pokémon IV stats directly in PokéFarm Q field tooltips with perfect IV highlights.",
   "permissions": [],
   "host_permissions": [
@@ -20,6 +20,12 @@
       "css": ["src/styles.css"],
       "run_at": "document_idle",
       "type": "module"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["network-interceptor.js"],
+      "matches": ["*://*.pokefarm.com/*"]
     }
   ],
   "icons": {

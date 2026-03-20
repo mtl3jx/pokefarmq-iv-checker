@@ -69,9 +69,51 @@ jsFiles.forEach(file => {
 fs.writeFileSync(path.join(DIST, "bundle.js"), bundle);
 console.log("bundle.js created in dist/");
 
+/* bundle the network-interceptor separately */
+const src = path.resolve("network-interceptor.js");
+const dest = path.resolve("dist/network-interceptor.js");
+
+fs.copyFileSync(src, dest);
+
+console.log("Copied network-interceptor.js");
+
 /* ===== AUTO-GENERATE MANIFEST FOR DIST ===== */
+
+/* normalize resource paths (strip src/) */
+function normalizeResourcePath(p) {
+  return p.replace(/^src\/networking\//, "");
+}
+
+/* fix web_accessible_resources */
+function fixWebAccessibleResources(resources = []) {
+  const updated = resources.map(entry => ({
+    ...entry,
+    resources: (entry.resources || []).map(normalizeResourcePath)
+  }));
+
+  // ensure interceptor is included
+  const hasInterceptor = updated.some(entry =>
+    entry.resources.includes("network-interceptor.js")
+  );
+
+  if (!hasInterceptor) {
+    updated.push({
+      resources: ["network-interceptor.js"],
+      matches: ["*://*.pokefarm.com/*"]
+    });
+  }
+
+  return updated;
+}
+
 const distManifest = {
   ...rootManifest,
+
+  /* fix web_accessible_resources paths automatically */
+  web_accessible_resources: fixWebAccessibleResources(
+    rootManifest.web_accessible_resources
+  ),
+
   content_scripts: rootManifest.content_scripts.map(cs => ({
     ...cs,
     js: ["bundle.js"], // relative to dist/
@@ -80,12 +122,15 @@ const distManifest = {
 };
 
 /* write manifest.json to dist */
-fs.writeFileSync(path.join(DIST, "manifest.json"), JSON.stringify(distManifest, null, 2));
+fs.writeFileSync(
+  path.join(DIST, "manifest.json"),
+  JSON.stringify(distManifest, null, 2)
+);
 console.log("dist/manifest.json generated successfully");
 
 /* ===== PACKAGE RELEASES ===== */
-const zipCmd = `cd ${DIST} && zip -r releases/pfq-${version}.zip bundle.js manifest.json`;
-const xpiCmd = `cd ${DIST} && zip -r releases/pfq-${version}.xpi bundle.js manifest.json`;
+const zipCmd = `cd ${DIST} && zip -r releases/pfq-${version}.zip bundle.js manifest.json network-interceptor.js`;
+const xpiCmd = `cd ${DIST} && zip -r releases/pfq-${version}.xpi bundle.js manifest.json network-interceptor.js`;
 
 execSync(zipCmd, { stdio: "inherit" });
 execSync(xpiCmd, { stdio: "inherit" });
