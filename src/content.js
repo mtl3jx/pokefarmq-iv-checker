@@ -35,11 +35,66 @@
       setupFieldHover();
     }
     if (isTrade) {
+      setupTradeSelectionOverlay();
       injectTradeCollectionIVs();
     }
     if (isShelter) {
       setupShelterOverlay();
     }
+    injectNetworkInterceptor();
+    injectNetworkListener();
+  }
+
+  /**
+   *  Injects a Network Interceptor to detect any native REST calls made by PFQ.
+   */
+  function injectNetworkInterceptor() {
+    const script = document.createElement("script");
+
+    script.src = chrome.runtime.getURL("network-interceptor.js");
+
+    script.onload = () => {
+      console.log("[PFQ IV] injectNetworkInterceptor()");
+      script.remove();
+    };
+
+    (document.head || document.documentElement).appendChild(script);
+  }
+
+  /**
+   * Observes when a certain REST network call is made (ex. user changed fields),
+   * and run some custom logic. Currently supported on user pages, fields, and trade center.
+   */
+  function injectNetworkListener() {
+    window.addEventListener("message", (event) => {
+      if (event.source !== window) return;
+
+      if (event.data?.type === "NETWORK_RESPONSE") {
+        // console.log("[PFQ IV] injectNetworkListener:", event);
+        const { url, body } = event.data.payload;
+        if (isField && url.includes("/fields/field")) {
+          const data = JSON.parse(body);
+          // console.log("[PFQ IV] Field selection on Fields detected...:", data);
+          setupFieldOverlay();
+
+        } else if (isShelter && url.includes("/shelter/load")) {
+          const data = JSON.parse(body);
+          console.log("[PFQ IV] Reload page in Shelter detected...:", data);
+          // TODO: fetch shelter IVs on reload
+
+        } else if (isTrade && url.includes("/fields/pkmnlist")) {
+          const data = JSON.parse(body);
+          // console.log("[PFQ IV] Field selection in Trade Center detected...:", data);
+          setupFieldOverlay();
+        }
+        else if (isParty && url.includes("/users/load")) {
+          const data = JSON.parse(body);
+          // console.log("[PFQ IV] New user party detected...:", data);
+          getPartyIVs();
+
+        }
+      }
+    });
   }
 
   // ---------------- PARTY WIDE / INJECTION ----------------
@@ -50,7 +105,9 @@
   async function getPartyIVs() {
     const party = document.querySelectorAll("div.party.wide > div[data-pid]");
     for (const slot of party) {
-      if (slot.querySelector(".pfq-iv-block")) continue;
+      if (slot.querySelector(".pfq-iv-block")) continue; // already shown
+      if (slot.querySelector('div.name a.summarylink').innerText.includes('Egg')) continue; // this is an egg
+
       const pokemonId = slot.getAttribute("data-pid");
       if (!isValidPokemonId(pokemonId)) continue;
 
@@ -142,6 +199,7 @@
   function setupShelterOverlay() {
     const sprites = document.querySelectorAll("div#shelter div.pokemon");
     sprites.forEach((sprite) => {
+      if (sprite.getAttribute("data-stage").includes('egg')) return; // skip eggs
       const tooltip = sprite.nextElementSibling;
       if (!tooltip?.classList.contains("tooltip_content")) return;
       const pokemonId = tooltip.getAttribute("data-adopt");
@@ -150,6 +208,19 @@
   }
 
   // ---------------- TRADE COLLECTION IV INJECTION ----------------
+
+  /**
+ * Adds IV overlays to Pokemon sprites when selecting what to trade.
+ */
+  function setupTradeSelectionOverlay() {
+    const sprites = document.querySelectorAll("div.field span.fieldmon");
+    sprites.forEach((sprite) => {
+      const tooltip = sprite.nextElementSibling;
+      if (!tooltip?.classList.contains("tooltip_content")) return;
+      const pokemonId = tooltip.getAttribute("data-id");
+      if (isValidPokemonId(pokemonId)) PFQ_HTML_GENERATOR.injectIVOverlayOnSprite(sprite, pokemonId);
+    });
+  }
 
   /**
    * On trade page load: finds each .fieldmontip, fetches IVs from the summary URL,
