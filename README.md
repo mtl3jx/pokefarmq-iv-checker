@@ -32,7 +32,7 @@ Supported Browsers:
 
        localStorage.setItem('pfq-api-key', 'YOUR-PFQ-API-KEY');
 
-   It's fine if it says `undefined` in the response, as long as it doesn't show an error message.
+   It's fine if it says `undefined` in the response, as long as it doesn't show an error message. If it won't let you paste directly into the browser Console tab, first type `allow pasting` then hit Enter, then try pasting again.
 
    ~OR~
    
@@ -52,13 +52,13 @@ Firefox Nightly is a Developer specific version of the browser. The Nightly Mobi
 
 3. Download and install Firefox Nightly (or another mobile browser that allows extensions)
 4. In the browser, turn on Developer Mode. Menu > Settings > About Firefox Nightly > click the logo rapidly 5+ times until it says "Debug menu enabled"
-5. Allow unverified extensions (Done at your own risk - I'm not responsible for anything you do outside of this extension) 
+5. Allow unverified extensions by navigating to the following URL. (Done at your own risk - I'm not responsible for anything you do outside of this extension) 
 
        about:config
 
 6. Search for "signatures" and toggle `xpinstall.signatures.required` to false.
 7. Install the PokefarmQ IV Checker extension on your browser. Menu > Settings > Install extension from file > select the .XPI file > Add
-8. You should now see PokefarmQ IV Checker listed under Extensions, you may need to enable it on the PFQ site. Menu > Extensions > PokefarmQ IV Checker > Permissions > toggle ON for the PFQ websites.
+8. You should now see PokefarmQ IV Checker listed under Extensions, but you may still need to enable it on the PFQ site. Menu > Extensions > PokefarmQ IV Checker > Permissions > toggle ON for the PFQ websites.
 9. Refresh on PFQ!
 
 #### ![orion logo](/icons/logo-orion-20.png) Orion - Mobile ![ios logo](/icons/logo-apple-20.png)
@@ -74,7 +74,7 @@ The Orion Mobile app allows you to load browser extensions in from a file. [Inst
 
 #### ![google chrome logo](/icons/logo-google-chrome-20.png) Google Chrome - Desktop 💻
 
-3. Unzip and extract contents from `.XPI` file
+3. Unzip and extract contents from `.XPI` file. (If on Windows, you may need to use the contents of an unzipped `.ZIP` file instead.)
 4. Manage Extensions > Turn ON Developer Mode (top right corner)
 5. Load unpacked > Select extracted folder
 6. "Extension Loaded" means you're good to go!

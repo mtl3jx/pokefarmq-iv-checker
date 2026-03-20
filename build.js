@@ -69,13 +69,16 @@ jsFiles.forEach(file => {
 fs.writeFileSync(path.join(DIST, "bundle.js"), bundle);
 console.log("bundle.js created in dist/");
 
-/* bundle the network-interceptor separately */
-const src = path.resolve("network-interceptor.js");
-const dest = path.resolve("dist/network-interceptor.js");
+/* ===== bundle the network-interceptor separately ===== */
+const srcInterceptor = path.resolve("src/networking/network-interceptor.js");
+const destInterceptor = path.resolve("dist/network-interceptor.js");
 
-fs.copyFileSync(src, dest);
-
-console.log("Copied network-interceptor.js");
+if (fs.existsSync(srcInterceptor)) {
+  fs.copyFileSync(srcInterceptor, destInterceptor);
+  console.log("Copied network-interceptor.js");
+} else {
+  console.warn("network-interceptor.js not found in src/networking/");
+}
 
 /* ===== AUTO-GENERATE MANIFEST FOR DIST ===== */
 
@@ -106,6 +109,49 @@ function fixWebAccessibleResources(resources = []) {
   return updated;
 }
 
+/* ===== COPY ICONS (SAFE + RESTRICTED) ===== */
+function copyIconsFromManifest(manifest) {
+  const iconPaths = new Set();
+
+  const collect = (icons) => {
+    if (!icons) return;
+    Object.values(icons).forEach(file => {
+      if (file && file.startsWith("icons/")) {
+        iconPaths.add(file);
+      }
+    });
+  };
+
+  collect(manifest.icons);
+  collect(manifest.action?.default_icon);
+
+  if (manifest.web_accessible_resources) {
+    manifest.web_accessible_resources.forEach(entry => {
+      (entry.resources || []).forEach(res => {
+        if (res && res.startsWith("icons/")) {
+          iconPaths.add(res);
+        }
+      });
+    });
+  }
+
+  iconPaths.forEach(iconPath => {
+    // 🔥 IMPORTANT: resolve from project ROOT, not SRC
+    const srcPath = path.join(".", iconPath);
+    const destPath = path.join(DIST, iconPath);
+
+    if (!fs.existsSync(srcPath)) {
+      console.warn(`Icon not found: ${iconPath}`);
+      return;
+    }
+
+    fs.mkdirSync(path.dirname(destPath), { recursive: true });
+    fs.copyFileSync(srcPath, destPath);
+
+    console.log(`Copied icon: ${iconPath}`);
+  });
+}
+
 const distManifest = {
   ...rootManifest,
 
@@ -128,9 +174,12 @@ fs.writeFileSync(
 );
 console.log("dist/manifest.json generated successfully");
 
+/* COPY ICONS AFTER MANIFEST */
+copyIconsFromManifest(distManifest);
+
 /* ===== PACKAGE RELEASES ===== */
-const zipCmd = `cd ${DIST} && zip -r releases/pfq-${version}.zip bundle.js manifest.json network-interceptor.js`;
-const xpiCmd = `cd ${DIST} && zip -r releases/pfq-${version}.xpi bundle.js manifest.json network-interceptor.js`;
+const zipCmd = `cd ${DIST} && zip -r releases/pfq-${version}.zip bundle.js manifest.json network-interceptor.js icons`;
+const xpiCmd = `cd ${DIST} && zip -r releases/pfq-${version}.xpi bundle.js manifest.json network-interceptor.js icons`;
 
 execSync(zipCmd, { stdio: "inherit" });
 execSync(xpiCmd, { stdio: "inherit" });
