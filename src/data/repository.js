@@ -59,5 +59,5 @@ PFQ_REPOSITORY.fetchIVs = async function (pokemonId) {
  * @returns {string} - The generated cache key. (ex. pfq-pokemon-id-J6QPB6)
  */
 function getCacheKey(pokemonId) {
-    return PFQ_POKEMON_ID_KEY_PREFIX + pokemonId;
+    return `${PFQ_POKEMON_ID_KEY_PREFIX}-${pokemonId}`;
 }
