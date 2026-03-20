@@ -26,24 +26,13 @@ Supported Browsers:
 - Safari 💻
 - Firefox 💻
 
-1. Set your PFQ API Key in the browser Console. You can [get your PFQ API Key here.](https://pokefarm.com/farm#tab=5.7) 
+1. Set your PFQ API Key by enabling the `lib-api` userscript on PFQ. If you already have QoL enabled and working, then this is probably already complete. Farm > Options > Userscripts > expand Library scripts > turn ON `lib-api`. Then refresh the PFQ page and you'll see a button to enter your API Key on the toolbar. You can [get your PFQ API Key on the Farm > Options > Others tab.](https://pokefarm.com/farm#tab=5.7) 
 
-   __(Desktop)__: To open browser Console (right click > Inspect). Paste the following command then hit 'Enter'.
+   ![img](/icons/pfq-api-key.png)
 
-       localStorage.setItem('pfq-api-key', 'YOUR-PFQ-API-KEY');
+   If you change your PFQ API key (by revoking and generating a new one) you will need to clear browser cookies and then re-enable the `lib-api` in order to re-enter the new API Key.
 
-   It's fine if it says `undefined` in the response, as long as it doesn't show an error message. If it won't let you paste directly into the browser Console tab, first type `allow pasting` then hit Enter, then try pasting again.
-
-   ~OR~
-   
-   __(Mobile)__: Create a Bookmark that has this script as its URL. Name it something easy to remember. (ex. "Set PFQ API Key")
-   
-          javascript:(function(){localStorage.setItem('pfq-api-key','YOUR-PFQ-API-KEY') });
-
-   Then, on a PFQ page start typing the name of your Bookmark in the browser URL. When the bookmark suggestion pops up, click it in order to execute that Javascript. Nothing will be displayed, but you should remain on the same page.
-
-
-3. Download the latest `.XPI` (or `.ZIP` depending on your browser) release file from [releases](dist/releases/). If there is only a `.ZIP` available, rename the file with an `.XPI` extension.
+2. Download the latest `.XPI` (or `.ZIP` depending on your browser) release file from [releases](dist/releases/). If there is only a `.ZIP` available, rename the file with an `.XPI` extension.
 
 
 #### ![firefox nightly logo](/icons/logo-firefox-nightly-20.png) Firefox Nightly - Mobile ![android logo](/icons/logo-android-20.png) / Desktop 💻

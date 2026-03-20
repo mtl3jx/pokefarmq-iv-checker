@@ -29,52 +29,48 @@ PFQ_ARRAY_UTILS.sum = function(numbers) {
 
 /* ===== utils/browser-storage.js ===== */
 window.PFQ_BROWSER_STORAGE = window.PFQ_BROWSER_STORAGE || {};
+window.PFQ_INVALID_API_KEY = window.PFQ_INVALID_API_KEY || "PFQ_INVALID_API_KEY";
 
-pfqApiKey = null
+// Cached state
+window.pfqApiKey = window.pfqApiKey ?? null;
 
-PFQ_BROWSER_STORAGE.getApiKey = function () {
-    if (pfqApiKey == null) {
-        pfqApiKey = getStorageKey('pfq-api-key')
-        console.log("[PFQ IV] PFQ API key:", pfqApiKey);
+PFQ_BROWSER_STORAGE.getApiKey = async function () {
+    // console.log("[PFQ IV] Checking cached API key:", window.pfqApiKey);
+
+    // Already known invalid
+    if (window.pfqApiKey === window.PFQ_INVALID_API_KEY) return null;
+
+    // Already cached valid key
+    if (window.pfqApiKey) return window.pfqApiKey;
+
+    const tempKey = getPFQApiKey('.userscript-api-key');
+    // console.log("[PFQ IV] Found API key from userscript:", tempKey);
+
+    if (!tempKey) { // no key found from localstorage - user needs to set up lib-api with api key 
+        window.pfqApiKey = window.PFQ_INVALID_API_KEY;
+        return null;
     }
-    return pfqApiKey;
+
+    window.pfqApiKey = tempKey;
+    return tempKey;
 };
 
-function getStorageKey(key) {
-    // TODO: ensure this compatibility with multiple browsers
-    if (typeof localStorage !== "undefined") {
-        return localStorage.getItem(key);
+/* Finds and returns the PFQ API Key that is already stored by QOL. */
+function getPFQApiKey(partialKey) {
+    // Iterate over all keys in localStorage
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+
+        // Check if the current key includes the partial string
+        if (key && key.includes(partialKey)) {
+            // If it matches, retrieve the value using getItem()
+            const value = localStorage.getItem(key);
+            return value;
+        }
     }
-    console.error("[PFQ IV] localStorage not compatible on this browser... cannot get pfq-api-key");
+
     return null;
 }
-
-function setStorageKey(key, value) {
-    let storageAPI = null;
-
-    if (typeof chrome !== "undefined" && chrome?.storage?.local) {
-        storageAPI = chrome.storage;
-    } else if (typeof browser !== "undefined" && browser?.storage?.local) {
-        storageAPI = browser.storage;
-    } else {
-        throw new Error("No compatible storage API found");
-    }
-
-    const data = {};
-    data[key] = value;
-
-    return new Promise((resolve, reject) => {
-        if (storageAPI.set.length === 2) {
-            storageAPI.local.set(data, () => {
-                if (chrome.runtime?.lastError) return reject(chrome.runtime.lastError);
-                resolve();
-            });
-        } else {
-            storageAPI.local.set(data).then(() => resolve()).catch(reject);
-        }
-    });
-}
-
 
 /* ===== utils/html-generator.js ===== */
 window.PFQ_HTML_GENERATOR = window.PFQ_HTML_GENERATOR || {};
@@ -351,38 +347,44 @@ function getIVClass(value) {
 /* ===== networking/fetch-url.js ===== */
 window.PFQ_FETCH_URL = window.PFQ_FETCH_URL || {};
 
-PFQ_FETCH_URL.get = async function (path) {
+PFQ_FETCH_URL.get = async function (path, options = {}) {
   const url = `${ENV.API_BASE_URL}${path}`;
-  return fetchJSON(url);
+  return fetchJSON(url, options);
 };
 
-/**
- * @param {*} url endpoint path (ex. /pokemon/iv)
- * @param {*} options 
- * @returns 
- */
 async function fetchJSON(url, options = {}) {
   // console.log(`[PFQ IV] fetchJSON:`, url);
 
-  const apiKey = PFQ_BROWSER_STORAGE.getApiKey();
-  if (!apiKey) {
-    console.error("[PFQ IV] pfq-api-key not set in browser storage");
+  const apiKey = await PFQ_BROWSER_STORAGE.getApiKey();
+  if (apiKey == null) {
+    // console.log("[PFQ IV] pfq-api-key not set in browser storage");
     return null;
   }
 
-  const response = await fetch(url, {
-    options: options,
-    headers: {
-      'x-api-key': apiKey,
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+        "x-api-key": apiKey,
+      },
+    });
+
+    // 🔥 First 403 disables all future requests
+    if (response.status === 403) {
+      console.warn("[PFQ IV] API key invalidated (403). Disabling all future requests.");
+      window.pfqApiKey = window.PFQ_INVALID_API_KEY;
+      return null;
+    } else if (!response.ok) {
+      console.error(`[PFQ IV] Request failed: ${response.status} ${url}`, response.error);
+      return null;
     }
-  });
 
-  if (!response.ok) {
-    // console.log(`[PFQ IV] Request failed: ${response.status} ${url}`, response.error);
+    return await response.json();
+  } catch (err) {
+    console.error("[PFQ IV] fetch error:", err);
     return null;
   }
-
-  return response.json();
 }
 
 
@@ -394,6 +396,21 @@ PFQ_SERVICE.getPokemonIVs = async function (pokemonId) {
     return PFQ_FETCH_URL.get(`/pokemon/iv?shortlink=${pokemonId}`);
 };
 
+PFQ_SERVICE.validateApiKey = async function (apiKey) {
+    // console.log("[PFQ IV] Fetching IVs for Pokémon:", pokemonId);
+    try {
+        const response = await fetch(`${ENV.API_BASE_URL}/user/me`, {
+            headers: {
+                "x-api-key": apiKey,
+            },
+        });
+
+        return response;
+    } catch (err) {
+        console.error("[PFQ IV] validateApiKey failed:", err);
+        return { ok: false };
+    }
+};
 
 /* ===== data/repository.js ===== */
 window.PFQ_REPOSITORY = window.PFQ_REPOSITORY || {};
