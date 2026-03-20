@@ -1,46 +1,43 @@
 window.PFQ_BROWSER_STORAGE = window.PFQ_BROWSER_STORAGE || {};
+window.PFQ_INVALID_API_KEY = window.PFQ_INVALID_API_KEY || "PFQ_INVALID_API_KEY";
 
-pfqApiKey = null
+// Cached state
+window.pfqApiKey = window.pfqApiKey ?? null;
 
-PFQ_BROWSER_STORAGE.getApiKey = function () {
-    if (pfqApiKey == null) {
-        pfqApiKey = getStorageKey('pfq-api-key')
-        console.log("[PFQ IV] PFQ API key:", pfqApiKey);
+PFQ_BROWSER_STORAGE.getApiKey = async function () {
+    // console.log("[PFQ IV] Checking cached API key:", window.pfqApiKey);
+
+    // Already known invalid
+    if (window.pfqApiKey === window.PFQ_INVALID_API_KEY) return null;
+
+    // Already cached valid key
+    if (window.pfqApiKey) return window.pfqApiKey;
+
+    const tempKey = getPFQApiKey('.userscript-api-key');
+    // console.log("[PFQ IV] Found API key from userscript:", tempKey);
+
+    if (!tempKey) { // no key found from localstorage - user needs to set up lib-api with api key 
+        window.pfqApiKey = window.PFQ_INVALID_API_KEY;
+        return null;
     }
-    return pfqApiKey;
+
+    window.pfqApiKey = tempKey;
+    return tempKey;
 };
 
-function getStorageKey(key) {
-    // TODO: ensure this compatibility with multiple browsers
-    if (typeof localStorage !== "undefined") {
-        return localStorage.getItem(key);
-    }
-    console.error("[PFQ IV] localStorage not compatible on this browser... cannot get pfq-api-key");
-    return null;
-}
+/* Finds and returns the PFQ API Key that is already stored by QOL. */
+function getPFQApiKey(partialKey) {
+    // Iterate over all keys in localStorage
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
 
-function setStorageKey(key, value) {
-    let storageAPI = null;
-
-    if (typeof chrome !== "undefined" && chrome?.storage?.local) {
-        storageAPI = chrome.storage;
-    } else if (typeof browser !== "undefined" && browser?.storage?.local) {
-        storageAPI = browser.storage;
-    } else {
-        throw new Error("No compatible storage API found");
-    }
-
-    const data = {};
-    data[key] = value;
-
-    return new Promise((resolve, reject) => {
-        if (storageAPI.set.length === 2) {
-            storageAPI.local.set(data, () => {
-                if (chrome.runtime?.lastError) return reject(chrome.runtime.lastError);
-                resolve();
-            });
-        } else {
-            storageAPI.local.set(data).then(() => resolve()).catch(reject);
+        // Check if the current key includes the partial string
+        if (key && key.includes(partialKey)) {
+            // If it matches, retrieve the value using getItem()
+            const value = localStorage.getItem(key);
+            return value;
         }
-    });
+    }
+
+    return null;
 }

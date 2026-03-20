@@ -1,35 +1,41 @@
 window.PFQ_FETCH_URL = window.PFQ_FETCH_URL || {};
 
-PFQ_FETCH_URL.get = async function (path) {
+PFQ_FETCH_URL.get = async function (path, options = {}) {
   const url = `${ENV.API_BASE_URL}${path}`;
-  return fetchJSON(url);
+  return fetchJSON(url, options);
 };
 
-/**
- * @param {*} url endpoint path (ex. /pokemon/iv)
- * @param {*} options 
- * @returns 
- */
 async function fetchJSON(url, options = {}) {
   // console.log(`[PFQ IV] fetchJSON:`, url);
 
-  const apiKey = PFQ_BROWSER_STORAGE.getApiKey();
-  if (!apiKey) {
-    console.error("[PFQ IV] pfq-api-key not set in browser storage");
+  const apiKey = await PFQ_BROWSER_STORAGE.getApiKey();
+  if (apiKey == null) {
+    // console.log("[PFQ IV] pfq-api-key not set in browser storage");
     return null;
   }
 
-  const response = await fetch(url, {
-    options: options,
-    headers: {
-      'x-api-key': apiKey,
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+        "x-api-key": apiKey,
+      },
+    });
+
+    // 🔥 First 403 disables all future requests
+    if (response.status === 403) {
+      console.warn("[PFQ IV] API key invalidated (403). Disabling all future requests.");
+      window.pfqApiKey = window.PFQ_INVALID_API_KEY;
+      return null;
+    } else if (!response.ok) {
+      console.error(`[PFQ IV] Request failed: ${response.status} ${url}`, response.error);
+      return null;
     }
-  });
 
-  if (!response.ok) {
-    // console.log(`[PFQ IV] Request failed: ${response.status} ${url}`, response.error);
+    return await response.json();
+  } catch (err) {
+    console.error("[PFQ IV] fetch error:", err);
     return null;
   }
-
-  return response.json();
 }
