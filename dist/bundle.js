@@ -526,8 +526,8 @@ function getCacheKey(pokemonId) {
   }
 
   /**
-   * Observes when a certain REST network call is made (ex. user changed fields),
-   * and run some custom logic. Currently supported on user pages, fields, and trade center.
+   * Observes when a certain REST network call is made (ex. user changed fields).
+   * Currently supported on user pages, fields, shelter, and trade center.
    */
   function injectNetworkListener() {
     window.addEventListener("message", (event) => {
