@@ -17,16 +17,6 @@ This allows players to quickly evaluate Pokémon in the field without opening ea
 - Automatically prefetches IV data for Pokémon currently visible in the field
 - Lightweight and designed to blend with the existing PokéFarm interface
 
-<details>
-  <summary>Screenshots</summary>
-  
-  ![6IVs](https://github.com/user-attachments/assets/416d4850-96dd-4b7c-be82-8a19901632e8)
-  
-  ![party IVs](https://github.com/user-attachments/assets/ca3b9fa0-cadf-4956-ab9b-e6a72fed2202)
-  
-  ![1 IV](https://github.com/user-attachments/assets/71d106d0-64f5-4d70-9712-740ef8d8a4ff)
-</details>
-
 ## Installation
 
 Supported Browsers:
@@ -40,7 +30,7 @@ Supported Browsers:
 
    __(Desktop)__: To open browser Console (right click > Inspect). Paste the following command then hit 'Enter'.
 
-       localStorage.setItem('pfq-api-key', '{{YOUR-PFQ-API-KEY}}');
+       localStorage.setItem('pfq-api-key', 'YOUR-PFQ-API-KEY');
 
    It's fine if it says `undefined` in the response, as long as it doesn't show an error message.
 
@@ -48,12 +38,12 @@ Supported Browsers:
    
    __(Mobile)__: Create a Bookmark that has this script as its URL. Name it something easy to remember. (ex. "Set PFQ API Key")
    
-          javascript:(function(){localStorage.setItem('pfq-api-key','{{YOUR-PFQ-API-KEY}}') });
+          javascript:(function(){localStorage.setItem('pfq-api-key','YOUR-PFQ-API-KEY') });
 
    Then, on a PFQ page start typing the name of your Bookmark in the browser URL. When the bookmark suggestion pops up, click it in order to execute that Javascript. Nothing will be displayed, but you should remain on the same page.
 
 
-2. Download the latest `.XPI` (or `.ZIP` depending on your browser) release file from [releases](dist/releases/). If there is only a `.ZIP` available, rename the file with an `.XPI` extension.
+3. Download the latest `.XPI` (or `.ZIP` depending on your browser) release file from [releases](dist/releases/). If there is only a `.ZIP` available, rename the file with an `.XPI` extension.
 
 
 #### ![firefox nightly logo](/icons/logo-firefox-nightly-20.png) Firefox Nightly - Mobile ![android logo](/icons/logo-android-20.png) / Desktop 💻
@@ -68,7 +58,7 @@ Firefox Nightly is a Developer specific version of the browser. The Nightly Mobi
 
 6. Search for "signatures" and toggle `xpinstall.signatures.required` to false.
 7. Install the PokefarmQ IV Checker extension on your browser. Menu > Settings > Install extension from file > select the .XPI file > Add
-8. You should now see PokefarmQ IV Checker listed under Extensions
+8. You should now see PokefarmQ IV Checker listed under Extensions, you may need to enable it on the PFQ site. Menu > Extensions > PokefarmQ IV Checker > Permissions > toggle ON for the PFQ websites.
 9. Refresh on PFQ!
 
 #### ![orion logo](/icons/logo-orion-20.png) Orion - Mobile ![ios logo](/icons/logo-apple-20.png)
@@ -156,4 +146,4 @@ All processing occurs locally in your browser and the extension only reads publi
 
 ### Disclaimer
 
-PokéFarm Field IV Viewer is an independent fan-made tool and is not affiliated with or endorsed by PokéFarm.
+PokéFarm Field IV Viewer is an independent fan-made tool and is not affiliated with or endorsed by PokéFarm. The developer of this tool is not responsible for any actions that may users choose to take with it (ex. Shelter Surfing).
